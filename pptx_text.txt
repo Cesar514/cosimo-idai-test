@@ -1,0 +1,291 @@
+--- ppt/slides/slide1.xml ---
+Multi-agentic Workflows
+Orchestrating Coding Agents with CLI Tools, skills.md, and MCPs
+Cesar Contreras | Friday 27 February 2026 | Elm House 214 + Teams
+Lunch at 12:00
+--- ppt/slides/slide10.xml ---
+Google Jules
+Jules targets asynchronous coding tasks on codebases
+Good pattern: dispatch tasks, collect artifacts, review diffs
+Useful for long-running background work
+Needs strict acceptance tests before delegated execution
+--- ppt/slides/slide11.xml ---
+Gemini CLI in Multi-agent Stacks
+Open-source terminal agent for coding and scripting workflows
+Useful for rapid implementation and repository exploration
+Extensible with MCP for custom integrations
+Can be paired with Gemini Code Assist for IDE workflows
+Treat outputs as proposals and enforce test/eval gates
+--- ppt/slides/slide12.xml ---
+Codex vs Gemini CLI vs Claude: Choice Matters
+Codex: strongest when you want strict rule-following (AGENTS.md, skills, explicit constraints).
+Gemini CLI: often takes more initiative and may deviate if your guardrails are loose.
+Claude: tends to over-improve and expand scope beyond the exact ask.
+Operational takeaway: same prompt can produce very different behaviors across agents.
+Your choice matters: pick the agent by control needs, risk tolerance, and review bandwidth.
+--- ppt/slides/slide13.xml ---
+Using GPT-5.2 Pro (Why It Helps)
+Best for hardest tasks: deep reasoning, multi-step code edits, and agentic tool-use chains.
+OpenAI positions GPT-5.2 Pro as the highest-capability GPT-5.2 tier (Responses API only).
+High leverage in your workflow: architecture decisions, risky refactors, and root-cause analysis.
+Pattern: use GPT-5.2 Pro for planning/critical reviews; use faster models for implementation loops.
+When uncertainty and downside risk are high, paying for stronger reasoning is usually net-positive.
+--- ppt/slides/slide14.xml ---
+Planning Mode: Codex and Gemini
+Codex: collaboration modes include plan mode (useful for design-first, read-before-write workflows).
+Gemini CLI: `/plan` switches to read-only planning mode (feature marked experimental).
+Gemini also supports `--approval-mode=plan` and explicit plan artifact generation before coding.
+Common benefit: better approach selection, fewer blind edits, cleaner handoff to implementer agents.
+Note: in Gemini docs, enter-plan tool is unavailable while running in YOLO mode.
+--- ppt/slides/slide15.xml ---
+Subscription Prices Snapshot (US, Feb 26, 2026)
+OpenAI ChatGPT: Plus $20/mo, Pro $200/mo, Business $25/user/mo (annual) (Enterprise: contact sales).
+Codex CLI: no separate subscription; included with ChatGPT Plus/Pro/Business/Edu/Enterprise.
+GitHub Copilot: Pro $10/mo, Pro+ $39/mo, Business $19/user/mo, Enterprise $39/user/mo.
+Google AI plans: AI Pro $19.99/mo; AI Ultra launched at $249.99/mo in the US (pricing/promos can change).
+Jules: no separate public subscription on its own page; usage limits are tied to AI Pro/Ultra tiers.
+--- ppt/slides/slide16.xml ---
+Local Models: When and Why to Use Them
+Codex supports local OSS providers (`--oss`) via Ollama or LM Studio in config.
+OpenAI open-weight options: `gpt-oss-20b` (local/specialized) and `gpt-oss-120b` (single H100 class).
+Cost model shift: lower subscription dependence, higher compute/ops responsibility.
+Best fit: privacy-sensitive data, air-gapped workflows, custom fine-tunes, deterministic local tooling.
+Practical strategy: hybrid stack (local models for bulk loops, frontier models for critical reasoning).
+--- ppt/slides/slide17.xml ---
+Role Split: Planner vs Implementer vs Reviewer
+Planner: defines task DAG, dependencies, and rollback logic
+Implementer: ships smallest safe patches per task node
+Reviewer: adversarial check for bugs, security, regressions
+Release agent (optional): changelog, versioning, deployment notes
+Human remains accountable for risk decisions and shipping
+--- ppt/slides/slide18.xml ---
+Codex Spawn Tree: Agents, Subagents, Max Depth
+Root session starts at depth 0; parent can spawn child agents for parallel tasks.
+Children can spawn subagents recursively only when depth budget allows.
+`agents.max_depth` limits nesting: default 1 = root -> child only (no grandchild).
+`agents.max_threads` limits concurrent open agent threads to avoid overload.
+Parent orchestrates lifecycle with spawn/send_input/wait/resume/close and merges outputs.
+--- ppt/slides/slide19.xml ---
+Codex Agent Types and Why This Is Marvelous
+Built-in roles: `default`, `worker`, `explorer`, and `monitor` (plus custom roles).
+`worker` focuses on execution/fixes; `explorer` on read-heavy code discovery; `monitor` on long waits/polling.
+Each role can have its own model, reasoning effort, sandbox mode, and instructions.
+Marvelous effect: role specialization + parallelism reduces context rot and increases throughput.
+You keep control with depth/thread limits and permissions while still moving much faster.
+--- ppt/slides/slide2.xml ---
+Event Details and Scope
+Date: Friday 27 February 2026 | Time: 11:00 (lunch at 12:00)
+Location: Elm House 214 + Teams
+Lead: Cesar Contreras
+Goal: practical multi-agent workflows for research code
+Outcome: repeatable path from idea to tested proof-of-concept
+--- ppt/slides/slide20.xml ---
+Hardcore Orchestration Pattern
+1) Set measurable goal and explicit stop conditions
+2) Spawn parallel implementers on isolated branches
+3) Run automated checks after every patch
+4) Reviewer compares alternatives with evidence
+5) Approve based on test artifacts, not model confidence
+--- ppt/slides/slide21.xml ---
+skills.md / SKILL.md Patterns
+Package repeatable workflows as skills: instructions + scripts + assets
+Keep skills narrow: setup, test triage, docs, release notes
+Embed deterministic scripts in scripts/ for repeatability
+Use clear descriptions for reliable triggering
+Version and review skills with normal PR discipline
+--- ppt/slides/slide22.xml ---
+How to Create a Skill (skill-creator Workflow)
+1) Define concrete usage examples and identify reusable resources (scripts, references, assets).
+2) Initialize scaffold with `scripts/init_skill.py <skill-name> --path <dir> --resources ...`.
+3) Write `SKILL.md`: frontmatter only `name` + `description`; keep body concise and imperative.
+4) Add deterministic scripts, needed references, and optional assets; generate `agents/openai.yaml` metadata.
+5) Validate with `scripts/quick_validate.py <skill-folder>`, test scripts, then iterate from real usage feedback.
+--- ppt/slides/slide23.xml ---
+Skill Spotlight: create-plan
+Purpose: generate a concise, actionable plan when planning is explicitly requested.
+Core behavior: fast read-only context scan + only blocking follow-up questions.
+Output contract: #Plan with scope, ordered checklist, and open questions.
+Why it matters here: aligns planner-agent behavior before parallel execution.
+Best use: kickoff for complex coding/research tasks with clear acceptance criteria.
+--- ppt/slides/slide24.xml ---
+Skill Spotlight: github-agents-deploy
+Purpose: triage open GitHub issues/PRs and deploy Copilot/Jules/Codex review strategically.
+Core behavior: MCP-only GitHub operations, capacity-aware assignment, no duplicate deployment.
+Safety pattern: draft per-issue/per-PR plan first, execute only after user approval.
+Why it matters here: operationalizes your issue-to-agent dispatch workflow at scale.
+Best use: weekly triage to keep agent workloads balanced and visible.
+--- ppt/slides/slide25.xml ---
+Skill Spotlight: openai-docs
+Purpose: fetch current OpenAI guidance from official docs with citations.
+Core behavior: search + fetch via OpenAI Docs MCP before any web fallback.
+Output quality: source-grounded API/tooling guidance with reduced speculation risk.
+Why it matters here: keeps agent architecture choices aligned with latest platform reality.
+Best use: model/tool capability checks before implementing new workflow patterns.
+--- ppt/slides/slide26.xml ---
+Skill Spotlight: suggest-improve
+Purpose: deep codebase health review with ranked, actionable improvements (no new features).
+Core behavior: evidence-based analysis and up to 10 prioritized suggestions (★ to ★★★).
+Output contract: why/evidence, what to change, where to change, and how to validate.
+Why it matters here: acts as reviewer/critic mode for technical debt and reliability.
+Best use: post-sprint optimization and hardening before broad agent rollout.
+--- ppt/slides/slide27.xml ---
+Skill Spotlight: playwright
+Purpose: automate real browser flows from terminal for testing and debugging.
+Core behavior: open -> snapshot -> interact by refs -> re-snapshot -> capture artifacts.
+Operational guardrail: CLI-first automation with reproducible interaction loops.
+Why it matters here: closes the test loop for UI paths that coding agents modify.
+Best use: regression checks, bug repros, and evidence capture in agent pipelines.
+--- ppt/slides/slide28.xml ---
+Skill Spotlight: literature-review
+Purpose: systematic literature review across multiple academic databases.
+Core behavior: scoped search strategy, dedup/screening, thematic synthesis, verified citations.
+Deliverables: publication-grade markdown/PDF outputs with reproducible search traces.
+Why it matters here: enables agent-assisted research discovery for issue ideation.
+Best use: state-of-the-art surveys before launching new experiment or implementation tracks.
+--- ppt/slides/slide29.xml ---
+Skill Spotlight: scientific-report-editor
+Purpose: draft and quality-gate scientific/technical reports in publication-grade style.
+Core behavior: multi-pass workflow (draft, micro-reviews, controlled rewrite, final review).
+Quality controls: math-aware formatting, evidence-linked claims, layout validation.
+Why it matters here: turns agent outputs into coherent, defensible research communication.
+Best use: transform experiment logs and notes into clean reports and summaries.
+--- ppt/slides/slide3.xml ---
+Agenda (60 Minutes)
+11:00-11:10: Why agents now + key definitions
+11:10-11:25: Tooling landscape (Codex, Copilot, Jules, Gemini, MCP)
+11:25-11:45: Live repo walkthrough with role-split agents
+11:45-11:55: Debug, testing, research, and writing workflows
+11:55-12:00: Robotics risk/reward, adoption plan, Q&A
+--- ppt/slides/slide30.xml ---
+Skill Spotlight: pr-merger
+Purpose: review, fix, validate, and merge PRs end-to-end with tight scope control.
+Core behavior: inspect PR signals, patch minimally, run tests, comment rationale, merge/close.
+Workflow discipline: keep main synced, verify fixes, and clean branch state after merge.
+Why it matters here: final integration step for work produced by multiple agents.
+Best use: converging parallel agent branches into safe, merge-ready outcomes.
+--- ppt/slides/slide31.xml ---
+AGENTS.md as Behavioral Control Plane
+Encodes persistent repo rules: build/test/style/review expectations
+Supports layered precedence: global -> repo -> subdirectory
+Turn repeated reviewer feedback into durable instructions
+Pair with linters and pre-commit hooks for enforcement
+Treat AGENTS.md as living policy, not static docs
+--- ppt/slides/slide32.xml ---
+MCP Basics: Why It Matters
+MCP standardizes model access to tools and context
+Core primitives: tools, resources, prompts
+Transports: local STDIO and remote HTTP
+Decouples orchestration logic from vendor-specific integrations
+Enables reusable agent workflows across different hosts
+--- ppt/slides/slide33.xml ---
+MCP in Practice: Trust and Safety
+Connect only to trusted and verified MCP servers
+Minimize tool scopes; separate read-only and mutating actions
+Require explicit approvals for high-impact tool calls
+Apply OAuth/token hygiene and audience validation
+Log every tool call for auditability and incident response
+--- ppt/slides/slide34.xml ---
+Live Walkthrough: Blank Repo to PoC
+Task: research pipeline from raw data to baseline model
+Planner writes milestones and acceptance criteria
+Implementers split ingestion, modeling, evaluation, docs
+Reviewer runs risk checklist and regression pass
+Output: tested PoC branch with metrics and documentation
+--- ppt/slides/slide35.xml ---
+Cesar's Real Workflow (Control Loop)
+Codex CLI is the control plane: parent/subagent orchestration at explicit depth levels.
+Default operating mode is `--yolo` to maximize autonomy, speed, and exploration breadth.
+Codex git skills convert lateral ideas and research asks directly into GitHub issues.
+Dispatch in GitHub: tag for Jules or assign to Copilot, often with parallel approaches.
+Gemini CLI critiques outputs and files difficulty-tagged bugs; Codex /review is the final gate.
+--- ppt/slides/slide36.xml ---
+Debug Loop with Agents
+Reproduce: isolate failing test and create minimal repro
+Diagnose: trace logs, data flow, and dependency graph
+Patch: propose fix with backward compatibility checks
+Verify: rerun targeted and full suite tests
+Document: root cause, fix rationale, and prevention steps
+--- ppt/slides/slide37.xml ---
+Testing Workflows with Agents
+Generate edge-case tests and mutation-style checks
+Triage flaky tests with repeated run variance reports
+Use CI autofix loops for lint/build breakages
+Run adversarial review prompts for correctness/security
+Track regression rate per agent and task class
+--- ppt/slides/slide38.xml ---
+Research and Writing Workflows
+Parallel literature triage and synthesis by topic
+Experiment design support for ablations and controls
+Auto-build reproducibility artifacts (env, seeds, scripts)
+Writing loop: draft -> critique -> revise -> citation audit
+Prism (OpenAI, Jan 27 2026): AI-native LaTeX scientific workspace
+--- ppt/slides/slide39.xml ---
+Experimental Robotics: Real World as Tools
+Any system connected to a computer can be wrapped as an agent tool interface.
+With GPT-5.3-Codex orchestration, cameras/sensors can feed real-world context into workflows.
+Agents can run your own scripts as tools for control, logging, and data quality checks.
+Real-world data collection can be agent-assisted with safety gates and human supervision.
+Pattern: scriptable interface -> MCP/tool wrapper -> agent policy -> monitored execution.
+--- ppt/slides/slide4.xml ---
+Why 2026 Is Different
+Coding agents moved from chat help to autonomous PR-style execution
+MCP-style protocols made tool integrations composable
+Larger context + stronger reasoning enable longer task chains
+Teams can parallelize exploration, implementation, and review
+Bottleneck shifted from typing speed to orchestration quality
+--- ppt/slides/slide40.xml ---
+High Risk, High Reward in Robot Agent Systems
+Reward: faster robotics iteration, larger design search, and continuous real-world data loops.
+Operating doctrine: run in `--yolo` mode by default for maximum autonomous action space.
+Risk: unsafe actuation, sensor misreads, and over-trusting autonomous decisions.
+Counterbalance controls: kill-switches, hard interrupts, telemetry, and post-run forensics.
+Core metrics: incident/near-miss rate, rollback frequency, and data quality drift.
+--- ppt/slides/slide41.xml ---
+Ralph Wiggum Technique (Actual Definition)
+Core loop: run the same prompt repeatedly (`while :; do cat PROMPT.md | agent; done`) until completion signal.
+State is externalized to files + git, not chat history; each iteration can start with a fresh context window.
+Operational rule: one concrete item per loop to reduce context pollution and drift.
+Add backpressure gates (tests, type checks, linters, scanners) so bad code is automatically rejected.
+Tune iteratively with explicit guardrail instructions (“signs”) when failure patterns appear.
+--- ppt/slides/slide42.xml ---
+Adoption Plan and Closing
+Week 1: AGENTS.md baseline, skill templates, MCP policy
+Week 2: pilot one workflow (bugfix or experiment setup)
+Weeks 3-4: reviewer agent, eval metrics, CI integration
+Success = faster cycle time, fewer escapes, better docs
+Q&A now | Lunch at 12:00 | Tool status validated on Feb 26, 2026
+--- ppt/slides/slide5.xml ---
+What Multi-agent Workflow Means
+Multiple specialized agents coordinate on one objective
+Planner decomposes work into parallelizable tasks
+Implementers execute code, tests, and integrations
+Reviewer/critic validates correctness and regression risk
+Human sets priorities, trust boundaries, and final approvals
+--- ppt/slides/slide6.xml ---
+Reference Architecture
+Inputs: issue statement, repo state, tests, constraints
+Planner agent: task graph + acceptance criteria
+Implementer agents: code changes + local validation
+Reviewer agent: risk scan + quality bar checks
+Operator (human): checkpoint approvals + merge decisions
+--- ppt/slides/slide7.xml ---
+Tool Landscape (As of Feb 26, 2026)
+OpenAI Codex CLI: local coding agent with multi-agent + MCP
+GitHub Copilot coding agent: issue-to-PR automation in GitHub
+Google Jules/Jules API: asynchronous coding agent + API automation
+Gemini CLI: open-source terminal agent with MCP extensibility
+Shared denominator: prompts + tools + policy + eval loops
+--- ppt/slides/slide8.xml ---
+Codex CLI: High-Leverage Features
+Local repo read/edit/run with explicit approval modes
+Non-interactive automation via codex exec workflows
+Experimental multi-agent orchestration with specialized roles
+First-party web search (cached or live modes)
+Built-in MCP support for external tools and context providers
+--- ppt/slides/slide9.xml ---
+GitHub Copilot Coding Agent
+Strong fit for issue-driven asynchronous implementation
+Operates directly in GitHub pull request workflows
+Useful for repetitive backlog and maintenance tasks
+Current constraints: preview status and restricted execution model
+Best used as implementer with independent reviewer checks
