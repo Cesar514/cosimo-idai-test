@@ -1,0 +1,21 @@
+[project]
+name = "robotics-maze"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "osx-64", "linux-64"]
+
+[dependencies]
+python = "3.11.*"
+pip = "*"
+
+[pypi-dependencies]
+numpy = ">=1.26"
+pillow = ">=10"
+mujoco = ">=3.3.7"
+python-pptx = ">=0.6.23"
+pytest = ">=8"
+
+[tasks]
+run = "python src/main.py --planner astar --episodes 3 --maze-size 15 --seed 42"
+benchmark = "python src/benchmark.py --num-mazes 30 --width 15 --height 15 --algorithm backtracker"
+screenshots = "python scripts/generate_sim_screenshots.py"
+mujoco_screenshots = "python scripts/generate_mujoco_screenshots.py"

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robotics-maze"
+version = "0.1.0"
+description = "Robotics maze runner scaffold with pluggable planner/sim components."
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "pybullet>=3.2",
+]
+
+[project.scripts]
+robotics-maze = "main:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["main"]
