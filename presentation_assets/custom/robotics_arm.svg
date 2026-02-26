@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="robotics arm icon">
+  <rect width="512" height="512" rx="72" fill="#F8F9FB"/>
+  <rect x="86" y="390" width="340" height="50" rx="16" fill="#3D4757"/>
+  <circle cx="200" cy="356" r="36" fill="#5B6D82" stroke="#273344" stroke-width="10"/>
+  <rect x="182" y="236" width="38" height="130" rx="16" fill="#7D8EA3"/>
+  <g stroke="#2A3545" stroke-width="14" stroke-linecap="round" fill="none">
+    <line x1="200" y1="236" x2="286" y2="188"/>
+    <line x1="286" y1="188" x2="350" y2="242"/>
+  </g>
+  <circle cx="286" cy="188" r="28" fill="#91A3B8" stroke="#2A3545" stroke-width="10"/>
+  <circle cx="350" cy="242" r="24" fill="#91A3B8" stroke="#2A3545" stroke-width="10"/>
+  <g fill="#4FC3F7" stroke="#0A4FBF" stroke-width="8">
+    <rect x="360" y="222" width="42" height="18" rx="8"/>
+    <rect x="360" y="246" width="42" height="18" rx="8"/>
+  </g>
+  <rect x="156" y="404" width="90" height="22" rx="10" fill="#AAB7C7"/>
+</svg>

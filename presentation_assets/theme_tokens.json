@@ -1,0 +1,37 @@
+{
+  "colors": {
+    "bg.canvas": "#F4F7FB",
+    "bg.card": "#FFFFFF",
+    "bg.inverse": "#0E1A2B",
+    "text.primary": "#0F172A",
+    "text.secondary": "#475569",
+    "text.inverse": "#F8FAFC",
+    "accent.primary": "#0B5FFF",
+    "accent.secondary": "#00A3A3",
+    "accent.warm": "#FF7A18",
+    "status.success": "#0E9F6E",
+    "status.warning": "#D97706",
+    "status.error": "#DC2626",
+    "line.default": "#D1D9E6"
+  },
+  "fontSize": {
+    "deckTitle": 56,
+    "sectionTitle": 40,
+    "slideTitle": 32,
+    "subtitle": 24,
+    "bodyLg": 22,
+    "body": 18,
+    "code": 16,
+    "caption": 14
+  },
+  "spacing": {
+    "1": 8,
+    "2": 16,
+    "3": 24,
+    "4": 32,
+    "5": 40,
+    "6": 48,
+    "8": 64,
+    "10": 80
+  }
+}

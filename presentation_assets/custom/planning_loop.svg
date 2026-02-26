@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="planning loop icon">
+  <rect width="512" height="512" rx="72" fill="#FFFDF8"/>
+  <circle cx="256" cy="256" r="146" fill="none" stroke="#E6E0D2" stroke-width="36"/>
+  <g fill="none" stroke="#FF8A00" stroke-width="22" stroke-linecap="round">
+    <path d="M256 96 A160 160 0 0 1 402 186"/>
+    <path d="M416 256 A160 160 0 0 1 326 402"/>
+    <path d="M256 416 A160 160 0 0 1 110 326"/>
+    <path d="M96 256 A160 160 0 0 1 186 110"/>
+  </g>
+  <g fill="#FF8A00">
+    <polygon points="395,178 426,194 391,210"/>
+    <polygon points="318,395 334,426 300,392"/>
+    <polygon points="117,318 86,334 121,300"/>
+    <polygon points="194,117 178,86 212,120"/>
+  </g>
+  <circle cx="256" cy="256" r="54" fill="#FFD08A" stroke="#FF8A00" stroke-width="12"/>
+</svg>
