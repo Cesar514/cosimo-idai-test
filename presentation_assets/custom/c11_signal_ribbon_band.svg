@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="320" viewBox="0 0 1920 320" role="img" aria-label="Dataflow signal ribbon band">
+  <defs>
+    <linearGradient id="c11bg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#edf3ff"/>
+      <stop offset="100%" stop-color="#d9e8ff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="320" fill="url(#c11bg)"/>
+  <path d="M0 104 C190 90, 360 52, 560 66 C720 78, 840 130, 1020 124 C1200 118, 1400 66, 1600 84 C1720 95, 1820 120, 1920 128" fill="none" stroke="#0b5fff" stroke-width="12" stroke-opacity="0.38"/>
+  <path d="M0 170 C210 186, 390 224, 600 202 C770 184, 860 142, 1060 156 C1240 168, 1420 232, 1630 218 C1740 210, 1840 188, 1920 178" fill="none" stroke="#00a3a3" stroke-width="10" stroke-opacity="0.34"/>
+  <path d="M0 248 C210 236, 360 200, 580 214 C760 226, 880 262, 1080 252 C1260 244, 1420 202, 1630 216 C1760 224, 1840 236, 1920 248" fill="none" stroke="#ff7a18" stroke-width="8" stroke-opacity="0.28"/>
+
+  <circle cx="280" cy="88" r="12" fill="#0b5fff"/>
+  <circle cx="640" cy="84" r="12" fill="#0b5fff"/>
+  <circle cx="980" cy="122" r="12" fill="#0b5fff"/>
+  <circle cx="1360" cy="90" r="12" fill="#0b5fff"/>
+  <circle cx="1700" cy="108" r="12" fill="#0b5fff"/>
+
+  <circle cx="220" cy="182" r="10" fill="#00a3a3"/>
+  <circle cx="560" cy="206" r="10" fill="#00a3a3"/>
+  <circle cx="920" cy="150" r="10" fill="#00a3a3"/>
+  <circle cx="1280" cy="204" r="10" fill="#00a3a3"/>
+  <circle cx="1620" cy="218" r="10" fill="#00a3a3"/>
+
+  <rect x="1480" y="28" width="360" height="92" rx="18" fill="#ffffff" fill-opacity="0.56"/>
+  <rect x="86" y="214" width="420" height="82" rx="18" fill="#ffffff" fill-opacity="0.55"/>
+</svg>

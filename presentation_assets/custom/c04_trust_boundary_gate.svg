@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-label="Trust boundary gate with auth policy and audit cards">
+  <defs>
+    <linearGradient id="c04bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f4f8ff"/>
+      <stop offset="100%" stop-color="#eef5ff"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b5fff"/>
+      <stop offset="100%" stop-color="#0a46be"/>
+    </linearGradient>
+    <filter id="c04shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="10" flood-color="#0e1a2b" flood-opacity="0.16"/>
+    </filter>
+    <marker id="c04arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#0b5fff"/>
+    </marker>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#c04bg)"/>
+  <circle cx="960" cy="540" r="360" fill="#0b5fff" opacity="0.08"/>
+  <circle cx="960" cy="540" r="455" fill="none" stroke="#0b5fff" stroke-opacity="0.12" stroke-width="2" stroke-dasharray="10 10"/>
+
+  <g transform="translate(800,250)">
+    <path d="M160 0 L320 72 L320 290 C320 378 256 453 160 500 C64 453 0 378 0 290 L0 72 Z" fill="url(#shield)" filter="url(#c04shadow)"/>
+    <path d="M160 82 L250 122 L250 278 C250 336 214 386 160 416 C106 386 70 336 70 278 L70 122 Z" fill="#ffffff" opacity="0.95"/>
+    <path d="M160 158 L198 224 H176 V306 H144 V224 H122 Z" fill="#0b5fff"/>
+  </g>
+
+  <g transform="translate(300,265)" filter="url(#c04shadow)">
+    <rect width="360" height="190" rx="24" fill="#ffffff" stroke="#0b5fff" stroke-opacity="0.3"/>
+    <rect x="34" y="34" width="86" height="86" rx="18" fill="#e9f0ff"/>
+    <circle cx="78" cy="78" r="22" fill="#0b5fff" opacity="0.2"/>
+    <rect x="140" y="44" width="190" height="18" rx="9" fill="#dbe7fc"/>
+    <rect x="140" y="74" width="150" height="14" rx="7" fill="#e8f0fc"/>
+    <rect x="34" y="142" width="296" height="14" rx="7" fill="#d8e6fc"/>
+    <text x="182" y="175" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0e1a2b">Auth Gate</text>
+  </g>
+
+  <g transform="translate(1260,265)" filter="url(#c04shadow)">
+    <rect width="360" height="190" rx="24" fill="#ffffff" stroke="#00a3a3" stroke-opacity="0.32"/>
+    <rect x="34" y="34" width="86" height="86" rx="18" fill="#e7f7f5"/>
+    <rect x="64" y="52" width="26" height="52" rx="8" fill="#00a3a3" opacity="0.26"/>
+    <rect x="140" y="44" width="190" height="18" rx="9" fill="#d4ecea"/>
+    <rect x="140" y="74" width="148" height="14" rx="7" fill="#e4f3f1"/>
+    <rect x="34" y="142" width="296" height="14" rx="7" fill="#d2ecea"/>
+    <text x="184" y="175" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0e1a2b">Policy Gate</text>
+  </g>
+
+  <g transform="translate(780,710)" filter="url(#c04shadow)">
+    <rect width="360" height="200" rx="24" fill="#ffffff" stroke="#ff7a18" stroke-opacity="0.34"/>
+    <rect x="34" y="34" width="86" height="86" rx="18" fill="#fff1e7"/>
+    <circle cx="76" cy="76" r="26" fill="none" stroke="#ff7a18" stroke-width="6" opacity="0.34"/>
+    <rect x="140" y="44" width="190" height="18" rx="9" fill="#f8e2d1"/>
+    <rect x="140" y="74" width="152" height="14" rx="7" fill="#faecdf"/>
+    <rect x="34" y="144" width="296" height="14" rx="7" fill="#f7e3d3"/>
+    <text x="184" y="180" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0e1a2b">Audit Trail</text>
+  </g>
+
+  <path d="M660 360 C730 380, 770 420, 820 470" stroke="#0b5fff" stroke-width="5" fill="none" marker-end="url(#c04arrow)"/>
+  <path d="M1260 360 C1190 380, 1150 420, 1100 470" stroke="#00a3a3" stroke-width="5" fill="none" marker-end="url(#c04arrow)"/>
+  <path d="M960 710 L960 645" stroke="#ff7a18" stroke-width="5" marker-end="url(#c04arrow)"/>
+</svg>

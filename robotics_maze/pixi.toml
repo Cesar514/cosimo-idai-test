@@ -11,6 +11,7 @@ pip = "*"
 numpy = ">=1.26"
 pillow = ">=10"
 mujoco = ">=3.3.7"
+pybullet = ">=3.2.7"
 python-pptx = ">=0.6.23"
 pytest = ">=8"
 

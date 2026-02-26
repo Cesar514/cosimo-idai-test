@@ -1,28 +1,68 @@
 {
+  "meta": {
+    "stylePack": "signal_forge_editorial_v2",
+    "intent": "Bold editorial technical deck with cobalt pulse accents, warm alarms, and tactile surfaces.",
+    "lastUpdated": "2026-02-26"
+  },
   "colors": {
-    "bg.canvas": "#F4F7FB",
+    "bg.canvas": "#EEF3FF",
     "bg.card": "#FFFFFF",
-    "bg.inverse": "#0E1A2B",
-    "text.primary": "#0F172A",
-    "text.secondary": "#475569",
-    "text.inverse": "#F8FAFC",
-    "accent.primary": "#0B5FFF",
-    "accent.secondary": "#00A3A3",
-    "accent.warm": "#FF7A18",
-    "status.success": "#0E9F6E",
-    "status.warning": "#D97706",
-    "status.error": "#DC2626",
-    "line.default": "#D1D9E6"
+    "bg.tinted": "#DDE8FF",
+    "bg.inverse": "#0F1629",
+    "text.primary": "#111A31",
+    "text.secondary": "#465373",
+    "text.inverse": "#F4F8FF",
+    "accent.primary": "#005BFF",
+    "accent.secondary": "#00A79A",
+    "accent.warm": "#FF6A2B",
+    "accent.hot": "#E63462",
+    "accent.signal": "#A2E930",
+    "status.success": "#0F8A67",
+    "status.warning": "#B66A08",
+    "status.error": "#C92B3E",
+    "line.default": "#C7D4EE",
+    "line.strong": "#869BC3"
+  },
+  "gradients": {
+    "mesh.primary": "linear-gradient(130deg, #005BFF 0%, #00A79A 52%, #A2E930 100%)",
+    "mesh.warning": "linear-gradient(135deg, #FF6A2B 0%, #E63462 100%)",
+    "surface.ink": "linear-gradient(160deg, #111A31 0%, #0F1629 100%)"
+  },
+  "typography": {
+    "fontFamily": {
+      "display": "\"Saira Stencil One\", \"Arial Black\", sans-serif",
+      "title": "\"Chakra Petch\", \"Segoe UI\", sans-serif",
+      "body": "\"Source Serif 4\", Georgia, serif",
+      "mono": "\"IBM Plex Mono\", \"SFMono-Regular\", Menlo, monospace"
+    },
+    "weight": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "lineHeight": {
+      "tight": 1.06,
+      "title": 1.12,
+      "body": 1.38,
+      "dense": 1.24
+    },
+    "tracking": {
+      "label": 0.08,
+      "title": 0.01,
+      "body": 0
+    }
   },
   "fontSize": {
-    "deckTitle": 56,
-    "sectionTitle": 40,
-    "slideTitle": 32,
-    "subtitle": 24,
+    "deckTitle": 62,
+    "sectionTitle": 44,
+    "slideTitle": 34,
+    "subtitle": 25,
     "bodyLg": 22,
     "body": 18,
     "code": 16,
-    "caption": 14
+    "caption": 14,
+    "eyebrow": 12
   },
   "spacing": {
     "1": 8,
@@ -32,6 +72,43 @@
     "5": 40,
     "6": 48,
     "8": 64,
-    "10": 80
+    "10": 80,
+    "12": 96
+  },
+  "radius": {
+    "sm": 8,
+    "md": 14,
+    "lg": 20,
+    "pill": 999
+  },
+  "shadow": {
+    "card": "0 12px 30px rgba(17, 26, 49, 0.09)",
+    "float": "0 18px 44px rgba(0, 91, 255, 0.2)",
+    "glow": "0 0 0 1px rgba(0, 91, 255, 0.16), 0 0 36px rgba(0, 167, 154, 0.26)"
+  },
+  "motion": {
+    "durationMs": {
+      "instant": 120,
+      "fast": 180,
+      "base": 280,
+      "slow": 520,
+      "section": 760
+    },
+    "easing": {
+      "standard": "cubic-bezier(0.25, 0.7, 0.3, 1)",
+      "snap": "cubic-bezier(0.2, 0.85, 0.2, 1)",
+      "expressive": "cubic-bezier(0.16, 1, 0.3, 1)"
+    },
+    "staggerMs": {
+      "bullet": 90,
+      "grid": 70,
+      "chips": 50
+    },
+    "patterns": {
+      "sectionEnter": "section_rail_wipe_then_rise",
+      "contentEnter": "stagger_fade_up",
+      "diagramTrace": "signal_trace_ltr",
+      "kpiEmphasis": "single_pop"
+    }
   }
 }

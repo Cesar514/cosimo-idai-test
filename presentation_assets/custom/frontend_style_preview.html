@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Signal Forge Editorial - Frontend Style Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Saira+Stencil+One&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-canvas: #eef3ff;
+      --bg-card: #ffffff;
+      --bg-tinted: #dde8ff;
+      --bg-inverse: #0f1629;
+      --text-primary: #111a31;
+      --text-secondary: #465373;
+      --text-inverse: #f4f8ff;
+      --accent-primary: #005bff;
+      --accent-secondary: #00a79a;
+      --accent-warm: #ff6a2b;
+      --accent-hot: #e63462;
+      --accent-signal: #a2e930;
+      --line-default: #c7d4ee;
+      --line-strong: #869bc3;
+      --mesh-primary: linear-gradient(130deg, #005bff 0%, #00a79a 52%, #a2e930 100%);
+      --mesh-warning: linear-gradient(135deg, #ff6a2b 0%, #e63462 100%);
+      --shadow-card: 0 12px 30px rgba(17, 26, 49, 0.09);
+      --shadow-float: 0 18px 44px rgba(0, 91, 255, 0.2);
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --ease-standard: cubic-bezier(0.25, 0.7, 0.3, 1);
+      --ease-expressive: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text-primary);
+      font-family: "Source Serif 4", Georgia, serif;
+      background: var(--bg-canvas);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -30vmax;
+      background:
+        radial-gradient(circle at 8% 14%, rgba(0, 91, 255, 0.2), transparent 42%),
+        radial-gradient(circle at 91% 16%, rgba(0, 167, 154, 0.2), transparent 40%),
+        radial-gradient(circle at 72% 88%, rgba(230, 52, 98, 0.14), transparent 35%);
+      z-index: -2;
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(15, 22, 41, 0.03) 0,
+        rgba(15, 22, 41, 0.03) 1px,
+        transparent 1px,
+        transparent 8px
+      );
+      opacity: 0.5;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    main {
+      width: min(1100px, calc(100% - 2.5rem));
+      margin: 2rem auto 3rem;
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .panel {
+      background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+      border: 1px solid var(--line-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: clamp(1rem, 2.4vw, 2rem);
+      position: relative;
+      overflow: clip;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: rise-in 680ms var(--ease-expressive) forwards;
+    }
+
+    .reveal:nth-of-type(1) { animation-delay: 60ms; }
+    .reveal:nth-of-type(2) { animation-delay: 180ms; }
+    .reveal:nth-of-type(3) { animation-delay: 280ms; }
+    .reveal:nth-of-type(4) { animation-delay: 380ms; }
+    .reveal:nth-of-type(5) { animation-delay: 460ms; }
+
+    .hero {
+      background: linear-gradient(165deg, rgba(238, 243, 255, 0.94), rgba(221, 232, 255, 0.78));
+      border-color: color-mix(in srgb, var(--accent-primary) 22%, var(--line-default));
+      padding-top: 2.4rem;
+      padding-bottom: 2.2rem;
+    }
+
+    .hero .mesh {
+      position: absolute;
+      width: min(50vw, 520px);
+      height: min(50vw, 520px);
+      right: -18%;
+      top: -32%;
+      border-radius: 999px;
+      background: var(--mesh-primary);
+      filter: blur(56px);
+      opacity: 0.35;
+      pointer-events: none;
+      animation: pulse-mesh 6s ease-in-out infinite;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-family: "Saira Stencil One", "Arial Black", sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      color: var(--accent-primary);
+    }
+
+    h1,
+    h2,
+    h3,
+    .title-font {
+      margin: 0;
+      font-family: "Chakra Petch", "Segoe UI", sans-serif;
+      line-height: 1.12;
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 5vw, 3.7rem);
+      max-width: 15ch;
+      margin-top: 0.45rem;
+    }
+
+    h2 {
+      font-size: clamp(1.45rem, 3.2vw, 2rem);
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      margin: 0;
+      color: var(--text-secondary);
+      line-height: 1.42;
+      max-width: 75ch;
+    }
+
+    .lead {
+      margin-top: 0.9rem;
+      font-size: clamp(1.01rem, 1.7vw, 1.2rem);
+    }
+
+    .hero-tags {
+      margin-top: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .tag {
+      font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0.02em;
+      padding: 0.34rem 0.62rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg-card) 88%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent-primary) 28%, var(--line-default));
+      color: var(--text-primary);
+    }
+
+    .swatch-grid {
+      margin-top: 1rem;
+      display: grid;
+      gap: 0.7rem;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+    }
+
+    .swatch {
+      border: 1px solid var(--line-default);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      overflow: hidden;
+      transition: transform 220ms var(--ease-standard), box-shadow 220ms var(--ease-standard);
+    }
+
+    .swatch:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-float);
+    }
+
+    .swatch-color {
+      height: 76px;
+      border-bottom: 1px solid var(--line-default);
+    }
+
+    .swatch-meta {
+      padding: 0.58rem 0.62rem 0.62rem;
+    }
+
+    .swatch-meta p {
+      font-size: 0.76rem;
+      color: var(--text-primary);
+      font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+      line-height: 1.3;
+    }
+
+    .swatch-meta p + p {
+      margin-top: 0.22rem;
+      color: var(--text-secondary);
+    }
+
+    .type-grid {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 1rem;
+    }
+
+    .type-card {
+      border: 1px solid var(--line-default);
+      border-radius: var(--radius-md);
+      background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+      padding: 1rem;
+    }
+
+    .type-display {
+      font-family: "Saira Stencil One", "Arial Black", sans-serif;
+      font-size: clamp(2rem, 4.8vw, 3.2rem);
+      letter-spacing: 0.08em;
+      color: var(--accent-primary);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .type-title {
+      font-family: "Chakra Petch", "Segoe UI", sans-serif;
+      font-size: clamp(1.55rem, 3.3vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: 0.55rem;
+      color: var(--text-primary);
+    }
+
+    .type-body {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.03rem;
+      max-width: 52ch;
+    }
+
+    .type-mono {
+      font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+      font-size: 0.9rem;
+      background: color-mix(in srgb, var(--bg-tinted) 72%, var(--bg-card));
+      border: 1px solid var(--line-default);
+      border-radius: 0.65rem;
+      padding: 0.68rem;
+      margin-top: 0.85rem;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+    }
+
+    .motion-line {
+      margin-top: 1rem;
+      background: color-mix(in srgb, var(--bg-card) 75%, var(--bg-tinted));
+      border: 1px solid var(--line-default);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .motion-line::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -38%;
+      width: 38%;
+      height: 100%;
+      background: var(--mesh-primary);
+      opacity: 0.45;
+      animation: rail-sweep 2.8s var(--ease-expressive) infinite;
+    }
+
+    .motion-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.48rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip {
+      font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+      font-size: 0.78rem;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+      color: var(--text-primary);
+      padding: 0.35rem 0.6rem;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: chip-rise 700ms var(--ease-expressive) forwards;
+    }
+
+    .chip:nth-child(1) { animation-delay: 80ms; }
+    .chip:nth-child(2) { animation-delay: 160ms; }
+    .chip:nth-child(3) { animation-delay: 240ms; }
+    .chip:nth-child(4) { animation-delay: 320ms; }
+    .chip:nth-child(5) { animation-delay: 400ms; }
+
+    .deck-mock {
+      margin-top: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--line-default);
+      overflow: clip;
+    }
+
+    .deck-head {
+      position: relative;
+      padding: 1rem;
+      background: linear-gradient(145deg, rgba(221, 232, 255, 0.9), rgba(238, 243, 255, 0.9));
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+    }
+
+    .deck-head::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      background: var(--mesh-primary);
+      transform-origin: left;
+      animation: head-line 2.2s var(--ease-expressive) infinite;
+    }
+
+    .deck-head h3 {
+      font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+    }
+
+    .runtime-badge {
+      background: var(--bg-inverse);
+      color: var(--text-inverse);
+      border-radius: 999px;
+      padding: 0.44rem 0.72rem;
+      font-size: 0.76rem;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      white-space: nowrap;
+    }
+
+    .deck-body {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1.05fr 1fr;
+      padding: 1rem;
+    }
+
+    .kpi-stack {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .kpi {
+      border-radius: 0.8rem;
+      border: 1px solid var(--line-default);
+      padding: 0.72rem 0.82rem;
+      background: color-mix(in srgb, var(--bg-card) 86%, var(--bg-canvas));
+    }
+
+    .kpi strong {
+      display: block;
+      font-family: "Chakra Petch", "Segoe UI", sans-serif;
+      font-size: 1.55rem;
+      color: var(--accent-primary);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .kpi span {
+      color: var(--text-secondary);
+      font-size: 0.91rem;
+    }
+
+    .evidence {
+      border-radius: 0.8rem;
+      border: 1px solid var(--line-default);
+      background: color-mix(in srgb, var(--bg-tinted) 84%, var(--bg-card));
+      padding: 0.9rem;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .evidence .mono {
+      font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .evidence p {
+      font-size: 0.99rem;
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent-warm);
+      padding-left: 0.7rem;
+      color: var(--text-primary);
+      font-size: 0.92rem;
+    }
+
+    .deck-foot {
+      border-top: 1px solid var(--line-default);
+      padding: 0.66rem 1rem;
+      font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+    }
+
+    @keyframes rise-in {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes drift {
+      from {
+        transform: translate3d(-1%, 0, 0);
+      }
+      to {
+        transform: translate3d(1%, 0, 0) scale(1.04);
+      }
+    }
+
+    @keyframes pulse-mesh {
+      0%,
+      100% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 0.42;
+      }
+    }
+
+    @keyframes rail-sweep {
+      0% {
+        transform: translateX(0%);
+      }
+      65% {
+        transform: translateX(380%);
+      }
+      100% {
+        transform: translateX(380%);
+      }
+    }
+
+    @keyframes chip-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes head-line {
+      0%,
+      100% {
+        transform: scaleX(0.12);
+      }
+      45% {
+        transform: scaleX(1);
+      }
+    }
+
+    @media (max-width: 930px) {
+      .swatch-grid {
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+      }
+
+      .type-grid,
+      .deck-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      main {
+        width: calc(100% - 1.3rem);
+        margin: 1rem auto 2rem;
+      }
+
+      .panel {
+        border-radius: 16px;
+        padding: 0.95rem;
+      }
+
+      .swatch-grid {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+
+      .deck-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="panel hero reveal">
+      <div class="mesh" aria-hidden="true"></div>
+      <p class="eyebrow">Signal Forge Editorial v2</p>
+      <h1>Deck Style Guide Preview</h1>
+      <p class="lead">A bold frontend-forward visual language for technical robotics storytelling: stencil markers, engineered serif readability, and high-signal color rails.</p>
+      <div class="hero-tags" aria-label="style highlights">
+        <span class="tag">Typography Pairing</span>
+        <span class="tag">Cobalt Signal Palette</span>
+        <span class="tag">Intentional Motion</span>
+        <span class="tag">Projector Safe</span>
+      </div>
+    </section>
+
+    <section class="panel reveal">
+      <h2>Color System</h2>
+      <p>Primary cobalt carries path and metric emphasis. Teal tracks process context. Warm and hot accents are constrained so each section has one memorable alarm moment rather than visual noise.</p>
+      <div class="swatch-grid" aria-label="color tokens">
+        <article class="swatch"><div class="swatch-color" style="background:#EEF3FF"></div><div class="swatch-meta"><p>bg.canvas</p><p>#EEF3FF</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#FFFFFF"></div><div class="swatch-meta"><p>bg.card</p><p>#FFFFFF</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#DDE8FF"></div><div class="swatch-meta"><p>bg.tinted</p><p>#DDE8FF</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#111A31"></div><div class="swatch-meta"><p>text.primary</p><p>#111A31</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#465373"></div><div class="swatch-meta"><p>text.secondary</p><p>#465373</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#005BFF"></div><div class="swatch-meta"><p>accent.primary</p><p>#005BFF</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#00A79A"></div><div class="swatch-meta"><p>accent.secondary</p><p>#00A79A</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#FF6A2B"></div><div class="swatch-meta"><p>accent.warm</p><p>#FF6A2B</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#E63462"></div><div class="swatch-meta"><p>accent.hot</p><p>#E63462</p></div></article>
+        <article class="swatch"><div class="swatch-color" style="background:#A2E930"></div><div class="swatch-meta"><p>accent.signal</p><p>#A2E930</p></div></article>
+      </div>
+    </section>
+
+    <section class="panel reveal">
+      <h2>Typography Pairing</h2>
+      <div class="type-grid">
+        <div class="type-card">
+          <div class="type-display">SECTION 04</div>
+          <div class="type-title">Robotic Coordination Under Tool Pressure</div>
+          <p class="type-body">Use expressive technical headings and calm editorial body text so dense slides stay readable without looking generic. Keep body line length below seventy-five characters.</p>
+          <div class="type-mono">$ agent run --planner weighted_astar --frames 300 --seed 11</div>
+        </div>
+        <div class="type-card">
+          <p class="eyebrow">Scale preview</p>
+          <p class="title-font" style="font-size:2.4rem;">Deck Title 62px</p>
+          <p class="title-font" style="font-size:1.92rem; margin-top:0.45rem;">Section Title 44px</p>
+          <p class="title-font" style="font-size:1.5rem; margin-top:0.45rem;">Slide Title 34px</p>
+          <p style="font-size:1.06rem; margin-top:0.75rem;">Body copy 18px with Source Serif rhythm.</p>
+          <p style="font-family:'IBM Plex Mono', monospace; font-size:0.85rem; margin-top:0.55rem;">Caption code 14-16px in mono.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel reveal">
+      <h2>Motion Ideas</h2>
+      <p>One motion family per slide: use a rail wipe for section transitions, staggered content entry for comparisons, and a single KPI pop to avoid distraction.</p>
+      <div class="motion-line" aria-label="section rail wipe demo">
+        <div class="motion-steps">
+          <span class="chip">section_rail_wipe</span>
+          <span class="chip">title_rise +80ms</span>
+          <span class="chip">stagger_70-90ms</span>
+          <span class="chip">kpi_pop_single</span>
+          <span class="chip">max window 900ms</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel reveal">
+      <h2>Component Preview</h2>
+      <p>This mock slide demonstrates the intended visual rhythm: asymmetry, crisp KPI cards, and one warm callout for risk narrative.</p>
+      <article class="deck-mock" aria-label="deck component mock">
+        <header class="deck-head">
+          <div>
+            <p class="eyebrow">Autonomy Pipeline</p>
+            <h3>Tool Mesh Stability at 300-Frame Run</h3>
+          </div>
+          <span class="runtime-badge">RUNTIME 92ms p95</span>
+        </header>
+        <div class="deck-body">
+          <div class="kpi-stack">
+            <div class="kpi"><strong>98.7%</strong><span>Goal reach rate over 1k simulations</span></div>
+            <div class="kpi"><strong>11.2%</strong><span>Reduced stalled-path incidents</span></div>
+            <div class="kpi"><strong>4.3x</strong><span>Faster triage with linked evidence rails</span></div>
+          </div>
+          <div class="evidence">
+            <span class="mono">evidence panel</span>
+            <p>Staggered reveal pattern improved sequence comprehension during live review. Operators identified planner divergence earlier when cobalt rails were paired with mono metric labels.</p>
+            <p class="callout">Risk watch: warm callout reserved for high-cost failure paths only.</p>
+          </div>
+        </div>
+        <footer class="deck-foot">refs: planner_benchmark_2026.tsv | simulation_capture_set_b | qa_projection_pass_02</footer>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

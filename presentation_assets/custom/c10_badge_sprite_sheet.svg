@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-label="Technical badge sprite sheet">
+  <defs>
+    <linearGradient id="c10bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7faff"/>
+      <stop offset="100%" stop-color="#eef5ff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#c10bg)"/>
+
+  <g transform="translate(210,220)">
+    <rect x="0" y="0" width="420" height="230" rx="30" fill="#ffffff" stroke="#0b5fff" stroke-opacity="0.3"/>
+    <circle cx="90" cy="115" r="54" fill="#eaf1ff"/>
+    <rect x="170" y="72" width="200" height="18" rx="9" fill="#d9e6fc"/>
+    <rect x="170" y="104" width="160" height="14" rx="7" fill="#e8f0fc"/>
+    <rect x="170" y="134" width="180" height="14" rx="7" fill="#edf3fd"/>
+  </g>
+
+  <g transform="translate(750,220)">
+    <rect x="0" y="0" width="420" height="230" rx="30" fill="#ffffff" stroke="#00a3a3" stroke-opacity="0.32"/>
+    <circle cx="90" cy="115" r="54" fill="#e8f8f6"/>
+    <rect x="170" y="72" width="200" height="18" rx="9" fill="#d4ecea"/>
+    <rect x="170" y="104" width="170" height="14" rx="7" fill="#e3f3f1"/>
+    <rect x="170" y="134" width="184" height="14" rx="7" fill="#edf8f7"/>
+  </g>
+
+  <g transform="translate(1290,220)">
+    <rect x="0" y="0" width="420" height="230" rx="30" fill="#ffffff" stroke="#ff7a18" stroke-opacity="0.32"/>
+    <circle cx="90" cy="115" r="54" fill="#fff2e8"/>
+    <rect x="170" y="72" width="200" height="18" rx="9" fill="#f8e3d4"/>
+    <rect x="170" y="104" width="152" height="14" rx="7" fill="#faecdf"/>
+    <rect x="170" y="134" width="176" height="14" rx="7" fill="#fbf2ea"/>
+  </g>
+
+  <g transform="translate(210,560)">
+    <rect x="0" y="0" width="420" height="230" rx="30" fill="#ffffff" stroke="#0b5fff" stroke-opacity="0.3"/>
+    <rect x="44" y="56" width="92" height="118" rx="16" fill="#e9f1ff"/>
+    <rect x="170" y="72" width="200" height="18" rx="9" fill="#dce8fc"/>
+    <rect x="170" y="104" width="140" height="14" rx="7" fill="#e8f0fc"/>
+    <rect x="170" y="134" width="188" height="14" rx="7" fill="#edf3fd"/>
+  </g>
+
+  <g transform="translate(750,560)">
+    <rect x="0" y="0" width="420" height="230" rx="30" fill="#ffffff" stroke="#00a3a3" stroke-opacity="0.32"/>
+    <path d="M50 146 L88 84 L126 146 Z" fill="#d8f1ee"/>
+    <rect x="170" y="72" width="200" height="18" rx="9" fill="#d4ecea"/>
+    <rect x="170" y="104" width="160" height="14" rx="7" fill="#e3f3f1"/>
+    <rect x="170" y="134" width="180" height="14" rx="7" fill="#edf8f7"/>
+  </g>
+
+  <g transform="translate(1290,560)">
+    <rect x="0" y="0" width="420" height="230" rx="30" fill="#ffffff" stroke="#ff7a18" stroke-opacity="0.32"/>
+    <circle cx="94" cy="116" r="44" fill="none" stroke="#f8d3bb" stroke-width="8"/>
+    <rect x="170" y="72" width="200" height="18" rx="9" fill="#f8e3d4"/>
+    <rect x="170" y="104" width="148" height="14" rx="7" fill="#faecdf"/>
+    <rect x="170" y="134" width="172" height="14" rx="7" fill="#fbf2ea"/>
+  </g>
+</svg>

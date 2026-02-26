@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from collections import deque
 import heapq
 import time
 from itertools import count
 from math import sqrt
-from typing import Any, Callable, Dict, Iterable, List, Sequence, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Literal, Sequence, Tuple
 
 try:
     from .heuristics import HeuristicFn, Point, resolve_heuristic
@@ -18,6 +19,7 @@ GridLike = Sequence[Sequence[Any]]
 Path = List[Point]
 PlannerResult = Dict[str, Any]
 PlannerFn = Callable[..., PlannerResult]
+AStarTieBreak = Literal["fifo", "low_h", "high_g"]
 
 _PLANNERS: Dict[str, PlannerFn] = {}
 
@@ -144,6 +146,14 @@ def _result(path: Path, expanded_nodes: int, started_at: float) -> PlannerResult
     }
 
 
+def _astar_tie_priority(g_cost: float, h_cost: float, tie_break: AStarTieBreak) -> float:
+    if tie_break == "low_h":
+        return h_cost
+    if tie_break == "high_g":
+        return -g_cost
+    return 0.0
+
+
 def _best_first_search(
     grid: GridLike,
     start: Point,
@@ -152,6 +162,8 @@ def _best_first_search(
     mode: str,
     heuristic: str | HeuristicFn | None = None,
     allow_diagonal: bool = False,
+    heuristic_weight: float = 1.0,
+    astar_tie_break: AStarTieBreak = "fifo",
 ) -> PlannerResult:
     started_at = time.perf_counter()
     rows, cols = _grid_shape(grid)
@@ -162,8 +174,14 @@ def _best_first_search(
     if not _is_passable(grid, start) or not _is_passable(grid, goal):
         return _result([], 0, started_at)
 
+    if mode == "astar":
+        if heuristic_weight < 1.0:
+            raise ValueError("heuristic_weight must be >= 1.0 for A*.")
+        if astar_tie_break not in {"fifo", "low_h", "high_g"}:
+            raise ValueError(f"Unsupported A* tie break mode '{astar_tie_break}'.")
+
     heuristic_fn = resolve_heuristic(heuristic)
-    frontier: List[Tuple[float, int, Point]] = []
+    frontier: List[Tuple[float, float, int, Point]] = []
     tie_breaker = count()
     came_from: Dict[Point, Point] = {}
     g_score: Dict[Point, float] = {start: 0.0}
@@ -171,10 +189,21 @@ def _best_first_search(
     expanded_nodes = 0
 
     initial_h = 0.0 if mode == "dijkstra" else heuristic_fn(start, goal)
-    heapq.heappush(frontier, (initial_h, next(tie_breaker), start))
+    if mode == "astar":
+        initial_priority = heuristic_weight * initial_h
+        initial_tie = _astar_tie_priority(0.0, initial_h, astar_tie_break)
+    elif mode == "dijkstra":
+        initial_priority = 0.0
+        initial_tie = 0.0
+    elif mode == "greedy_best_first":
+        initial_priority = initial_h
+        initial_tie = 0.0
+    else:
+        raise ValueError(f"Unsupported search mode '{mode}'.")
+    heapq.heappush(frontier, (initial_priority, initial_tie, next(tie_breaker), start))
 
     while frontier:
-        _, _, current = heapq.heappop(frontier)
+        _, _, _, current = heapq.heappop(frontier)
         if current in closed:
             continue
         closed.add(current)
@@ -199,15 +228,18 @@ def _best_first_search(
             heuristic_cost = heuristic_fn(nxt, goal)
 
             if mode == "astar":
-                priority = tentative_cost + heuristic_cost
+                priority = tentative_cost + (heuristic_weight * heuristic_cost)
+                tie_priority = _astar_tie_priority(tentative_cost, heuristic_cost, astar_tie_break)
             elif mode == "dijkstra":
                 priority = tentative_cost
+                tie_priority = 0.0
             elif mode == "greedy_best_first":
                 priority = heuristic_cost
+                tie_priority = 0.0
             else:
                 raise ValueError(f"Unsupported search mode '{mode}'.")
 
-            heapq.heappush(frontier, (priority, next(tie_breaker), nxt))
+            heapq.heappush(frontier, (priority, tie_priority, next(tie_breaker), nxt))
 
     return _result([], expanded_nodes, started_at)
 
@@ -220,8 +252,14 @@ def astar(
     *,
     heuristic: str | HeuristicFn | None = "manhattan",
     allow_diagonal: bool = False,
+    heuristic_weight: float = 1.0,
+    tie_break: AStarTieBreak = "low_h",
 ) -> PlannerResult:
-    """A* baseline on a grid maze."""
+    """A* baseline on a grid maze.
+
+    `heuristic_weight=1.0` preserves optimality with admissible heuristics.
+    Tie-break defaults to `low_h` to reduce frontier churn in mazes.
+    """
 
     return _best_first_search(
         grid,
@@ -230,6 +268,8 @@ def astar(
         mode="astar",
         heuristic=heuristic,
         allow_diagonal=allow_diagonal,
+        heuristic_weight=heuristic_weight,
+        astar_tie_break=tie_break,
     )
 
 
@@ -254,6 +294,50 @@ def dijkstra(
     )
 
 
+@register_planner("bfs")
+def bfs(
+    grid: GridLike,
+    start: Point,
+    goal: Point,
+    *,
+    allow_diagonal: bool = False,
+) -> PlannerResult:
+    """Breadth-first search baseline on a grid maze.
+
+    BFS minimizes hop count on an unweighted occupancy grid.
+    """
+
+    started_at = time.perf_counter()
+    rows, cols = _grid_shape(grid)
+    if rows == 0 or cols == 0:
+        return _result([], 0, started_at)
+    if not _in_bounds(start, rows, cols) or not _in_bounds(goal, rows, cols):
+        return _result([], 0, started_at)
+    if not _is_passable(grid, start) or not _is_passable(grid, goal):
+        return _result([], 0, started_at)
+
+    frontier = deque([start])
+    visited: set[Point] = {start}
+    came_from: Dict[Point, Point] = {}
+    expanded_nodes = 0
+
+    while frontier:
+        current = frontier.popleft()
+        expanded_nodes += 1
+
+        if current == goal:
+            return _result(_reconstruct_path(came_from, goal), expanded_nodes, started_at)
+
+        for nxt in _neighbors(current, rows, cols, allow_diagonal):
+            if nxt in visited or not _is_passable(grid, nxt):
+                continue
+            visited.add(nxt)
+            came_from[nxt] = current
+            frontier.append(nxt)
+
+    return _result([], expanded_nodes, started_at)
+
+
 @register_planner("greedy_best_first")
 def greedy_best_first(
     grid: GridLike,
@@ -275,8 +359,48 @@ def greedy_best_first(
     )
 
 
+@register_planner("r13_greedy_best_first")
+def r13_greedy_best_first(
+    grid: GridLike,
+    start: Point,
+    goal: Point,
+    *,
+    heuristic: str | HeuristicFn | None = "manhattan",
+    allow_diagonal: bool = False,
+) -> PlannerResult:
+    """R13 Greedy Best-First option wired to the dedicated alt planner module."""
+
+    try:
+        from .alt_planners.r13_greedy_best_first import plan_greedy_best_first
+    except ImportError:
+        from alt_planners.r13_greedy_best_first import plan_greedy_best_first
+
+    path, metrics = plan_greedy_best_first(
+        grid,
+        start,
+        goal,
+        heuristic=heuristic,
+        allow_diagonal=allow_diagonal,
+    )
+
+    result: PlannerResult = dict(metrics)
+    result["path"] = path
+    result["expanded_nodes"] = int(result.get("expanded_nodes", 0))
+
+    runtime_ms = result.get("runtime_ms", result.get("elapsed_ms", 0.0))
+    result["runtime_ms"] = float(runtime_ms)
+    result["runtime_sec"] = result["runtime_ms"] / 1000.0
+    return result
+
+
 register_planner("greedy", greedy_best_first)
 register_planner("gbfs", greedy_best_first)
+register_planner("r13_gbfs", r13_greedy_best_first)
+register_planner("r11_dijkstra", dijkstra)
+register_planner("uniform_cost_search", dijkstra)
+register_planner("ucs", dijkstra)
+register_planner("breadth_first_search", bfs)
+register_planner("r12_bfs", bfs)
 
 
 __all__ = [
@@ -285,9 +409,11 @@ __all__ = [
     "PlannerFn",
     "PlannerResult",
     "astar",
+    "bfs",
     "dijkstra",
     "get_planner",
     "greedy_best_first",
+    "r13_greedy_best_first",
     "list_planners",
     "plan_path",
     "register_planner",

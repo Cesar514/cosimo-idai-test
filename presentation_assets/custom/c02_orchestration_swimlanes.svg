@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-label="Planner implementer reviewer orchestration swimlanes">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f6f9ff"/>
+      <stop offset="100%" stop-color="#eef5ff"/>
+    </linearGradient>
+    <linearGradient id="laneA" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#dfe9ff"/>
+      <stop offset="100%" stop-color="#f3f7ff"/>
+    </linearGradient>
+    <linearGradient id="laneB" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d5f4f1"/>
+      <stop offset="100%" stop-color="#eefaf9"/>
+    </linearGradient>
+    <linearGradient id="laneC" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffe8d6"/>
+      <stop offset="100%" stop-color="#fff4ec"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#0b5fff"/>
+    </marker>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0e1a2b" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <path d="M0 210 C420 150, 730 160, 1180 210 C1450 240, 1680 250, 1920 220" stroke="#0b5fff" stroke-width="2" opacity="0.25" fill="none"/>
+  <path d="M0 860 C380 890, 760 890, 1180 850 C1510 820, 1710 820, 1920 860" stroke="#00a3a3" stroke-width="2" opacity="0.2" fill="none"/>
+
+  <rect x="220" y="165" rx="26" ry="26" width="1470" height="190" fill="url(#laneA)" stroke="#0b5fff" stroke-opacity="0.25" filter="url(#soft)"/>
+  <rect x="220" y="425" rx="26" ry="26" width="1470" height="190" fill="url(#laneB)" stroke="#00a3a3" stroke-opacity="0.28" filter="url(#soft)"/>
+  <rect x="220" y="685" rx="26" ry="26" width="1470" height="190" fill="url(#laneC)" stroke="#ff7a18" stroke-opacity="0.3" filter="url(#soft)"/>
+
+  <rect x="80" y="215" width="110" height="90" rx="16" fill="#0b5fff"/>
+  <text x="135" y="270" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="28" fill="#ffffff" font-weight="700">PLAN</text>
+  <rect x="80" y="475" width="110" height="90" rx="16" fill="#00a3a3"/>
+  <text x="135" y="530" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#ffffff" font-weight="700">BUILD</text>
+  <rect x="80" y="735" width="110" height="90" rx="16" fill="#ff7a18"/>
+  <text x="135" y="790" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#ffffff" font-weight="700">REVIEW</text>
+
+  <circle cx="820" cy="260" r="30" fill="#ffffff" stroke="#0b5fff" stroke-width="4"/>
+  <circle cx="940" cy="260" r="24" fill="#ffffff" stroke="#0b5fff" stroke-width="3" opacity="0.9"/>
+  <circle cx="1080" cy="260" r="30" fill="#ffffff" stroke="#0b5fff" stroke-width="4"/>
+
+  <circle cx="760" cy="520" r="28" fill="#ffffff" stroke="#00a3a3" stroke-width="4"/>
+  <circle cx="900" cy="520" r="34" fill="#ffffff" stroke="#00a3a3" stroke-width="4"/>
+  <circle cx="1060" cy="520" r="26" fill="#ffffff" stroke="#00a3a3" stroke-width="4"/>
+
+  <circle cx="780" cy="780" r="26" fill="#ffffff" stroke="#ff7a18" stroke-width="4"/>
+  <circle cx="920" cy="780" r="34" fill="#ffffff" stroke="#ff7a18" stroke-width="4"/>
+  <circle cx="1070" cy="780" r="30" fill="#ffffff" stroke="#ff7a18" stroke-width="4"/>
+
+  <line x1="1095" y1="260" x2="1420" y2="260" stroke="#0b5fff" stroke-width="5" marker-end="url(#arrow)"/>
+  <line x1="1086" y1="520" x2="1420" y2="520" stroke="#00a3a3" stroke-width="5" marker-end="url(#arrow)"/>
+  <line x1="1100" y1="780" x2="1420" y2="780" stroke="#ff7a18" stroke-width="5" marker-end="url(#arrow)"/>
+
+  <path d="M1425 260 C1510 260, 1515 435, 1420 520" fill="none" stroke="#0b5fff" stroke-width="4" stroke-dasharray="8 8" opacity="0.75" marker-end="url(#arrow)"/>
+  <path d="M1425 520 C1510 520, 1515 695, 1420 780" fill="none" stroke="#00a3a3" stroke-width="4" stroke-dasharray="8 8" opacity="0.75" marker-end="url(#arrow)"/>
+
+  <rect x="1500" y="208" width="300" height="130" rx="22" fill="#ffffff" stroke="#0b5fff" stroke-opacity="0.35"/>
+  <rect x="1500" y="468" width="300" height="130" rx="22" fill="#ffffff" stroke="#00a3a3" stroke-opacity="0.35"/>
+  <rect x="1500" y="728" width="300" height="130" rx="22" fill="#ffffff" stroke="#ff7a18" stroke-opacity="0.35"/>
+
+  <text x="1660" y="286" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#0e1a2b">Plan Contract</text>
+  <text x="1660" y="546" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#0e1a2b">Implementation</text>
+  <text x="1660" y="806" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#0e1a2b">Verification</text>
+</svg>

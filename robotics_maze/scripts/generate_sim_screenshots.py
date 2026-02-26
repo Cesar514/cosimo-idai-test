@@ -7,11 +7,12 @@ pipeline outputs as pseudo-3D snapshots suitable for presentation slides.
 
 from __future__ import annotations
 
+import argparse
 import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Sequence
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -154,8 +155,28 @@ def _render_snapshot(
     img.save(output_path)
 
 
-def main() -> int:
-    out_dir = ROOT / "results" / "screenshots"
+def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Generate deterministic pseudo-3D simulation screenshots."
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=ROOT / "results" / "screenshots",
+        help="Directory where screenshots will be written.",
+    )
+    parser.add_argument(
+        "--filename-prefix",
+        default="",
+        help="Optional prefix prepended to every generated PNG filename.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = _parse_args(argv)
+    out_dir: Path = args.output_dir
+    filename_prefix: str = args.filename_prefix
     specs = [
         SnapshotSpec(
             title="Simulation Snapshot 1: Baseline A*",
@@ -195,7 +216,7 @@ def main() -> int:
             f"planner={spec.planner_name} seed={spec.seed} "
             f"path_len={max(len(path) - 1, 0)} elapsed_ms={float(elapsed):.3f}"
         )
-        out_path = out_dir / f"sim_snapshot_{idx}_{spec.planner_name}.png"
+        out_path = out_dir / f"{filename_prefix}sim_snapshot_{idx}_{spec.planner_name}.png"
         _render_snapshot(
             grid,
             start,

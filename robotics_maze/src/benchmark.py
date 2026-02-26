@@ -27,6 +27,7 @@ import planners as baseline_planners
 Grid = list[list[int]]
 Cell = tuple[int, int]
 PlannerFn = Callable[[Grid, Cell, Cell], Any]
+TrialKey = tuple[int, int, int, int, str]
 
 ALT_PLANNER_SPECS: tuple[tuple[str, str, str], ...] = (
     ("r1_weighted_astar", "alt_planners.r1_weighted_astar", "plan_weighted_astar"),
@@ -101,6 +102,90 @@ def _extract_expansions(metrics: Mapping[str, Any]) -> int:
     return 0
 
 
+def _is_blocked_cell(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return value != 0
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "x", "#", "wall", "blocked", "true"}
+    return bool(value)
+
+
+def _in_bounds(cell: Cell, rows: int, cols: int) -> bool:
+    return 0 <= cell[0] < rows and 0 <= cell[1] < cols
+
+
+def _bresenham_segment(start: Cell, end: Cell) -> list[Cell]:
+    if start == end:
+        return [start]
+
+    r0, c0 = start
+    r1, c1 = end
+    dr = abs(r1 - r0)
+    dc = abs(c1 - c0)
+    step_r = 1 if r0 < r1 else -1
+    step_c = 1 if c0 < c1 else -1
+
+    err = dc - dr
+    row, col = r0, c0
+    out = [(row, col)]
+
+    while (row, col) != (r1, c1):
+        e2 = 2 * err
+        if e2 > -dr:
+            err -= dr
+            col += step_c
+        if e2 < dc:
+            err += dc
+            row += step_r
+        out.append((row, col))
+
+    return out
+
+
+def _validate_and_measure_path(
+    grid: Grid,
+    path: list[Cell],
+    start: Cell,
+    goal: Cell,
+) -> tuple[bool, int | None, str | None]:
+    rows = len(grid)
+    cols = len(grid[0]) if rows else 0
+    if not path:
+        return False, None, "Planner did not return a path."
+    if path[0] != start or path[-1] != goal:
+        return False, None, "Path endpoints do not match benchmark start/goal."
+    if not rows or not cols:
+        return False, None, "Benchmark grid is empty."
+
+    for cell in (start, goal):
+        if not _in_bounds(cell, rows, cols):
+            return False, None, f"Endpoint {cell} is out of grid bounds."
+        if _is_blocked_cell(grid[cell[0]][cell[1]]):
+            return False, None, f"Endpoint {cell} is blocked."
+
+    for idx, cell in enumerate(path):
+        if not _in_bounds(cell, rows, cols):
+            return False, None, f"Path cell out of bounds at index {idx}: {cell}."
+        if _is_blocked_cell(grid[cell[0]][cell[1]]):
+            return False, None, f"Path crosses blocked cell at index {idx}: {cell}."
+
+    measured_steps = 0
+    for idx in range(1, len(path)):
+        segment = _bresenham_segment(path[idx - 1], path[idx])
+        if segment[0] != path[idx - 1] or segment[-1] != path[idx]:
+            return False, None, f"Path segment {idx - 1}->{idx} could not be rasterized."
+        for segment_cell in segment[1:]:
+            if not _in_bounds(segment_cell, rows, cols):
+                return False, None, f"Path segment exits grid at {segment_cell}."
+            if _is_blocked_cell(grid[segment_cell[0]][segment_cell[1]]):
+                return False, None, f"Path segment crosses blocked cell at {segment_cell}."
+        measured_steps += len(segment) - 1
+
+    return True, measured_steps, None
+
+
 def _normalize_planner_output(result: Any, start: Cell, goal: Cell) -> tuple[bool, list[Cell], int]:
     payload: dict[str, Any] = {}
     path: list[Cell] = []
@@ -135,8 +220,8 @@ def _normalize_planner_output(result: Any, start: Cell, goal: Cell) -> tuple[boo
     return True, path, expansions
 
 
-def _path_length(path: list[Cell]) -> int:
-    return max(len(path) - 1, 0)
+def _trial_key(row: TrialResult) -> TrialKey:
+    return (row.maze_index, row.maze_seed, row.width, row.height, row.algorithm)
 
 
 def _safe_import(module_name: str):
@@ -210,29 +295,82 @@ def generate_benchmark_maze(
 
 def summarize_trials(trials: list[TrialResult]) -> list[dict[str, Any]]:
     grouped: dict[str, list[TrialResult]] = defaultdict(list)
+    by_maze_key: dict[TrialKey, dict[str, TrialResult]] = defaultdict(dict)
     for trial in trials:
         grouped[trial.planner].append(trial)
+        by_maze_key[_trial_key(trial)][trial.planner] = trial
+
+    planner_count = len(grouped)
+    shared_success_keys = {
+        key
+        for key, planner_trials in by_maze_key.items()
+        if len(planner_trials) == planner_count and all(row.success for row in planner_trials.values())
+    }
 
     summary_rows: list[dict[str, Any]] = []
     for planner_name in sorted(grouped):
         rows = grouped[planner_name]
         successes = [row for row in rows if row.success]
+        shared_rows = [row for row in rows if _trial_key(row) in shared_success_keys]
         summary_rows.append(
             {
                 "planner": planner_name,
                 "runs": len(rows),
                 "successes": len(successes),
+                "failures": len(rows) - len(successes),
                 "success_rate": len(successes) / len(rows) if rows else 0.0,
                 "mean_solve_time_ms": mean(row.solve_time_ms for row in rows) if rows else 0.0,
+                "shared_success_maze_count": len(shared_rows),
+                "mean_shared_solve_time_ms": (
+                    mean(row.solve_time_ms for row in shared_rows) if shared_rows else math.nan
+                ),
                 "mean_path_length": (
                     mean(row.path_length for row in successes if row.path_length is not None)
                     if successes
                     else math.nan
                 ),
+                "mean_shared_path_length": (
+                    mean(row.path_length for row in shared_rows if row.path_length is not None)
+                    if shared_rows
+                    else math.nan
+                ),
                 "mean_expansions": mean(row.expansions for row in successes) if successes else math.nan,
             }
         )
-    return summary_rows
+    return rank_summary_rows(summary_rows)
+
+
+def _rank_metric(value: float) -> float:
+    return value if not math.isnan(value) else math.inf
+
+
+def _comparison_time_ms(row: Mapping[str, Any]) -> float:
+    shared_time = float(row.get("mean_shared_solve_time_ms", math.nan))
+    if not math.isnan(shared_time):
+        return shared_time
+    return float(row["mean_solve_time_ms"])
+
+
+def _comparison_path_length(row: Mapping[str, Any]) -> float:
+    shared_path = float(row.get("mean_shared_path_length", math.nan))
+    if not math.isnan(shared_path):
+        return shared_path
+    return float(row["mean_path_length"])
+
+
+def rank_summary_rows(summary_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    ranked = sorted(
+        summary_rows,
+        key=lambda row: (
+            -float(row["success_rate"]),
+            _rank_metric(_comparison_time_ms(row)),
+            _rank_metric(_comparison_path_length(row)),
+            _rank_metric(float(row["mean_expansions"])),
+            float(row["mean_solve_time_ms"]),
+            str(row["planner"]),
+        ),
+    )
+    return [{**row, "rank": idx} for idx, row in enumerate(ranked, start=1)]
 
 
 def write_results_csv(trials: list[TrialResult], output_path: Path) -> Path:
@@ -279,6 +417,64 @@ def _fmt_metric(value: float) -> str:
     return f"{value:.2f}"
 
 
+def _fmt_success(successes: int, runs: int) -> str:
+    if runs <= 0:
+        return "0.0% (0/0)"
+    return f"{(successes / runs) * 100:.1f}% ({successes}/{runs})"
+
+
+def _fmt_delta_ms(value: float) -> str:
+    return f"{value:+.2f}"
+
+
+def render_console_summary_table(summary_rows: list[dict[str, Any]]) -> str:
+    ranked_rows = rank_summary_rows(summary_rows)
+    if not ranked_rows:
+        return "No planner rows to display."
+
+    baseline_time_ms = _comparison_time_ms(ranked_rows[0])
+    headers = [
+        ("Rank", "right"),
+        ("Planner", "left"),
+        ("Success Rate", "right"),
+        ("Comparable Mazes", "right"),
+        ("Comparable Time (ms)", "right"),
+        ("Delta vs #1 (ms)", "right"),
+        ("Comparable Path", "right"),
+        ("Mean Expansions", "right"),
+    ]
+    rows = [
+        [
+            str(row["rank"]),
+            str(row["planner"]),
+            _fmt_success(int(row["successes"]), int(row["runs"])),
+            str(int(row.get("shared_success_maze_count", 0))),
+            f"{_comparison_time_ms(row):.2f}",
+            _fmt_delta_ms(_comparison_time_ms(row) - baseline_time_ms),
+            _fmt_metric(_comparison_path_length(row)),
+            _fmt_metric(float(row["mean_expansions"])),
+        ]
+        for row in ranked_rows
+    ]
+    widths = [
+        max(len(headers[idx][0]), max(len(row[idx]) for row in rows))
+        for idx in range(len(headers))
+    ]
+
+    def _render_row(cells: list[str]) -> str:
+        rendered: list[str] = []
+        for idx, cell in enumerate(cells):
+            align = headers[idx][1]
+            width = widths[idx]
+            rendered.append(cell.rjust(width) if align == "right" else cell.ljust(width))
+        return " | ".join(rendered)
+
+    header_line = _render_row([name for name, _ in headers])
+    separator_line = "-+-".join("-" * width for width in widths)
+    body_lines = [_render_row(row) for row in rows]
+    return "\n".join([header_line, separator_line, *body_lines])
+
+
 def write_summary_markdown(
     summary_rows: list[dict[str, Any]],
     output_path: Path,
@@ -290,6 +486,9 @@ def write_summary_markdown(
 ) -> Path:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     generated_at = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
+    ranked_rows = rank_summary_rows(summary_rows)
+    baseline_time_ms = _comparison_time_ms(ranked_rows[0]) if ranked_rows else 0.0
+    top_planner = str(ranked_rows[0]["planner"]) if ranked_rows else "n/a"
     lines = [
         "# Benchmark Summary",
         "",
@@ -298,18 +497,24 @@ def write_summary_markdown(
         f"- Maze size (cells): {width}x{height}",
         f"- Maze algorithm: {algorithm}",
         f"- Seed: {seed}",
+        f"- Top planner: {top_planner}",
+        "- Comparable mazes: mazes solved by every planner (shared-success set).",
+        "- Ranking policy: success rate (desc), comparable solve time (asc), comparable path length (asc), mean expansions (asc), mean solve time (asc).",
         "",
-        "| Planner | Success Rate | Mean Solve Time (ms) | Mean Path Length | Mean Expansions |",
-        "|---|---:|---:|---:|---:|",
+        "| Rank | Planner | Success Rate | Comparable Mazes | Comparable Solve Time (ms) | Delta vs #1 (ms) | Comparable Path Length | Mean Expansions |",
+        "|---:|---|---:|---:|---:|---:|---:|---:|",
     ]
 
-    for row in summary_rows:
+    for row in ranked_rows:
         lines.append(
             "| "
+            + f"{row['rank']} | "
             + f"{row['planner']} | "
-            + f"{row['success_rate'] * 100:.1f}% ({row['successes']}/{row['runs']}) | "
-            + f"{row['mean_solve_time_ms']:.2f} | "
-            + f"{_fmt_metric(row['mean_path_length'])} | "
+            + f"{_fmt_success(int(row['successes']), int(row['runs']))} | "
+            + f"{int(row.get('shared_success_maze_count', 0))} | "
+            + f"{_comparison_time_ms(row):.2f} | "
+            + f"{_fmt_delta_ms(_comparison_time_ms(row) - baseline_time_ms)} | "
+            + f"{_fmt_metric(_comparison_path_length(row))} | "
             + f"{_fmt_metric(row['mean_expansions'])} |"
         )
 
@@ -333,7 +538,8 @@ def run_benchmark(
     available = load_available_planners(include_alt=True)
     if planners is None:
         planners = available
-    if not planners:
+    planner_items = sorted(planners.items(), key=lambda item: item[0])
+    if not planner_items:
         raise ValueError("At least one planner is required.")
     if algorithm not in maze_mod.SUPPORTED_MAZE_ALGORITHMS:
         raise ValueError(
@@ -352,7 +558,11 @@ def run_benchmark(
             algorithm=algorithm,
         )
 
-        for planner_name, planner_fn in planners.items():
+        # Rotate planner execution order per maze to reduce first-run cache bias.
+        offset = maze_index % len(planner_items)
+        ordered_items = planner_items[offset:] + planner_items[:offset]
+
+        for planner_name, planner_fn in ordered_items:
             trial_grid = _copy_grid(grid)
             started = time.perf_counter()
             error_text: str | None = None
@@ -363,7 +573,16 @@ def run_benchmark(
                 error_text = f"{type(exc).__name__}: {exc}"
             elapsed_ms = (time.perf_counter() - started) * 1000.0
 
-            success, path, expansions = _normalize_planner_output(raw_result, start, goal)
+            reported_success, path, expansions = _normalize_planner_output(raw_result, start, goal)
+            valid_path, path_length, validation_error = _validate_and_measure_path(
+                grid=grid,
+                path=path,
+                start=start,
+                goal=goal,
+            )
+            success = reported_success and valid_path
+            if reported_success and not valid_path and error_text is None:
+                error_text = validation_error
             trials.append(
                 TrialResult(
                     planner=planner_name,
@@ -374,7 +593,7 @@ def run_benchmark(
                     algorithm=algorithm,
                     success=success,
                     solve_time_ms=elapsed_ms,
-                    path_length=_path_length(path) if success else None,
+                    path_length=path_length if success else None,
                     expansions=expansions,
                     error=error_text,
                 )
@@ -481,13 +700,11 @@ def main() -> None:
 
     print(f"Wrote: {csv_path}")
     print(f"Wrote: {summary_path}")
-    for row in summary_rows:
-        print(
-            f"{row['planner']}: success={row['success_rate'] * 100:.1f}% "
-            f"time_ms={row['mean_solve_time_ms']:.2f} "
-            f"path={_fmt_metric(row['mean_path_length'])} "
-            f"expansions={_fmt_metric(row['mean_expansions'])}"
-        )
+    print(
+        f"Planner comparison ({args.mazes} mazes, {args.width}x{args.height}, "
+        f"algorithm={args.algorithm}, seed={args.seed}):"
+    )
+    print(render_console_summary_table(summary_rows))
 
 
 if __name__ == "__main__":

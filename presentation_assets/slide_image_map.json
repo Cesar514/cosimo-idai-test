@@ -1,0 +1,125 @@
+{
+  "1": [
+    "presentation_assets/custom/mcp_mesh.png"
+  ],
+  "2": [
+    "presentation_assets/custom/mcp_mesh.svg"
+  ],
+  "3": [
+    "presentation_assets/custom/planning_loop.png"
+  ],
+  "4": [
+    "presentation_assets/custom/planning_loop.svg"
+  ],
+  "5": [
+    "presentation_assets/custom/robotics_arm.png"
+  ],
+  "6": [
+    "presentation_assets/custom/robotics_arm.svg"
+  ],
+  "7": [
+    "presentation_assets/tooling_logos/docker.svg"
+  ],
+  "8": [
+    "presentation_assets/tooling_logos/git.svg"
+  ],
+  "9": [
+    "presentation_assets/tooling_logos/github.svg"
+  ],
+  "10": [
+    "presentation_assets/tooling_logos/kubernetes.svg"
+  ],
+  "11": [
+    "presentation_assets/tooling_logos/nodedotjs.svg"
+  ],
+  "12": [
+    "presentation_assets/tooling_logos/npm.svg"
+  ],
+  "13": [
+    "presentation_assets/tooling_logos/openai.svg"
+  ],
+  "14": [
+    "presentation_assets/tooling_logos/python.svg"
+  ],
+  "15": [
+    "robotics_maze/results/screenshots_mujoco/sim_mujoco_1_astar.png"
+  ],
+  "16": [
+    "robotics_maze/results/screenshots_mujoco/sim_mujoco_2_weighted_astar.png"
+  ],
+  "17": [
+    "robotics_maze/results/screenshots_mujoco/sim_mujoco_3_fringe_search.png"
+  ],
+  "18": [
+    "robotics_maze/results/screenshots/sim_snapshot_1_astar.png"
+  ],
+  "19": [
+    "robotics_maze/results/screenshots/sim_snapshot_2_weighted_astar.png"
+  ],
+  "20": [
+    "robotics_maze/results/screenshots/sim_snapshot_3_fringe_search.png"
+  ],
+  "21": [
+    "robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png"
+  ],
+  "22": [
+    "robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png"
+  ],
+  "23": [
+    "robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png"
+  ],
+  "24": [
+    "robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png"
+  ],
+  "25": [
+    "robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png"
+  ],
+  "26": [
+    "robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png"
+  ],
+  "27": [
+    "presentation_assets/custom/mcp_mesh.png"
+  ],
+  "28": [
+    "presentation_assets/custom/mcp_mesh.svg"
+  ],
+  "29": [
+    "presentation_assets/custom/planning_loop.png"
+  ],
+  "30": [
+    "presentation_assets/custom/planning_loop.svg"
+  ],
+  "31": [
+    "presentation_assets/custom/robotics_arm.png"
+  ],
+  "32": [
+    "presentation_assets/custom/robotics_arm.svg"
+  ],
+  "33": [
+    "presentation_assets/tooling_logos/docker.svg"
+  ],
+  "34": [
+    "presentation_assets/tooling_logos/git.svg"
+  ],
+  "35": [
+    "presentation_assets/tooling_logos/github.svg"
+  ],
+  "36": [
+    "presentation_assets/tooling_logos/kubernetes.svg"
+  ],
+  "37": [
+    "presentation_assets/tooling_logos/nodedotjs.svg"
+  ],
+  "38": [
+    "presentation_assets/tooling_logos/npm.svg"
+  ],
+  "39": [
+    "presentation_assets/tooling_logos/openai.svg"
+  ],
+  "40": [
+    "presentation_assets/tooling_logos/python.svg"
+  ],
+  "41": [
+    "robotics_maze/results/screenshots_mujoco/sim_mujoco_1_astar.png"
+  ]
+}

@@ -1,0 +1,30 @@
+task_id,agent_name,agent_id,status,last_event_ts,last_event_type,source,notes
+S1,S1,unknown,blocker_snapshot_logged,2026-02-26T19:40:02Z,agent_status,coordination/session_event_log.csv,Supervisor scan reported missing logs early in session.
+B1,B1,unknown,completed,2026-02-26T19:45:00Z,agent_completed,coordination/session_event_log.csv,Scaffold and CLI baseline completed.
+B2,B2,019c9b76-7e47-7510-bb0a-4e3ae9dcdeb5,completed,unknown,agent_completed,coordination/session_event_log.csv,Maze generation and geometry conversion delivered.
+B3,B3,019c9b76-7f23-7361-bb02-3fa0e144dc98,completed,unknown,agent_completed,coordination/session_event_log.csv,PyBullet simulation and controller integration delivered.
+B4,B4,unknown,completed,unknown,agent_completed,coordination/session_event_log.csv,Baseline planner interfaces and A-star implementation delivered.
+B5,B5,019c9b76-817d-7721-a7b6-c093410d6c13,completed,unknown,agent_completed,coordination/session_event_log.csv,URDF fetch scripts and docs delivered.
+B6,B6,019c9b76-82b5-77a1-85a3-5f73839e9629,completed,unknown,agent_completed,coordination/session_event_log.csv,Benchmark harness tests and report artifacts delivered.
+R1,R1,unknown,completed,unknown,agent_completed,coordination/session_event_log.csv,Weighted A-star planner track completed.
+R2,R2,019c9b76-df85-7a72-b361-92555a615212,completed,unknown,agent_completed,coordination/session_event_log.csv,Bidirectional A-star planner track completed.
+R3,R3,unknown,completed,unknown,agent_completed,coordination/session_event_log.csv,Theta-star planner track completed.
+R4,R4,unknown,completed,unknown,agent_completed,coordination/session_event_log.csv,IDA-star planner track completed.
+R5,R5,019c9b77-84af-7a03-a93e-41d52db50086,completed,unknown,agent_completed,coordination/session_event_log.csv,Jump Point Search planner track completed.
+R6,R6,019c9b77-85cf-72c2-97c5-ccb7b56ca040,completed,unknown,agent_completed,coordination/session_event_log.csv,LPA-star planner track completed.
+R7,R7,unknown,completed,unknown,agent_completed,coordination/session_event_log.csv,Beam Search planner track completed.
+R8,R8,019c9b77-87ce-7262-b50d-0b0ecc08b94d,completed,unknown,agent_completed,coordination/session_event_log.csv,Fringe Search planner track completed.
+R9,R9,019c9b77-88d1-77e0-b6ac-590dbfe17c86,completed,unknown,agent_completed,coordination/session_event_log.csv,Bidirectional BFS planner track completed.
+R10,R10,019c9b77-89dc-7381-96ae-a4f05f390e37,completed,unknown,agent_completed,coordination/session_event_log.csv,SOTA alternatives research track completed.
+L1,Cypress,unknown,active_ready_for_append_updates,2026-02-26T19:??:??-05:00,user_instruction,coordination/session_event_log.csv,Logger maintenance requested and delegated.
+T1,T1,019c9bd4-81a0-7b72-9eb6-4f5cd62861ca,completed_post_fix_validation_pass,unknown,agent_completed,coordination/session_event_log.csv,Simulation tests completed after parser bug fix.
+T2,T2,019c9bd4-87c9-7942-8c58-4174b2b32322,completed,unknown,agent_completed,coordination/session_event_log.csv,Benchmark test report completed.
+T3,T3,019c9bd4-8db6-7383-9c04-cfb59cd265d0,completed,unknown,agent_completed,coordination/session_event_log.csv,Screenshot analysis completed and rechecked pass.
+SC1,SC1,unknown,completed,unknown,dashboard_snapshot,coordination/AGENT_DASHBOARD.md,Skill package group one synced.
+SC2,SC2,unknown,completed,unknown,dashboard_snapshot,coordination/AGENT_DASHBOARD.md,Skill package group two synced.
+SC3,SC3,unknown,completed,unknown,dashboard_snapshot,coordination/AGENT_DASHBOARD.md,Skill package group three synced.
+ROOT_PIXI,ROOT_PIXI,unknown,completed,unknown,dashboard_snapshot,coordination/AGENT_DASHBOARD.md,Root pixi workflow integrated.
+GUI_SETUP,Worker B,unknown,completed,unknown,dashboard_snapshot,coordination/AGENT_DASHBOARD.md,GUI setup script delivered.
+GUI_VALIDATION,Worker C,unknown,completed_with_caveat,unknown,dashboard_snapshot,coordination/AGENT_DASHBOARD.md,GUI validation done with known arg forwarding caveat.
+Larry,Larry,019c9bd8-1f91-76a3-bad6-a0a1459985fd,completed,unknown,agent_completed,coordination/session_event_log.csv,Monitoring poll helper completed.
+TASK25,Timeline/Ledger Owner,unknown,completed,2026-02-26T22:36:23Z,maintenance_update,coordination/SESSION_TIMELINE.md|coordination/agent_task_log.csv|coordination/agent_reports/task25_timeline.md,Refreshed timeline and task ledger and wrote owner report.

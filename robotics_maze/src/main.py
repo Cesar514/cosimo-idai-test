@@ -3,10 +3,19 @@ from __future__ import annotations
 import argparse
 import importlib
 import random
+import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Protocol, Sequence
 
 MazeSize = tuple[int, int]
+BACKEND_CHOICES = ("auto", "pybullet", "mujoco")
+
+SRC_DIR = Path(__file__).resolve().parent
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+DEFAULT_ROBOT_URDF = "husky/husky.urdf"
 
 
 @dataclass(frozen=True)
@@ -16,6 +25,10 @@ class RunConfig:
     maze_size: MazeSize
     seed: int | None
     gui: bool
+    gui_setup: bool = False
+    robot_urdf: str | None = None
+    gui_hold_seconds: float = 8.0
+    physics_backend: str = "auto"
 
 
 @dataclass(frozen=True)
@@ -45,6 +58,9 @@ class Simulator(Protocol):
         *,
         gui: bool,
         seed: int | None,
+        robot_urdf: str | None = None,
+        gui_hold_seconds: float = 8.0,
+        physics_backend: str = "auto",
     ) -> EpisodeResult:
         ...
 
@@ -62,6 +78,24 @@ class StubPlanner:
         return {"planner": self.name, "seed": seed, "maze": maze}
 
 
+class FunctionPlannerAdapter:
+    def __init__(self, name: str, planner_fn: Any) -> None:
+        self.name = name
+        self._planner_fn = planner_fn
+
+    def plan(self, maze: Any, *, seed: int | None) -> dict[str, Any]:
+        del seed
+        grid, start, goal = _maze_to_grid_triplet(maze)
+        if grid is None or start is None or goal is None:
+            if hasattr(maze, "shortest_path") and callable(getattr(maze, "shortest_path")):
+                try:
+                    return {"path": maze.shortest_path()}
+                except Exception:
+                    return {"path": []}
+            return {"path": []}
+        return self._planner_fn(grid, start, goal)
+
+
 class StubSimulator:
     def run_episode(
         self,
@@ -70,7 +104,11 @@ class StubSimulator:
         *,
         gui: bool,
         seed: int | None,
+        robot_urdf: str | None = None,
+        gui_hold_seconds: float = 8.0,
+        physics_backend: str = "auto",
     ) -> EpisodeResult:
+        del gui, plan, robot_urdf, gui_hold_seconds, physics_backend
         size = _extract_size(maze)
         rng = random.Random(seed)
         steps = rng.randint(max(size[0], size[1]), max(size[0] * size[1], 1))
@@ -95,6 +133,41 @@ def parse_maze_size(raw_value: str) -> MazeSize:
 
     side = positive_int(value)
     return (side, side)
+
+
+def _is_pybullet_data_urdf(candidate: str) -> bool:
+    try:
+        import pybullet_data
+    except Exception:
+        return False
+    return (Path(pybullet_data.getDataPath()) / candidate).is_file()
+
+
+def validate_robot_urdf(raw_robot_urdf: str | None) -> str | None:
+    if raw_robot_urdf is None:
+        return None
+
+    candidate = raw_robot_urdf.strip()
+    if not candidate:
+        return None
+    if not candidate.lower().endswith(".urdf"):
+        print(
+            f"[WARN] Ignoring robot URDF '{candidate}': expected a .urdf file. "
+            f"Falling back to default '{DEFAULT_ROBOT_URDF}'."
+        )
+        return None
+
+    expanded = Path(candidate).expanduser()
+    if expanded.is_file():
+        return str(expanded.resolve())
+    if _is_pybullet_data_urdf(candidate):
+        return candidate
+
+    print(
+        f"[WARN] Ignoring robot URDF '{candidate}': file not found. "
+        f"Falling back to default '{DEFAULT_ROBOT_URDF}'."
+    )
+    return None
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -128,6 +201,41 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Enable GUI mode when simulator support is available.",
     )
+    parser.add_argument(
+        "--physics-backend",
+        choices=BACKEND_CHOICES,
+        default="auto",
+        help="Physics backend preference. GUI mode is best with pybullet.",
+    )
+    parser.add_argument(
+        "--robot-urdf",
+        default=None,
+        help=(
+            "Optional custom robot URDF path for pybullet runs (absolute, relative, or "
+            f"pybullet_data path). Defaults to '{DEFAULT_ROBOT_URDF}'. Invalid paths "
+            "fall back to the default."
+        ),
+    )
+    parser.add_argument(
+        "--gui-hold-seconds",
+        type=float,
+        default=8.0,
+        help="How long to keep GUI open after each episode finishes.",
+    )
+    gui_setup_group = parser.add_mutually_exclusive_group()
+    gui_setup_group.add_argument(
+        "--gui-setup",
+        dest="gui_setup",
+        action="store_true",
+        help="Open a Tkinter setup dialog before running the simulation.",
+    )
+    gui_setup_group.add_argument(
+        "--no-gui-setup",
+        dest="gui_setup",
+        action="store_false",
+        help="Skip the setup dialog and run directly with CLI arguments.",
+    )
+    parser.set_defaults(gui_setup=False)
     return parser
 
 
@@ -139,6 +247,90 @@ def parse_args(argv: Sequence[str] | None = None) -> RunConfig:
         maze_size=args.maze_size,
         seed=args.seed,
         gui=args.gui,
+        gui_setup=args.gui_setup,
+        robot_urdf=validate_robot_urdf(args.robot_urdf),
+        gui_hold_seconds=max(args.gui_hold_seconds, 0.0),
+        physics_backend=args.physics_backend,
+    )
+
+
+def _planner_setup_options(current_planner: str) -> list[str]:
+    default_options = [
+        "stub",
+        "default",
+        "astar",
+        "bfs",
+        "dijkstra",
+        "greedy_best_first",
+        "weighted_astar",
+        "bidirectional_astar",
+        "theta_star",
+        "idastar",
+        "jps",
+        "lpa_star",
+        "beam_search",
+        "fringe_search",
+        "bidirectional_bfs",
+    ]
+    options = [current_planner] if current_planner not in default_options else []
+    options.extend(default_options)
+    return options
+
+
+def apply_gui_setup(config: RunConfig) -> tuple[RunConfig, bool]:
+    if not config.gui_setup:
+        return config, True
+
+    try:
+        from gui_setup import GuiSetupConfig, launch_gui_setup
+    except Exception as exc:
+        print(f"[WARN] GUI setup unavailable ({exc}); continuing with CLI configuration.")
+        return config, True
+
+    setup_result = launch_gui_setup(
+        GuiSetupConfig(
+            planner=config.planner,
+            episodes=config.episodes,
+            maze_size=config.maze_size,
+            seed=config.seed,
+            gui=config.gui,
+            physics_backend=config.physics_backend,
+            robot_urdf=config.robot_urdf,
+            gui_hold_seconds=config.gui_hold_seconds,
+        ),
+        planner_options=_planner_setup_options(config.planner),
+    )
+
+    if setup_result.warning is not None:
+        print(f"[WARN] GUI setup unavailable ({setup_result.warning}); continuing with CLI configuration.")
+        return config, True
+    if setup_result.config is None:
+        if setup_result.cancelled:
+            print("[INFO] GUI setup canceled; exiting without starting a simulation run.")
+            return config, False
+        print("[INFO] GUI setup closed without selection; continuing with CLI configuration.")
+        return config, True
+
+    selected = setup_result.config
+    backend = selected.physics_backend.strip().lower()
+    if backend not in BACKEND_CHOICES:
+        backend = config.physics_backend
+    if selected.gui and backend == "auto":
+        # GUI runs are intended to stay visual; prefer the GUI-capable backend.
+        backend = "pybullet"
+    return (
+        RunConfig(
+            planner=selected.planner,
+            episodes=selected.episodes,
+            maze_size=selected.maze_size,
+            seed=selected.seed,
+            gui=selected.gui,
+            gui_setup=config.gui_setup,
+            robot_urdf=validate_robot_urdf(selected.robot_urdf),
+            gui_hold_seconds=max(selected.gui_hold_seconds, 0.0),
+            physics_backend=backend,
+        ),
+        True,
     )
 
 
@@ -152,6 +344,22 @@ def _extract_size(maze: Any) -> MazeSize:
         ):
             return size
     return (10, 10)
+
+
+def _maze_to_grid_triplet(maze: Any) -> tuple[Any, Any, Any]:
+    if isinstance(maze, dict):
+        grid = maze.get("grid")
+        start = maze.get("start")
+        goal = maze.get("goal")
+        if grid is not None and start is not None and goal is not None:
+            return grid, start, goal
+
+    try:
+        import benchmark as bench_mod
+
+        return bench_mod.maze_to_occupancy_grid(maze)
+    except Exception:
+        return None, None, None
 
 
 def _load_module_symbol(module_name: str, symbol_name: str) -> Any | None:
@@ -237,6 +445,44 @@ def load_planner(name: str) -> Planner:
             print(f"[INFO] Planner loaded from {module_name}.{symbol_name}")
             return loaded
 
+    # Support baseline planners and registered alternatives from planners.py.
+    try:
+        import planners as planners_mod
+
+        planner_fn = planners_mod.get_planner(name)
+        if callable(planner_fn):
+            print(f"[INFO] Planner loaded from planners registry: {name}")
+            return FunctionPlannerAdapter(name=name, planner_fn=planner_fn)
+    except Exception:
+        pass
+
+    alt_map: dict[str, tuple[str, str]] = {
+        "weighted_astar": ("alt_planners.r1_weighted_astar", "plan_weighted_astar"),
+        "r1_weighted_astar": ("alt_planners.r1_weighted_astar", "plan_weighted_astar"),
+        "bidirectional_astar": ("alt_planners.r2_bidirectional_astar", "plan_bidirectional_astar"),
+        "r2_bidirectional_astar": ("alt_planners.r2_bidirectional_astar", "plan_bidirectional_astar"),
+        "theta_star": ("alt_planners.r3_theta_star", "plan_theta_star"),
+        "r3_theta_star": ("alt_planners.r3_theta_star", "plan_theta_star"),
+        "idastar": ("alt_planners.r4_idastar", "plan_idastar"),
+        "r4_idastar": ("alt_planners.r4_idastar", "plan_idastar"),
+        "jps": ("alt_planners.r5_jump_point_search", "plan_jps"),
+        "r5_jump_point_search": ("alt_planners.r5_jump_point_search", "plan_jps"),
+        "lpa_star": ("alt_planners.r6_lpa_star", "plan_lpa_star"),
+        "r6_lpa_star": ("alt_planners.r6_lpa_star", "plan_lpa_star"),
+        "beam_search": ("alt_planners.r7_beam_search", "plan_beam_search"),
+        "r7_beam_search": ("alt_planners.r7_beam_search", "plan_beam_search"),
+        "fringe_search": ("alt_planners.r8_fringe_search", "plan_fringe_search"),
+        "r8_fringe_search": ("alt_planners.r8_fringe_search", "plan_fringe_search"),
+        "bidirectional_bfs": ("alt_planners.r9_bidirectional_bfs", "plan_bidirectional_bfs"),
+        "r9_bidirectional_bfs": ("alt_planners.r9_bidirectional_bfs", "plan_bidirectional_bfs"),
+    }
+    if name in alt_map:
+        module_name, symbol_name = alt_map[name]
+        planner_fn = _load_module_symbol(module_name, symbol_name)
+        if callable(planner_fn):
+            print(f"[INFO] Planner loaded from alt planner module: {module_name}.{symbol_name}")
+            return FunctionPlannerAdapter(name=name, planner_fn=planner_fn)
+
     print(f"[INFO] Planner '{name}' not found; using stub planner.")
     return StubPlanner(name=name)
 
@@ -247,12 +493,18 @@ def run(config: RunConfig) -> int:
     simulator = load_simulator()
 
     print(
-        "[START] planner={planner} episodes={episodes} maze_size={maze_size} seed={seed} gui={gui}".format(
+        (
+            "[START] planner={planner} episodes={episodes} maze_size={maze_size} seed={seed} "
+            "gui={gui} backend={backend} urdf={urdf} gui_hold_s={gui_hold_s}"
+        ).format(
             planner=getattr(planner, "name", config.planner),
             episodes=config.episodes,
             maze_size=f"{config.maze_size[0]}x{config.maze_size[1]}",
             seed=config.seed,
             gui=config.gui,
+            backend=config.physics_backend,
+            urdf=config.robot_urdf or f"default({DEFAULT_ROBOT_URDF})",
+            gui_hold_s=f"{config.gui_hold_seconds:.1f}",
         )
     )
 
@@ -273,6 +525,9 @@ def run(config: RunConfig) -> int:
             plan,
             gui=config.gui,
             seed=episode_seed,
+            robot_urdf=config.robot_urdf,
+            gui_hold_seconds=config.gui_hold_seconds,
+            physics_backend=config.physics_backend,
         )
 
         if result.success:
@@ -305,7 +560,9 @@ def run(config: RunConfig) -> int:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    config = parse_args(argv)
+    config, should_run = apply_gui_setup(parse_args(argv))
+    if not should_run:
+        return 0
     return run(config)
 
 

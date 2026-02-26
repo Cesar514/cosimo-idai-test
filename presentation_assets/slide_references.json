@@ -1,0 +1,207 @@
+{
+  "1": [
+    "https://developers.openai.com/codex/",
+    "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent",
+    "https://modelcontextprotocol.io/specification/2025-11-25/basic"
+  ],
+  "2": [
+    "https://developers.openai.com/codex/guides/agents-sdk/",
+    "https://docs.github.com/en/actions",
+    "https://jules.google/docs/api/reference/overview"
+  ],
+  "3": [
+    "https://developers.openai.com/codex/cli/features/",
+    "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent",
+    "https://jules.google/docs/cli/reference/"
+  ],
+  "4": [
+    "https://developers.openai.com/codex/guides/agents-sdk/",
+    "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent",
+    "https://modelcontextprotocol.io/specification/2025-11-25/basic"
+  ],
+  "5": [
+    "https://arxiv.org/abs/2308.08155",
+    "https://arxiv.org/abs/2308.00352",
+    "https://arxiv.org/abs/2212.06817"
+  ],
+  "6": [
+    "https://developers.openai.com/codex/guides/agents-sdk/",
+    "https://github.com/modelcontextprotocol/modelcontextprotocol",
+    "https://modelcontextprotocol.io/specification/2025-11-25/basic"
+  ],
+  "7": [
+    "https://developers.openai.com/codex/",
+    "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent",
+    "https://jules.google/docs/api/reference/overview"
+  ],
+  "8": [
+    "https://developers.openai.com/codex/cli/features/",
+    "https://developers.openai.com/codex/security/",
+    "https://developers.openai.com/codex/config-reference/"
+  ],
+  "9": [
+    "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-a-pr",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/review-copilot-prs"
+  ],
+  "10": [
+    "https://jules.google/docs/api/reference/overview",
+    "https://jules.google/docs/api/reference/",
+    "https://jules.google/docs/changelog/2025-10-03/"
+  ],
+  "11": [
+    "https://github.com/google-gemini/gemini-cli",
+    "https://jules.google/docs/cli/reference/",
+    "https://developers.openai.com/codex/cli/features/"
+  ],
+  "12": [
+    "https://developers.openai.com/codex/cli/features/",
+    "https://github.com/google-gemini/gemini-cli",
+    "https://docs.anthropic.com/en/docs/claude-code/overview"
+  ],
+  "13": [
+    "https://developers.openai.com/docs/models/",
+    "https://developers.openai.com/docs/api-reference/responses/get",
+    "https://developers.openai.com/docs/pricing"
+  ],
+  "14": [
+    "https://developers.openai.com/codex/cli/slash-commands/",
+    "https://developers.openai.com/codex/config-reference/",
+    "https://developers.openai.com/codex/guides/agents-md/"
+  ],
+  "15": [
+    "https://developers.openai.com/docs/pricing",
+    "https://docs.github.com/en/copilot/about-github-copilot/subscription-plans-for-github-copilot",
+    "https://developers.google.com/program/plans-and-pricing"
+  ],
+  "16": [
+    "https://developers.openai.com/codex/config-reference/",
+    "https://github.com/ollama/ollama",
+    "https://lmstudio.ai/docs"
+  ],
+  "17": [
+    "https://developers.openai.com/codex/guides/agents-sdk/",
+    "https://docs.github.com/en/pull-requests",
+    "https://www.omg.org/spec/BPMN/2.0.2/"
+  ],
+  "18": [
+    "https://developers.openai.com/codex/config-reference/",
+    "https://developers.openai.com/codex/guides/agents-sdk/",
+    "https://docs.github.com/en/actions"
+  ],
+  "19": [
+    "https://developers.openai.com/codex/config-reference/",
+    "https://developers.openai.com/codex/concepts/customization/",
+    "https://developers.openai.com/codex/skills/"
+  ],
+  "20": [
+    "https://developers.openai.com/codex/guides/agents-sdk/",
+    "https://docs.github.com/en/actions",
+    "https://docs.github.com/en/pull-requests"
+  ],
+  "21": [
+    "https://developers.openai.com/codex/skills/",
+    "https://developers.openai.com/codex/concepts/customization/",
+    "https://developers.openai.com/codex/guides/agents-md/"
+  ],
+  "22": [
+    "https://developers.openai.com/codex/skills/",
+    "https://developers.openai.com/codex/concepts/customization/",
+    "https://developers.openai.com/codex/guides/agents-md/"
+  ],
+  "23": [
+    "https://developers.openai.com/codex/cli/slash-commands/",
+    "https://developers.openai.com/codex/guides/agents-md/",
+    "https://developers.openai.com/codex/skills/"
+  ],
+  "24": [
+    "https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-a-pr",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/review-copilot-prs"
+  ],
+  "25": [
+    "https://developers.openai.com/codex/",
+    "https://developers.openai.com/codex/mcp/",
+    "https://modelcontextprotocol.io/specification/2025-11-25/basic"
+  ],
+  "26": [
+    "https://developers.openai.com/codex/skills/",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/review-copilot-prs",
+    "https://developers.openai.com/codex/concepts/customization/"
+  ],
+  "27": [
+    "https://playwright.dev/docs/intro",
+    "https://docs.github.com/en/actions",
+    "https://docs.pytest.org/en/stable/"
+  ],
+  "28": [
+    "https://www.prisma-statement.org/prisma-2020",
+    "https://info.arxiv.org/help/api/index.html",
+    "https://pubmed.ncbi.nlm.nih.gov/help/"
+  ],
+  "29": [
+    "https://www.latex-project.org/",
+    "https://www.crossref.org/",
+    "https://jupyter.org/"
+  ],
+  "30": [
+    "https://docs.github.com/en/pull-requests",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/review-copilot-prs",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-a-pr"
+  ],
+  "31": [
+    "https://developers.openai.com/codex/guides/agents-md/",
+    "https://developers.openai.com/codex/config-reference/",
+    "https://developers.openai.com/codex/concepts/customization/"
+  ],
+  "32": [
+    "https://developers.openai.com/codex/mcp/",
+    "https://modelcontextprotocol.io/specification/2025-11-25/basic",
+    "https://github.com/modelcontextprotocol/modelcontextprotocol"
+  ],
+  "33": [
+    "https://developers.openai.com/codex/security/",
+    "https://docs.anthropic.com/en/docs/mcp",
+    "https://www.nist.gov/itl/ai-risk-management-framework"
+  ],
+  "34": [
+    "https://developers.openai.com/codex/guides/agents-sdk/",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-a-pr",
+    "https://docs.github.com/en/actions"
+  ],
+  "35": [
+    "https://developers.openai.com/codex/config-reference/",
+    "https://developers.openai.com/codex/skills/",
+    "https://git-scm.com/docs/git"
+  ],
+  "36": [
+    "https://docs.pytest.org/en/stable/",
+    "https://playwright.dev/docs/intro",
+    "https://docs.github.com/en/actions"
+  ],
+  "37": [
+    "https://docs.pytest.org/en/stable/",
+    "https://docs.github.com/en/actions",
+    "https://arxiv.org/abs/2310.06770"
+  ],
+  "38": [
+    "https://www.prisma-statement.org/prisma-2020",
+    "https://jupyter.org/",
+    "https://www.latex-project.org/"
+  ],
+  "39": [
+    "https://arxiv.org/abs/2212.06817",
+    "https://arxiv.org/abs/2307.15818",
+    "https://arxiv.org/abs/2308.08155"
+  ],
+  "40": [
+    "https://www.nist.gov/itl/ai-risk-management-framework",
+    "https://arxiv.org/abs/2307.15818",
+    "https://arxiv.org/abs/2308.00352"
+  ],
+  "41": [
+    "https://www.gnu.org/software/bash/manual/bash.html#Looping-Constructs",
+    "https://git-scm.com/docs/git",
+    "https://docs.github.com/en/actions"
+  ]
+}

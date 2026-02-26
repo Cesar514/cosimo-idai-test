@@ -29,6 +29,23 @@ Slide numbering below assumes a 40+ slide technical deck and is a recommendation
 | W6 | Simple feedback control loop diagram | https://commons.wikimedia.org/wiki/File:Simple_feedback_control_loop2.svg | CC BY-SA 3.0 | Attribution + share-alike; clean control-systems visual. | Slides 28, 33 (closed-loop robotics control explanation). |
 | W7 | SERCOS III control interface cycle diagram | https://commons.wikimedia.org/wiki/File:SERCOS_III_Control_Interface_Cycle_diagram.svg | Public domain (PD-self) | No attribution legally required; editable SVG for timing overlays. | Slides 34, 35 (industrial comms timing, deterministic control flow). |
 
+## Local Custom Assets Added (Task 20)
+
+All assets below are generated in-repo under `presentation_assets/custom/` and can be used without external attribution.
+
+| ID | Asset | File | Source | License | Recommended Usage Slides |
+| --- | --- | --- | --- | --- | --- |
+| C02 | Orchestration swimlanes map | `presentation_assets/custom/c02_orchestration_swimlanes.svg` | Generated locally (Task 20) | CC0-1.0 | Slides 5, 6, 16, 17 |
+| C03 | Capability card stack | `presentation_assets/custom/c03_capability_cards.svg` | Generated locally (Task 20) | CC0-1.0 | Slides 13, 15, 21 |
+| C04 | Trust boundary gate | `presentation_assets/custom/c04_trust_boundary_gate.svg` | Generated locally (Task 20) | CC0-1.0 | Slides 31, 32, 33 |
+| C05 | Debug feedback loop | `presentation_assets/custom/c05_debug_feedback_loop.svg` | Generated locally (Task 20) | CC0-1.0 | Slides 35, 37 |
+| C06 | Research-to-report pipeline | `presentation_assets/custom/c06_research_report_pipeline.svg` | Generated locally (Task 20) | CC0-1.0 | Slides 25, 28, 29, 36 |
+| C07 | PR merge gate flow | `presentation_assets/custom/c07_pr_merge_flow.svg` | Generated locally (Task 20) | CC0-1.0 | Slides 24, 30, 38 |
+| C08 | Robotics horizon matte backdrop | `presentation_assets/custom/c08_robotics_horizon_matte.svg` | Generated locally (Task 20) | CC0-1.0 | Slide 42 |
+| C09 | Risk/reward diptych | `presentation_assets/custom/c09_risk_reward_diptych.svg` | Generated locally (Task 20) | CC0-1.0 | Slide 40 |
+| C10 | Technical badge sprite sheet | `presentation_assets/custom/c10_badge_sprite_sheet.svg` | Generated locally (Task 20) | CC0-1.0 | Slide 12 |
+| C11 | Signal ribbon top band | `presentation_assets/custom/c11_signal_ribbon_band.svg` | Generated locally (Task 20) | CC0-1.0 | Slides 4, 34 |
+
 ## Attribution and Compliance Notes
 
 - Preferred attribution format for CC BY / CC BY-SA assets: `Title - Author - Source URL - License`.

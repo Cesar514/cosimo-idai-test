@@ -1,0 +1,20 @@
+[workspace]
+name = "cosimi-idai-test"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "osx-64", "linux-64"]
+
+[dependencies]
+python = "3.11.*"
+pip = "*"
+pybullet = ">=3.24,<3.26"
+
+[pypi-dependencies]
+numpy = ">=1.26"
+pillow = ">=10"
+mujoco = ">=3.3.7"
+python-pptx = ">=0.6.23"
+pytest = ">=8"
+
+[tasks]
+sim = "python scripts/sim_runner.py --gui-setup --gui --planner astar --episodes 1 --maze-size 15 --seed 42 --physics-backend auto --gui-hold-seconds 20"
+benchmark = "python robotics_maze/src/benchmark.py --mazes 30 --width 15 --height 15 --algorithm backtracker"

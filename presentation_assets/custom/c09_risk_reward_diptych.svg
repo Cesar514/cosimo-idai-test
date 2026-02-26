@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1350" viewBox="0 0 2400 1350" role="img" aria-label="Risk and reward diptych for robotics deployment tradeoffs">
+  <defs>
+    <linearGradient id="leftPanel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e9f4ff"/>
+      <stop offset="100%" stop-color="#cfe4ff"/>
+    </linearGradient>
+    <linearGradient id="rightPanel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff1e8"/>
+      <stop offset="100%" stop-color="#ffdcca"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="1350" fill="url(#leftPanel)"/>
+  <rect x="1200" width="1200" height="1350" fill="url(#rightPanel)"/>
+  <rect x="1188" width="24" height="1350" fill="#ffffff" opacity="0.65"/>
+
+  <g transform="translate(120,180)" opacity="0.9">
+    <rect width="960" height="850" rx="34" fill="#ffffff" fill-opacity="0.56"/>
+    <rect x="88" y="106" width="360" height="620" rx="24" fill="#7ea9e8" opacity="0.72"/>
+    <rect x="492" y="170" width="360" height="556" rx="24" fill="#5f8bd2" opacity="0.64"/>
+    <path d="M128 760 L892 760" stroke="#4c73b4" stroke-width="12" opacity="0.65"/>
+    <path d="M220 748 C360 620, 470 560, 610 500 C700 460, 770 410, 840 320" stroke="#0b5fff" stroke-width="12" fill="none" opacity="0.65"/>
+    <circle cx="224" cy="748" r="16" fill="#0b5fff"/>
+    <circle cx="510" cy="548" r="16" fill="#0b5fff"/>
+    <circle cx="840" cy="320" r="16" fill="#0b5fff"/>
+  </g>
+
+  <g transform="translate(1320,180)" opacity="0.92">
+    <rect width="960" height="850" rx="34" fill="#ffffff" fill-opacity="0.58"/>
+    <rect x="108" y="260" width="320" height="466" rx="24" fill="#ff9f63" opacity="0.72"/>
+    <rect x="462" y="190" width="390" height="536" rx="24" fill="#f07a2f" opacity="0.64"/>
+    <path d="M160 760 L880 760" stroke="#cb6e2f" stroke-width="12" opacity="0.62"/>
+    <path d="M220 320 C330 430, 470 520, 620 620 C700 670, 780 710, 850 748" stroke="#c4561a" stroke-width="12" fill="none" opacity="0.68"/>
+    <circle cx="220" cy="320" r="16" fill="#c4561a"/>
+    <circle cx="610" cy="620" r="16" fill="#c4561a"/>
+    <circle cx="850" cy="748" r="16" fill="#c4561a"/>
+  </g>
+
+  <rect x="220" y="1080" width="780" height="132" rx="28" fill="#ffffff" fill-opacity="0.68"/>
+  <rect x="1420" y="1080" width="780" height="132" rx="28" fill="#ffffff" fill-opacity="0.68"/>
+</svg>

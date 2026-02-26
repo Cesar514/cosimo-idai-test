@@ -1,0 +1,46 @@
+{
+  "style_pack": "cobalt_signal_editorial_v1",
+  "aesthetic_direction": "Editorial technical with cool-paper surfaces and high-contrast cobalt signals",
+  "title_color": "#102449",
+  "body_color": "#24344D",
+  "bg_color_even": "#F4F8FF",
+  "bg_color_odd": "#E8F0FF",
+  "accent_color": "#0A5BFF",
+  "accent_color_secondary": "#0F766E",
+  "accent_color_warm": "#C26716",
+  "citation_color": "#5C6880",
+  "divider_color": "#C8D6EE",
+  "surface_color": "#FFFFFF",
+  "title_size_pt": 46,
+  "body_size_pt": 20,
+  "citation_size_pt": 9,
+  "kpi_size_pt": 52,
+  "font_title": "IBM Plex Sans",
+  "font_body": "IBM Plex Serif",
+  "font_mono": "IBM Plex Mono",
+  "max_bullets_per_slide": 6,
+  "max_title_lines": 2,
+  "accent_usage_ratio": {
+    "primary": 0.7,
+    "secondary": 0.2,
+    "warm": 0.1
+  },
+  "slide_cadence": {
+    "use_odd_background_for": [
+      "title_slides",
+      "section_dividers",
+      "agenda_resets"
+    ],
+    "use_even_background_for": [
+      "content_slides",
+      "comparison_slides",
+      "evidence_slides"
+    ]
+  },
+  "motion_plan": {
+    "default_transition": "fade_fast",
+    "section_transition": "wipe_left",
+    "bullet_reveal": "stagger_100ms",
+    "max_reveal_styles_per_slide": 1
+  }
+}

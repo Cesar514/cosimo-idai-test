@@ -65,3 +65,10 @@ PyBullet use you may need a pre-expanded plain URDF.
 Do not require these downloads for normal execution. If external folders are
 absent, runner code should continue loading built-in models from
 `pybullet_data.getDataPath()`.
+
+Default runtime order in `robotics_maze/src/sim.py`:
+1. `husky/husky.urdf` (primary default, real mobile robot model)
+2. `r2d2.urdf` (explicit fallback when Husky is missing or fails to load)
+
+If both defaults fail, simulation raises a runtime error instead of silently
+continuing without a robot.
