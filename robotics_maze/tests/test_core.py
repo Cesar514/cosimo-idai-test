@@ -15,7 +15,21 @@ def _load_benchmark_module():
     return module
 
 
+def _load_sensitivity_module():
+    src_dir = Path(__file__).resolve().parents[1] / "src"
+    if str(src_dir) not in sys.path:
+        sys.path.insert(0, str(src_dir))
+    sensitivity_path = src_dir / "backend_sensitivity.py"
+    spec = importlib.util.spec_from_file_location("backend_sensitivity", sensitivity_path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 benchmark = _load_benchmark_module()
+sensitivity = _load_sensitivity_module()
 
 
 def test_maze_generation_smoke():
@@ -74,3 +88,85 @@ def test_benchmark_reports_written_to_output_dir(tmp_path):
     assert "algorithm" in csv_text
     assert "success_rate" not in csv_text  # CSV is per-trial detail.
     assert "| Planner | Success Rate |" in md_text
+
+
+# ---------------------------------------------------------------------------
+# Backend sensitivity tests
+# ---------------------------------------------------------------------------
+
+
+def test_paired_episodes_returns_correct_count():
+    """run_paired_episodes returns one PairedEpisodeResult per episode."""
+    paired = sensitivity.run_paired_episodes(
+        episodes=5,
+        maze_size=(10, 10),
+        seed=7,
+        planner="stub",
+    )
+    assert len(paired) == 5
+    for p in paired:
+        assert p.pybullet.backend == "pybullet"
+        assert p.mujoco.backend == "mujoco"
+
+
+def test_paired_episodes_seeds_are_deterministic():
+    """Same base seed always produces identical paired results."""
+    run_a = sensitivity.run_paired_episodes(episodes=4, maze_size=(8, 8), seed=1, planner="stub")
+    run_b = sensitivity.run_paired_episodes(episodes=4, maze_size=(8, 8), seed=1, planner="stub")
+    for a, b in zip(run_a, run_b):
+        assert a.pybullet.steps == b.pybullet.steps
+        assert a.mujoco.steps == b.mujoco.steps
+        assert a.pybullet.success == b.pybullet.success
+        assert a.mujoco.success == b.mujoco.success
+
+
+def test_compute_sensitivity_stats_structure():
+    """compute_sensitivity_stats returns a fully-populated SensitivityReport."""
+    paired = sensitivity.run_paired_episodes(episodes=6, maze_size=(10, 10), seed=42, planner="stub")
+    report = sensitivity.compute_sensitivity_stats(paired)
+    assert report.pybullet_stats.n_episodes == 6
+    assert report.mujoco_stats.n_episodes == 6
+    assert report.n_both_success + report.n_pybullet_only_fail + report.n_mujoco_only_fail + report.n_both_fail == 6
+    assert not (report.ci_steps_delta.n == 0)
+    assert not (report.ci_elapsed_delta.n == 0)
+
+
+def test_sensitivity_reports_written_to_output_dir(tmp_path):
+    """run_sensitivity_experiment writes both CSV and Markdown artifacts."""
+    report, csv_path, md_path = sensitivity.run_sensitivity_experiment(
+        episodes=3,
+        maze_size=(8, 8),
+        seed=99,
+        planner="stub",
+        output_dir=tmp_path,
+    )
+    assert csv_path.exists()
+    assert md_path.exists()
+
+    csv_text = csv_path.read_text(encoding="utf-8")
+    assert "episode" in csv_text
+    assert "pybullet_steps" in csv_text
+    assert "mujoco_steps" in csv_text
+    assert "steps_delta" in csv_text
+    assert "failure_mode" in csv_text
+
+    md_text = md_path.read_text(encoding="utf-8")
+    assert "Backend Sensitivity Report" in md_text
+    assert "Per-Backend Summary" in md_text
+    assert "Cross-Backend Deltas" in md_text
+    assert "Failure-Mode Breakdown" in md_text
+    assert "Backend Divergence Notes" in md_text
+
+
+def test_sensitivity_report_row_count(tmp_path):
+    """CSV contains exactly episodes + 1 lines (header + data rows)."""
+    n = 4
+    _, csv_path, _ = sensitivity.run_sensitivity_experiment(
+        episodes=n,
+        maze_size=(8, 8),
+        seed=5,
+        planner="stub",
+        output_dir=tmp_path,
+    )
+    lines = [l for l in csv_path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    assert len(lines) == n + 1  # header + n data rows
