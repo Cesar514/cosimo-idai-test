@@ -1,0 +1,35 @@
+name: Snapshot Table Check
+
+on:
+  push:
+    paths:
+      - 'paper/ieee_tro_robotics_maze/tables/**'
+      - 'robotics_maze/results/snapshots/**'
+      - 'robotics_maze/scripts/regenerate_tables_from_snapshot.py'
+      - 'robotics_maze/scripts/check_snapshot_tables.py'
+      - 'paper/ieee_tro_robotics_maze/coordination/snapshot_manifest.json'
+  pull_request:
+    paths:
+      - 'paper/ieee_tro_robotics_maze/tables/**'
+      - 'robotics_maze/results/snapshots/**'
+      - 'robotics_maze/scripts/regenerate_tables_from_snapshot.py'
+      - 'robotics_maze/scripts/check_snapshot_tables.py'
+      - 'paper/ieee_tro_robotics_maze/coordination/snapshot_manifest.json'
+
+jobs:
+  check-snapshot-tables:
+    name: Verify paper tables match designated snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install numpy
+
+      - name: Run snapshot table check
+        run: python robotics_maze/scripts/check_snapshot_tables.py

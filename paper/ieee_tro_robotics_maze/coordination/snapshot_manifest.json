@@ -1,0 +1,7 @@
+{
+  "designated_snapshot": "paper_v1",
+  "snapshot_path": "robotics_maze/results/snapshots/paper_v1",
+  "csv_sha256": "66b0db3157104523d1698f918c2552db92c7d468ca507bcaa29dbd63d434e934",
+  "frozen_utc": "2026-02-27T11:48:33Z",
+  "note": "This file designates the canonical benchmark snapshot for the paper release. Update designated_snapshot and csv_sha256 only when intentionally refreshing the paper data."
+}
