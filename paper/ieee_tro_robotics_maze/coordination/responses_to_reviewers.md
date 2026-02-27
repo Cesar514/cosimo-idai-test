@@ -47,6 +47,15 @@ Round 2 integration additionally applied benchmark code and coordination-artifac
 | R1-9 | Resolved | Manuscript-process figure removed from main experiments section. |
 | R1-10 | Resolved | Placeholder keywords replaced with concrete indexing terms in `main.tex`. |
 
+## Final Novelty and Framing Polish (Submission Ready)
+
+The following final editorial adjustments were made to ensure maximal defensibility for journal review:
+- **Title and Abstract**: Refined `main.tex` to explicitly emphasize integration-level novelty and ensure the abstract uses consistent, bounded scope language.
+- **Contribution Language**: Tightened contribution bullets in `sections/02_introduction.tex` to focus on infrastructure-level integration and auditable repository workflows.
+- **Related Work Delta**: Streamlined the closest-work delta in `sections/03_related_work.tex` and `tables/closest_work_delta_table.tex` to be strictly benchmark-infrastructure focused.
+- **Bounded Claims**: Performed an editorial pass on `sections/07_discussion.tex` and `sections/08_conclusion.tex` to rephrase all competitive findings as descriptive results of the specific benchmark snapshot, removing any residual overclaim phrasing.
+
 ## Consolidated status
 - Resolved in this round: seed-policy wording alignment, ranking-policy consistency across code/artifacts/text, benchmark entrypoint consistency, path-length ranking bias removal, expansion-metric hardening, novelty reframing, and coordination-artifact freshness.
+- Final Polish: Integrated final framing adjustments to reinforce integration-level novelty and explicitly bound all scientific claims to the executed benchmark regime.
 - Partially resolved: timing rigor remains limited by single-run per planner-maze timing; this is now explicitly labeled exploratory and queued for repeated-run future work.
