@@ -1,0 +1,17 @@
+{
+  "snapshot_id": "paper_v1",
+  "csv_sha256": "66b0db3157104523d1698f918c2552db92c7d468ca507bcaa29dbd63d434e934",
+  "generated_utc": "2026-02-27T11:48:33Z",
+  "benchmark_config": {
+    "mazes": 50,
+    "width": 15,
+    "height": 15,
+    "seed": 7,
+    "algorithm": "backtracker"
+  },
+  "tables": {
+    "main_results_table": "paper/ieee_tro_robotics_maze/tables/main_results_table.tex",
+    "statistical_comparison_table": "paper/ieee_tro_robotics_maze/tables/statistical_comparison_table.tex"
+  },
+  "description": "Canonical paper release snapshot. Tables are generated from this CSV via regenerate_tables_from_snapshot.py. CI uses check_snapshot_tables.py to verify no drift."
+}
