@@ -1,12 +1,30 @@
 # Citation Compliance Report
 
-Generated on: 2026-02-27 00:16:00 GMT
+Generated on: 2026-02-27 00:16:00 GMT  
+**Verification audit completed: 2026-02-27T11:48:33Z** (cross-check of all 70 entries against primary sources; see `audit_delta_report.md`)
 
 ## Scope
 
 - Bibliography source: `paper/ieee_tro_robotics_maze/references.bib`
 - Audit source: `paper/ieee_tro_robotics_maze/coordination/citations_audit.csv`
 - Citation usage source: `paper/ieee_tro_robotics_maze/sections/*.tex`
+
+## Verification Audit Summary
+
+Cross-check of all 70 entries between `references.bib` and `citations_audit.csv` performed on 2026-02-27T11:48:33Z:
+
+| Check | Result |
+|---|---|
+| Cite key set match | ✅ 0 mismatches |
+| Title consistency | ✅ 0 mismatches |
+| Year consistency | ✅ 0 mismatches |
+| Venue consistency | ✅ 0 mismatches |
+| DOI/URL consistency | ✅ 0 mismatches |
+| All entries `verification_status=verified_doi` | ✅ 70/70 |
+| All entries `peer_reviewed=yes` | ✅ 70/70 |
+| Non-peer-reviewed entries flagged | ✅ none found |
+
+Full delta report: `coordination/audit_delta_report.md`
 
 ## Required Metrics
 
