@@ -1,13 +1,25 @@
-planner,maze_index,maze_seed,width,height,algorithm,success,solve_time_ms,path_length,expansions,error
-astar,0,7,9,9,backtracker,1,0.339959,108,136,
-dijkstra,0,7,9,9,backtracker,1,0.315750,108,141,
-greedy_best_first,0,7,9,9,backtracker,1,0.297542,108,133,
-r1_weighted_astar,0,7,9,9,backtracker,1,0.237084,108,135,
-r2_bidirectional_astar,0,7,9,9,backtracker,1,0.680667,108,281,
-r3_theta_star,0,7,9,9,backtracker,1,0.923917,76,136,
-r4_idastar,0,7,9,9,backtracker,1,7.685667,108,2988,
-r5_jump_point_search,0,7,9,9,backtracker,1,0.295625,108,39,
-r6_lpa_star,0,7,9,9,backtracker,1,0.991542,108,137,
-r7_beam_search,0,7,9,9,backtracker,1,0.293875,108,140,
-r8_fringe_search,0,7,9,9,backtracker,1,0.363792,108,137,
-r9_bidirectional_bfs,0,7,9,9,backtracker,1,0.347250,108,140,
+planner,maze_index,maze_seed,width,height,algorithm,success,solve_time_ms,path_length,expansions,is_dynamic,replans,replan_time_ms,collisions,progress,error
+astar,0,7,7,7,backtracker,0,0.326069,,54,1,2,0.326069,0,0.4730,Goal not reached
+dijkstra,0,7,7,7,backtracker,0,0.320467,,56,1,2,0.320467,0,0.4730,Goal not reached
+greedy_best_first,0,7,7,7,backtracker,0,0.276005,,54,1,2,0.276005,0,0.4730,Goal not reached
+r1_weighted_astar,0,7,7,7,backtracker,0,0.210412,,54,1,2,0.210412,0,0.4730,Goal not reached
+r2_bidirectional_astar,0,7,7,7,backtracker,0,0.842906,,142,1,2,0.842906,0,0.4730,Goal not reached
+r3_theta_star,0,7,7,7,backtracker,0,1.096691,,68,1,2,1.096691,0,0.4107,Goal not reached
+r4_idastar,0,7,7,7,backtracker,0,2.268743,,393,1,2,2.268743,0,0.4730,Goal not reached
+r5_jump_point_search,0,7,7,7,backtracker,0,0.297132,,18,1,2,0.297132,0,0.4730,Goal not reached
+r6_lpa_star,0,7,7,7,backtracker,0,1.025680,,54,1,2,1.025680,0,0.4730,Goal not reached
+r7_beam_search,0,7,7,7,backtracker,0,0.284327,,53,1,2,0.284327,0,0.4730,Goal not reached
+r8_fringe_search,0,7,7,7,backtracker,0,0.426544,,54,1,2,0.426544,0,0.4730,Goal not reached
+r9_bidirectional_bfs,0,7,7,7,backtracker,0,0.463683,,58,1,2,0.463683,0,0.4730,Goal not reached
+dijkstra,1,8,7,7,backtracker,0,0.408376,,80,1,2,0.408376,0,0.1502,Goal not reached
+greedy_best_first,1,8,7,7,backtracker,0,0.365083,,76,1,2,0.365083,0,0.1502,Goal not reached
+r1_weighted_astar,1,8,7,7,backtracker,0,0.327526,,76,1,2,0.327526,0,0.1502,Goal not reached
+r2_bidirectional_astar,1,8,7,7,backtracker,0,0.879640,,159,1,2,0.879640,0,0.1502,Goal not reached
+r3_theta_star,1,8,7,7,backtracker,0,1.250559,,79,1,2,1.250559,0,0.2454,Goal not reached
+r4_idastar,1,8,7,7,backtracker,0,5.054358,,823,1,2,5.054358,0,0.1502,Goal not reached
+r5_jump_point_search,1,8,7,7,backtracker,0,0.429138,,19,1,2,0.429138,0,0.1502,Goal not reached
+r6_lpa_star,1,8,7,7,backtracker,0,1.222967,,76,1,2,1.222967,0,0.1502,Goal not reached
+r7_beam_search,1,8,7,7,backtracker,0,0.370223,,77,1,2,0.370223,0,0.1502,Goal not reached
+r8_fringe_search,1,8,7,7,backtracker,0,0.410042,,76,1,2,0.410042,0,0.1502,Goal not reached
+r9_bidirectional_bfs,1,8,7,7,backtracker,0,0.451118,,80,1,2,0.451118,0,0.1502,Goal not reached
+astar,1,8,7,7,backtracker,0,0.380585,,76,1,2,0.380585,0,0.1502,Goal not reached
