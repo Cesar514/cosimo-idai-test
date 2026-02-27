@@ -382,22 +382,14 @@ def render_main_results_table(stats: list[dict], maze_count: int) -> str:
         rank = s["rank"]
         display = _PLANNER_DISPLAY.get(s["planner"], s["planner"])
         success_str = f"{s['n_success']}/{s['n_total']}"
-        time_str = f"{s['mean_time_ms']:.2f} $\\pm$ {s['std_time_ms']:.2f}"
-        median_iqr_str = f"{s['median_time_ms']:.2f} [{s['q25_time_ms']:.2f}, {s['q75_time_ms']:.2f}]"
         path_len = s["mean_shared_path_length"] if not math.isnan(s["mean_shared_path_length"]) else s["mean_path_length"]
         path_str = f"{path_len:.2f}" + _theta_star_footnote(s["planner"])
-        exp_str = f"{s['mean_expansions']:.2f}"
         lines.append(
-            f"{rank:<2} & {display:<22} & {success_str} & {time_str:<18} & {time_str:<20}   "
-            f"& {path_str:<17} & {exp_str}  \\\\"
-        )
-        # Rebuild properly formatted row
-        lines[-1] = (
             f"{rank:<2} & {display:<22} & {success_str} "
             f"& {s['mean_time_ms']:.2f} $\\pm$ {s['std_time_ms']:.2f}"
             f"   & {s['median_time_ms']:.2f} [{s['q25_time_ms']:.2f}, {s['q75_time_ms']:.2f}]"
-            f"   & {path_str}"
-            f"          & {s['mean_expansions']:.2f}  \\\\"
+            f"   & {path_str:<17}"
+            f"& {s['mean_expansions']:.2f}  \\\\"
         )
 
     lines += [

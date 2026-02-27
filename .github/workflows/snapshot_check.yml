@@ -20,6 +20,8 @@ jobs:
   check-snapshot-tables:
     name: Verify paper tables match designated snapshot
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
