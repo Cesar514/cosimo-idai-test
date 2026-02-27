@@ -51,4 +51,17 @@ where \(\mathrm{SR}\) is success rate, \(T^{\mathrm{shared}}\) comparable solve 
 Planner name is used only as a deterministic final tie-break.
 Comparable path length \(L^{\mathrm{shared}}\) is still reported as a descriptive metric, but excluded from ranking when any-angle planners are present to avoid mixed-geometry bias.
 
+\subsubsection{Repeated-Run Timing Protocol}
+To improve timing quality and enable rank-stability analysis, the benchmark supports a configurable repeated-run protocol via the \texttt{--repeats} and \texttt{--warmup} CLI arguments.
+When \texttt{--repeats} \(R > 1\), each planner-maze pair is executed \(R\) timed times; an optional \(W \ge 0\) warm-up invocations (controlled by \texttt{--warmup}) are discarded before timing begins to mitigate cold-start and JIT effects.
+Each timed repetition is recorded as a distinct row in \texttt{benchmark\_results.csv} (identified by the \texttt{repeat\_index} column), so all raw observations are retained for downstream analysis.
+
+When \(R > 1\), two additional output artifacts are generated:
+\begin{itemize}
+    \item \textbf{\texttt{benchmark\_repeat\_stats.csv}}: per (planner, maze) aggregates across repeats---mean, median, standard deviation, minimum, and maximum of \texttt{solve\_time\_ms}.
+    \item \textbf{\texttt{benchmark\_rank\_stability.md}}: pairwise Spearman rank-correlation coefficients \(\rho\) between every pair of repeat-round planner rankings, together with the mean \(\rho\) across all pairs as a single stability scalar.
+\end{itemize}
+
+A mean \(\rho\) near \(1.0\) indicates that the rank ordering of planners is consistent across timed repetitions; values substantially below \(1.0\) suggest that the timing spread is wide enough to make per-repeat rankings unreliable.
+
 This protocol outputs \texttt{benchmark\_results.csv} and \texttt{benchmark\_summary.md}, enabling traceable comparison and direct linkage between manuscript claims and generated artifacts.
