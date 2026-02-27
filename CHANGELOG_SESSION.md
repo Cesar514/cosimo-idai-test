@@ -74,3 +74,64 @@ Scope: major repository modifications produced in this session, grouped by area.
 - Appended/expanded `robotics_maze/coordination/session_event_log.csv` with session timeline entries (agent completions, bug-fix/test events, and GitHub issue creation records).
 - Introduced root `.gitignore` entry to keep local copied skills untracked (`/skills/`), consistent with SC3 notes.
 
+---
+
+# Session Changelog Addendum (Round-2/3 Cycle)
+
+Date: 2026-02-27  
+Scope: paper review-cycle integration, benchmark/ranking hardening, artifact refresh, external backlog expansion, and checksum traceability updates.
+
+## Paper
+
+- Integrated round-2/3 review resolutions across manuscript + coordination artifacts:
+  - synchronized ranking-policy wording and evidence across method/results/discussion/table surfaces
+  - aligned reproducibility entrypoints across root and robotics Pixi configs + protocol table commands
+  - removed path-length tie-break from ranking policy and hardened expansion handling when planner metrics are missing
+  - closed round-3 minor findings on dependency-pin alignment, fail-closed planner defaults, inferential traceability, and novelty framing polish
+- Refreshed round-tracking and status artifacts:
+  - `paper/ieee_tro_robotics_maze/coordination/responses_to_reviewers.md`
+  - `paper/ieee_tro_robotics_maze/coordination/review_comment_log.csv`
+  - `paper/ieee_tro_robotics_maze/coordination/paper_status.md`
+  - `paper/ieee_tro_robotics_maze/coordination/claims_traceability.csv`
+
+## Benchmarking
+
+- Updated `robotics_maze/src/benchmark.py` comparison flow for reproducible ranking:
+  - enforced fail-closed default benchmark planner set (canonical 12 planners)
+  - standardized ranking order: success rate (desc), comparable solve time (asc), mean expansions (asc), mean solve time (asc), planner name (asc)
+  - exposed comparable-maze counts + `Delta vs #1 (ms)` in console and markdown summaries
+- Refreshed benchmark evidence artifacts consumed by paper outputs:
+  - `robotics_maze/results/benchmark_results.csv`
+  - `robotics_maze/results/benchmark_summary.md`
+  - `paper/ieee_tro_robotics_maze/coordination/inferential_runtime_comparison.csv`
+
+## Artifacts
+
+- Regenerated paper figures and submission package outputs:
+  - `paper/ieee_tro_robotics_maze/figures/benchmark_runtime_ms.png`
+  - `paper/ieee_tro_robotics_maze/figures/runtime_uncertainty.png`
+  - `paper/ieee_tro_robotics_maze/figures/benchmark_expansions.png`
+  - `paper/ieee_tro_robotics_maze/figures/benchmark_success_rate.png`
+  - `paper/ieee_tro_robotics_maze/submission/ieee_tro_robotics_maze_main.pdf`
+  - `paper/ieee_tro_robotics_maze/submission/ieee_tro_robotics_maze_source.zip`
+- Updated `paper/ieee_tro_robotics_maze/coordination/figure_manifest.csv` with snapshot-linked provenance for all runtime/result figures.
+
+## GitHub Backlog
+
+- Added external tracking issues `#9`-`#18` in `Cesar514/cosimo-idai-test` (created 2026-02-27), covering:
+  - benchmark snapshot freeze and manuscript drift prevention
+  - repeated-run timing protocol + rank-stability analysis
+  - 2021+ bibliography/DOI verification
+  - scripted inferential table generation from benchmark CSV
+  - backend parity study (PyBullet vs MuJoCo) and dynamic-obstacle benchmark extension
+  - URDF fallback diagnostics tests
+  - CI guardrails for canonical planner-set enforcement
+  - final novelty/framing editorial polish
+  - publication-grade scripted figure regeneration
+
+## Package Checksums
+
+- Recorded refreshed checksum traceability for paper packaging:
+  - benchmark snapshot hash used by inferential + figure artifacts: `aad1a3e07fdb0b3921e60f0b8e59ba60d6ea98484ad019fd8191f0acb98f9a30`
+  - submission PDF SHA256: `8a2caef1edd77ee1f328661a628cbb2a5c5f2f0c94953ca42afa5115e5182f24`
+  - submission source ZIP SHA256: `0456079f8f62ae63e527dd0a8294cb1e7f0678fef7085348b1e32feae61e7c8b`

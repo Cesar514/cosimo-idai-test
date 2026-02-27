@@ -1,75 +1,94 @@
 # Robotics Maze Run Guide
 
-Run all commands from the repository root (`cosimi-idai-test`) unless noted.
+Run commands from repository root (`cosimi-idai-test`) unless noted.
 
-## Environment
+## Setup
 
 ```bash
 pixi install
+pixi task list
 ```
 
-## GUI run
+Current root Pixi tasks:
+
+- `sim`
+- `benchmark`
+
+## GUI simulation (root task)
+
+Default interactive GUI run:
 
 ```bash
 pixi run sim
 ```
 
-The root `sim` task runs this exact command:
+Automation-friendly GUI run (no setup dialog, short hold):
 
 ```bash
-python scripts/sim_runner.py --gui-setup --planner astar --episodes 1 --maze-size 15 --seed 42 --gui --physics-backend pybullet --gui-hold-seconds 20
+pixi run sim --no-gui-setup --gui-hold-seconds 0 --episodes 1 --maze-size 9 --seed 7
 ```
 
-## CLI run (headless)
+## Headless simulation (CLI)
+
+There is no root `sim-cli` task. Use the root wrapper directly:
 
 ```bash
-pixi run sim-cli
+pixi run python scripts/sim_runner.py --planner astar --episodes 3 --maze-size 15 --seed 42 --no-gui-setup --physics-backend auto
 ```
 
-The root `sim-cli` task runs this exact command:
+## Backend selection
+
+PyBullet (headless):
 
 ```bash
-python scripts/sim_runner.py --planner astar --episodes 3 --maze-size 15 --seed 42
+pixi run python scripts/sim_runner.py --planner astar --episodes 1 --maze-size 9 --seed 7 --no-gui-setup --physics-backend pybullet
 ```
 
-## Backend switching
-
-Force PyBullet (GUI-capable):
+MuJoCo (headless):
 
 ```bash
-python scripts/sim_runner.py --planner astar --episodes 1 --maze-size 15 --seed 42 --gui --physics-backend pybullet
+pixi run python scripts/sim_runner.py --planner astar --episodes 1 --maze-size 9 --seed 7 --no-gui-setup --physics-backend mujoco
 ```
 
-Force MuJoCo (headless in this project):
+PyBullet GUI:
 
 ```bash
-python scripts/sim_runner.py --planner astar --episodes 3 --maze-size 15 --seed 42 --physics-backend mujoco
+pixi run sim --no-gui-setup --physics-backend pybullet --gui-hold-seconds 0 --episodes 1 --maze-size 9 --seed 7
 ```
 
-Auto fallback order (PyBullet then MuJoCo):
+Note: in this project, MuJoCo runs headless; GUI visualization is provided by PyBullet.
+
+## Benchmarking
+
+Run default root benchmark task:
 
 ```bash
-python scripts/sim_runner.py --planner astar --episodes 3 --maze-size 15 --seed 42 --physics-backend auto
+pixi run benchmark
+```
+
+Run benchmark with explicit overrides:
+
+```bash
+pixi run benchmark --mazes 1 --width 9 --height 9 --seed 7 --algorithm backtracker --output-dir robotics_maze/results
 ```
 
 ## URDF selection
 
-Select a specific robot URDF (example uses built-in `pybullet_data` asset):
+Use built-in `pybullet_data` URDF:
 
 ```bash
-python scripts/sim_runner.py --planner astar --episodes 1 --maze-size 15 --seed 42 --gui --physics-backend pybullet --robot-urdf r2d2.urdf
+pixi run python scripts/sim_runner.py --planner astar --episodes 1 --maze-size 15 --seed 42 --gui --physics-backend pybullet --robot-urdf r2d2.urdf
 ```
 
-Use an external URDF file path (optional assets):
+Use downloaded external URDF:
 
 ```bash
 ./robotics_maze/scripts/fetch_urdfs.sh turtlebot3
-python scripts/sim_runner.py --planner astar --episodes 1 --maze-size 15 --seed 42 --gui --physics-backend pybullet --robot-urdf robotics_maze/urdfs/external/turtlebot3/turtlebot3_description/urdf/turtlebot3_burger.urdf
+pixi run python scripts/sim_runner.py --planner astar --episodes 1 --maze-size 15 --seed 42 --gui --physics-backend pybullet --robot-urdf robotics_maze/urdfs/external/turtlebot3/turtlebot3_description/urdf/turtlebot3_burger.urdf
 ```
 
-If a provided URDF fails to load, the simulator logs a warning and falls back to the default robot.
+If a provided URDF is invalid or missing, runtime logs a warning and falls back to the default robot.
 
-## Note on custom args with root Pixi tasks
+## Argument passing note
 
-For custom flags, call `python scripts/sim_runner.py ...` directly.
-Avoid `pixi run sim-cli -- --...` because the literal `--` is forwarded to `argparse` and causes an unrecognized-arguments error.
+When adding extra flags to root Pixi tasks, append them directly (for example, `pixi run sim --episodes 1 ...`).

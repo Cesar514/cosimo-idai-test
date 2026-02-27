@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scientific Report Editor"
+  short_description: "Draft and refine technical reports with multi-pass academic-quality review and visual validation."
+  default_prompt: "Write or improve a scientific/technical report and run the full multi-pass review workflow, including DOCX/PDF checks and math-aware formatting."

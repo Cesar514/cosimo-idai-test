@@ -1,11 +1,11 @@
 # Agent Operations Dashboard
 
-Last updated: 2026-02-26
-Source: `robotics_maze/coordination/session_event_log.csv` + per-task coordination logs.
+Last updated: 2026-02-27
+Source: `robotics_maze/coordination/session_event_log.csv`, `robotics_maze/coordination/agent_task_log.csv` + per-task coordination logs.
 
 | Task ID | Agent ID / Nickname | Status | Key Output Files |
 |---|---|---|---|
-| S1 | `unknown` | blocker snapshot logged | `robotics_maze/coordination/S1.md` |
+| S1 | `unknown` | completed (historical blocker snapshot logged) | `robotics_maze/coordination/S1.md` |
 | B1 | `unknown` | completed | `robotics_maze/pyproject.toml`, `robotics_maze/requirements.txt`, `robotics_maze/src/main.py` |
 | B2 | `019c9b76-7e47-7510-bb0a-4e3ae9dcdeb5` | completed | `robotics_maze/src/maze.py`, `robotics_maze/src/geometry.py`, `robotics_maze/coordination/B2.md` |
 | B3 | `019c9b76-7f23-7361-bb02-3fa0e144dc98` | completed | `robotics_maze/src/sim.py`, `robotics_maze/src/robot.py`, `robotics_maze/coordination/B3.md` |
@@ -22,7 +22,7 @@ Source: `robotics_maze/coordination/session_event_log.csv` + per-task coordinati
 | R8 | `019c9b77-87ce-7262-b50d-0b0ecc08b94d` | completed | `robotics_maze/src/alt_planners/r8_fringe_search.py`, `robotics_maze/research/R8_fringe_search.md` |
 | R9 | `019c9b77-88d1-77e0-b6ac-590dbfe17c86` | completed | `robotics_maze/src/alt_planners/r9_bidirectional_bfs.py`, `robotics_maze/research/R9_bidirectional_bfs.md` |
 | R10 | `019c9b77-89dc-7381-96ae-a4f05f390e37` | completed | `robotics_maze/src/alt_planners/r10_dwa_hybrid.md`, `robotics_maze/research/R10_alt_methods_sota.md` |
-| L1 | `Cypress` (id unknown) | active/ready for append updates | `robotics_maze/coordination/L1.md`, `robotics_maze/coordination/session_event_log.csv` |
+| L1 | `Cypress` (id unknown) | completed (logging pass finalized; cycle closed) | `robotics_maze/coordination/L1.md`, `robotics_maze/coordination/session_event_log.csv` |
 | T1 | `019c9bd4-81a0-7b72-9eb6-4f5cd62861ca` | completed (post-fix validation pass) | `robotics_maze/testing/run_sim_tests.sh`, `robotics_maze/testing/screenshots/` |
 | T2 | `019c9bd4-87c9-7942-8c58-4174b2b32322` | completed | `robotics_maze/testing/benchmark_results_test.csv`, `robotics_maze/testing/benchmark_summary_test.md`, `robotics_maze/testing/benchmark_test_report.md` |
 | T3 | `019c9bd4-8db6-7383-9c04-cfb59cd265d0` | completed | `robotics_maze/testing/reports/screenshot_analysis.md`, `robotics_maze/testing/reports/screenshot_debug_todos.md` |

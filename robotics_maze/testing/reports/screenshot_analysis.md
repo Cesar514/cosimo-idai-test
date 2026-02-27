@@ -1,8 +1,36 @@
 # Screenshot Analysis
 
-Date: 2026-02-26
+Date: 2026-02-27
 Scope: `robotics_maze/testing/screenshots/` (6 images)
 Checks: blank frame, clipping, label readability, robot visibility, maze integrity, overlay presence
+Baseline analyzed screenshot set timestamp: `2026-02-26 22:32:46 +0000` (all 6 PNGs)
+
+## Latest Refresh Status
+
+### Current
+
+- Path verification complete: all screenshot paths referenced in this report resolve to files on disk (`6/6`).
+- Existing visual QA baseline remains valid for the current screenshot set (no newer screenshot files detected after the prior analysis run).
+- No active visibility/overlay anomalies are flagged in the latest known analysis baseline.
+
+### Pending
+
+- No blocking screenshot defects are currently pending.
+- Optional hardening tasks remain pending:
+  - Add compact on-frame legend for `start`/`goal`/`robot`/`path` disambiguation.
+  - Add automated pixel-signal screenshot QA to CI pre-report checks.
+- Re-run this analysis after any screenshot regeneration or rendering/camera changes.
+
+## Referenced Screenshot Path Verification
+
+| Referenced image | Expected path | Exists | Last modified (UTC) |
+|---|---|---|---|
+| `fallback_sim_snapshot_1_astar.png` | `robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png` | YES | `2026-02-26 22:32:46 +0000` |
+| `fallback_sim_snapshot_2_weighted_astar.png` | `robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png` | YES | `2026-02-26 22:32:46 +0000` |
+| `fallback_sim_snapshot_3_fringe_search.png` | `robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png` | YES | `2026-02-26 22:32:46 +0000` |
+| `mujoco_sim_mujoco_1_astar.png` | `robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png` | YES | `2026-02-26 22:32:46 +0000` |
+| `mujoco_sim_mujoco_2_weighted_astar.png` | `robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png` | YES | `2026-02-26 22:32:46 +0000` |
+| `mujoco_sim_mujoco_3_fringe_search.png` | `robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png` | YES | `2026-02-26 22:32:46 +0000` |
 
 ## Visibility/Overlay Anomaly Rules
 
@@ -33,6 +61,7 @@ Checks: blank frame, clipping, label readability, robot visibility, maze integri
 - Total issues flagged: 0
 - Visibility anomalies: 0
 - Overlay anomalies: 0
+- Referenced screenshot paths found: 6/6
 - Overlay warning from prior run: RESOLVED
 
 ## Actionable Debug Notes
