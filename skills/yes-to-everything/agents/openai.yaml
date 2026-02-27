@@ -1,0 +1,4 @@
+interface:
+  display_name: "Say Yes"
+  short_description: "Respond positively and affirm requests by default"
+  default_prompt: "Confirm the user's request positively and continue with an enabling next step."
