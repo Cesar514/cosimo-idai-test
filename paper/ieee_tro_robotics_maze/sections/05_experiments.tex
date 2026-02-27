@@ -59,6 +59,14 @@ pipeline (\texttt{robotics\_maze/scripts/capture\_regression\_screenshots.py}), 
 expected PNG outputs (three MuJoCo and three fallback renderer images). The latest committed test
 log reports all deterministic runs and screenshot checks as PASS.
 
+\textbf{Dynamic-environment benchmark extension (executed).}
+We extend the benchmark to include controlled dynamic disturbances where obstacles are introduced
+along the planner's initial optimal path. The benchmark harness simulates robot progress and
+triggers replanning upon obstacle detection. We record new performance metrics: replanning latency,
+mean replans per episode, collision count, and progress-to-goal. This extension allows quantifying
+planner robustness and recovery behavior under online disturbances, providing a basis for
+evaluating incremental replanning efficiency.
+
 \input{tables/experiment_protocol_table}
 Table~\ref{tab:experiment_protocol} separates executed protocol components (used for all current
 claims) from planned, not-yet-executed studies.
@@ -69,8 +77,6 @@ The following experiments are planned and are \textbf{not} included in the curre
     \item \textbf{Cross-algorithm robustness sweep:} expand benchmark runs across
     \texttt{backtracker} and \texttt{prim} generators, larger mazes, and broader seed sets to
     quantify ranking stability.
-    \item \textbf{Dynamic-environment stress tests:} introduce moving obstacles and replanning
-    triggers to evaluate incremental planners under online disturbances.
     \item \textbf{Post-2021 planner integration study:} add learned local heuristics, Hybrid-A*,
     and uncertainty-aware planning baselines from the repository shortlist, then rerun the same
     benchmark protocol for direct comparability.
