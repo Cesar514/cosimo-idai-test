@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
 
 try:
@@ -31,11 +31,20 @@ DEFAULT_ROBOT_URDF = "husky/husky.urdf"
 SECONDARY_FALLBACK_ROBOT_URDF = "r2d2.urdf"
 
 
+# Diagnostic reason codes for URDF and backend decisions
+URDF_OK = "URDF_OK"
+URDF_NOT_FOUND = "URDF_NOT_FOUND"
+URDF_INVALID_EXTENSION = "URDF_INVALID_EXTENSION"
+URDF_LOAD_ERROR = "URDF_LOAD_ERROR"
+BACKEND_FALLBACK = "BACKEND_FALLBACK"
+
+
 @dataclass(frozen=True)
 class EpisodeResult:
     success: bool
     steps: int
     elapsed_s: float
+    diagnostics: Mapping[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -148,24 +157,43 @@ class PyBulletMazeSim:
         urdf_path: Optional[str] = None,
         start_position: Sequence[float] = (0.0, 0.0, 0.2),
         start_yaw: float = 0.0,
-    ) -> int:
+    ) -> tuple[int, Mapping[str, Any]]:
         if self.robot_id is not None:
             p.removeBody(self.robot_id, physicsClientId=self.client_id)
             self.robot_id = None
 
+        diagnostics: dict[str, Any] = {
+            "requested_urdf": urdf_path,
+            "urdf_status": URDF_OK,
+        }
+
         quaternion = p.getQuaternionFromEuler((0.0, 0.0, float(start_yaw)))
         if urdf_path is not None:
-            resolved_urdf_path = _resolve_custom_urdf_path(urdf_path)
-            self.robot_id = p.loadURDF(
-                resolved_urdf_path,
-                start_position,
-                quaternion,
-                useFixedBase=False,
-                physicsClientId=self.client_id,
-            )
-            self.robot_name = os.path.basename(resolved_urdf_path)
+            try:
+                resolved_urdf_path = _resolve_custom_urdf_path(urdf_path)
+                self.robot_id = p.loadURDF(
+                    resolved_urdf_path,
+                    start_position,
+                    quaternion,
+                    useFixedBase=False,
+                    physicsClientId=self.client_id,
+                )
+                self.robot_name = os.path.basename(resolved_urdf_path)
+                diagnostics["final_urdf"] = resolved_urdf_path
+            except (ValueError, FileNotFoundError) as exc:
+                status = URDF_INVALID_EXTENSION if isinstance(exc, ValueError) else URDF_NOT_FOUND
+                diagnostics["urdf_status"] = status
+                diagnostics["urdf_error"] = str(exc)
+                raise
+            except p.error as exc:
+                diagnostics["urdf_status"] = URDF_LOAD_ERROR
+                diagnostics["urdf_error"] = str(exc)
+                raise
         else:
-            self.robot_id, self.robot_name = self._load_default_robot(start_position, quaternion)
+            self.robot_id, self.robot_name, default_diag = self._load_default_robot(
+                start_position, quaternion
+            )
+            diagnostics.update(default_diag)
 
         self._configure_robot_contact_dynamics(self.robot_id)
         self.robot_controller = MobileRobotController(
@@ -173,7 +201,7 @@ class PyBulletMazeSim:
             body_id=self.robot_id,
         )
         self.goal_reached = False
-        return self.robot_id
+        return self.robot_id, diagnostics
 
     def focus_camera(
         self,
@@ -283,13 +311,15 @@ class PyBulletMazeSim:
         self,
         start_position: Sequence[float],
         quaternion: Sequence[float],
-    ) -> Tuple[int, str]:
+    ) -> Tuple[int, str, Mapping[str, Any]]:
         candidates = [
             (DEFAULT_ROBOT_URDF, "husky", 0.15),
             (SECONDARY_FALLBACK_ROBOT_URDF, "r2d2", 1.0),
         ]
         data_dir = pybullet_data.getDataPath()
         primary_failure_reason: str | None = None
+        diagnostics: dict[str, Any] = {"urdf_status": URDF_OK}
+
         for relative_urdf, label, scaling in candidates:
             candidate_path = os.path.join(data_dir, relative_urdf)
             if not os.path.exists(candidate_path):
@@ -307,6 +337,7 @@ class PyBulletMazeSim:
                     globalScaling=float(scaling),
                     physicsClientId=self.client_id,
                 )
+                diagnostics["final_urdf"] = relative_urdf
                 if relative_urdf != DEFAULT_ROBOT_URDF:
                     reason = (
                         primary_failure_reason
@@ -316,7 +347,8 @@ class PyBulletMazeSim:
                         "Default robot URDF fallback engaged: "
                         f"{reason} Using '{relative_urdf}'."
                     )
-                return robot_id, label
+                    diagnostics["urdf_fallback_reason"] = reason
+                return robot_id, label, diagnostics
             except p.error as exc:
                 if relative_urdf == DEFAULT_ROBOT_URDF:
                     primary_failure_reason = (
@@ -329,6 +361,8 @@ class PyBulletMazeSim:
         )
         if primary_failure_reason:
             message = f"{message} Primary failure: {primary_failure_reason}"
+        diagnostics["urdf_status"] = URDF_LOAD_ERROR
+        diagnostics["urdf_error"] = message
         raise RuntimeError(message)
 
     def _configure_robot_contact_dynamics(self, body_id: int) -> None:
@@ -641,6 +675,20 @@ class MazeEpisodeSimulator:
         if not waypoints:
             return EpisodeResult(success=False, steps=0, elapsed_s=time.perf_counter() - started_at)
 
+        all_diagnostics: dict[str, Any] = {
+            "physics_backend": physics_backend,
+            "requested_urdf": robot_urdf,
+            "urdf_status": URDF_OK,
+        }
+
+        if robot_urdf is not None:
+            try:
+                _resolve_custom_urdf_path(robot_urdf)
+            except (ValueError, FileNotFoundError) as exc:
+                all_diagnostics["urdf_status"] = BACKEND_FALLBACK
+                all_diagnostics["urdf_fallback_reason"] = str(exc)
+                robot_urdf = None
+
         backend = physics_backend.strip().lower()
         if backend not in {"auto", "pybullet", "mujoco"}:
             _warn(
@@ -682,18 +730,29 @@ class MazeEpisodeSimulator:
             else:
                 backend_order = ()
 
+        all_diagnostics.update({"physics_backend": backend, "backend_order": backend_order})
+
         for backend_name in backend_order:
             if backend_name == "pybullet" and pybullet_available:
                 sim: PyBulletMazeSim | None = None
                 try:
+                    all_diagnostics["actual_backend"] = "pybullet"
                     sim = PyBulletMazeSim(gui=gui, gui_hold_seconds=gui_hold_seconds)
                     start_x, start_y = waypoints[0]
                     start_pose = (start_x, start_y, 0.24)
                     try:
-                        sim.load_mobile_robot(
+                        _, urdf_diag = sim.load_mobile_robot(
                             urdf_path=robot_urdf,
                             start_position=start_pose,
                         )
+                        # Preserve existing status (like BACKEND_FALLBACK from path validation)
+                        if all_diagnostics.get("urdf_status") != BACKEND_FALLBACK:
+                            all_diagnostics.update(urdf_diag)
+                        else:
+                            # If we are already in fallback, only update with details but keep status
+                            for k, v in urdf_diag.items():
+                                if k != "urdf_status":
+                                    all_diagnostics[k] = v
                     except Exception as exc:
                         if robot_urdf:
                             _warn(
@@ -701,11 +760,21 @@ class MazeEpisodeSimulator:
                                 "Falling back to defaults "
                                 f"('{DEFAULT_ROBOT_URDF}' then '{SECONDARY_FALLBACK_ROBOT_URDF}')."
                             )
-                            sim.load_mobile_robot(
+                            _, urdf_diag = sim.load_mobile_robot(
                                 urdf_path=None,
                                 start_position=start_pose,
                             )
+                            # Ensure we don't lose the original requested_urdf in diagnostics
+                            original_request = all_diagnostics.get("requested_urdf")
+                            all_diagnostics.update(urdf_diag)
+                            if original_request:
+                                all_diagnostics["requested_urdf"] = original_request
+                            # Overwrite status because we had a fallback due to custom URDF failure
+                            all_diagnostics["urdf_status"] = BACKEND_FALLBACK
+                            all_diagnostics["urdf_fallback_reason"] = f"Custom URDF failed: {exc}"
                         else:
+                            all_diagnostics["urdf_status"] = URDF_LOAD_ERROR
+                            all_diagnostics["urdf_error"] = str(exc)
                             raise RuntimeError(
                                 "Unable to load default robot URDFs "
                                 f"('{DEFAULT_ROBOT_URDF}' then '{SECONDARY_FALLBACK_ROBOT_URDF}')."
@@ -734,33 +803,49 @@ class MazeEpisodeSimulator:
                         )
 
                     elapsed = time.perf_counter() - started_at
-                    return EpisodeResult(success=success, steps=steps, elapsed_s=elapsed)
+                    return EpisodeResult(
+                        success=success,
+                        steps=steps,
+                        elapsed_s=elapsed,
+                        diagnostics=all_diagnostics,
+                    )
                 except Exception as exc:
                     _warn(f"PyBullet backend failed ({exc}); trying the next available backend.")
+                    all_diagnostics["pybullet_failure"] = str(exc)
                 finally:
                     if sim is not None:
                         sim.close()
 
             if backend_name == "mujoco" and mujoco_available:
+                all_diagnostics["actual_backend"] = "mujoco"
                 if gui:
                     _warn(
                         "GUI visualization requires PyBullet in this project; "
                         "running MuJoCo headless fallback."
                     )
-                return self._run_episode_with_mujoco(
+                    all_diagnostics["gui_fallback"] = True
+                res = self._run_episode_with_mujoco(
                     waypoints=waypoints,
                     obstacles=obstacles,
                     started_at=started_at,
+                )
+                return EpisodeResult(
+                    success=res.success,
+                    steps=res.steps,
+                    elapsed_s=res.elapsed_s,
+                    diagnostics=all_diagnostics,
                 )
 
         _warn(
             "Neither PyBullet nor MuJoCo is available; using deterministic kinematic fallback."
         )
+        all_diagnostics["actual_backend"] = "kinematic_fallback"
         steps = max(len(waypoints) - 1, 1)
         return EpisodeResult(
             success=True,
             steps=steps,
             elapsed_s=time.perf_counter() - started_at,
+            diagnostics=all_diagnostics,
         )
 
     def _run_episode_with_mujoco(

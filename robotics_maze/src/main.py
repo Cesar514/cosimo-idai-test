@@ -4,7 +4,7 @@ import argparse
 import importlib
 import random
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol, Sequence
 
@@ -36,6 +36,7 @@ class EpisodeResult:
     success: bool
     steps: int
     elapsed_s: float
+    diagnostics: dict[str, Any] = field(default_factory=dict)
 
 
 class MazeGenerator(Protocol):
@@ -536,12 +537,13 @@ def run(config: RunConfig) -> int:
         total_elapsed_s += result.elapsed_s
 
         print(
-            "[EP {ep}/{total}] status={status} steps={steps} elapsed_s={elapsed:.4f}".format(
+            "[EP {ep}/{total}] status={status} steps={steps} elapsed_s={elapsed:.4f} diagnostics={diag}".format(
                 ep=episode,
                 total=config.episodes,
                 status="ok" if result.success else "fail",
                 steps=result.steps,
                 elapsed=result.elapsed_s,
+                diag=result.diagnostics,
             )
         )
 
