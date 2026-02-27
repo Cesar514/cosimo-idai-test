@@ -55,3 +55,9 @@ the efficient frontier (\texttt{r5\_jump\_point\_search}) and high-overhead outl
 These results are limited to one benchmark regime: 50 mazes, one maze size (\(15\times15\)), one generator (backtracker), and one seed schedule. Timings are wall-clock and mostly sub-millisecond for the fastest methods, so statistical significance should not be conflated with large practical effect size in deployment settings. The benchmark also covers static, fully known mazes only; conclusions may not transfer to dynamic, partially observable, or larger-scale environments. Finally, Theta* uses any-angle motion, so its path-length values are not directly comparable to cardinal-grid planners.
 The flat success-rate profile in Figure~\ref{fig:benchmark_success_rate} further emphasizes that
 this dataset mainly distinguishes planners by efficiency rather than solvability.
+
+\paragraph{Repeated-run protocol.}
+The benchmark harness supports configurable repeated-run timing via \texttt{--repeats} and \texttt{--warmup} (see Section~\ref{sec:method}).
+With \(\texttt{--repeats} > 1\), each planner-maze pair is timed independently \(R\) times (after \(W\) discarded warm-up runs), and two additional artifacts are emitted: per-(planner, maze) aggregate statistics (mean, median, standard deviation) in \texttt{benchmark\_repeat\_stats.csv}, and a rank-stability report (\texttt{benchmark\_rank\_stability.md}) containing pairwise Spearman \(\rho\) across repeat-round rankings.
+The current committed results use the default \(\texttt{--repeats}~1\) single-measurement protocol; timing claims should therefore be interpreted as exploratory.
+Running with \(\texttt{--repeats}~\ge~5\) and \(\texttt{--warmup}~1\) is recommended before drawing inferential conclusions about runtime ordering.
