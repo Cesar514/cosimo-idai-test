@@ -1,0 +1,241 @@
+\subsection{Notation and Occupancy-Grid Construction}
+Let the maze have width $W$ and height $H$ in cell coordinates. The benchmark converts each maze to a binary occupancy lattice
+\begin{equation}
+G \in \{0,1\}^{R \times C}, \quad R = 2H + 1, \quad C = 2W + 1,
+\end{equation}
+where $G_{r,c}=0$ denotes free space and $G_{r,c}=1$ denotes blocked space.
+The cell-to-lattice map used by the implementation is
+\begin{equation}
+\phi(x,y) = (2y+1,\,2x+1),
+\end{equation}
+so the benchmark start and goal nodes are
+\begin{equation}
+s=\phi(x_s,y_s), \qquad g=\phi(x_g,y_g).
+\end{equation}
+
+For a lattice node $n=(r,c)$, the neighborhood is either 4-connected or 8-connected:
+\begin{equation}
+\mathcal{N}_4(n)=\{(r-1,c),(r,c+1),(r+1,c),(r,c-1)\}\cap\Omega,
+\end{equation}
+\begin{equation}
+\mathcal{N}_8(n)=\mathcal{N}_4(n)\cup\{(r-1,c-1),(r-1,c+1),(r+1,c+1),(r+1,c-1)\}\cap\Omega,
+\end{equation}
+with $\Omega$ the in-bounds lattice set.
+The step cost in the baseline planners is
+\begin{equation}
+c(u,v)=
+\begin{cases}
+\sqrt{2}, & \text{if }u\rightarrow v\text{ is diagonal},\\
+1, & \text{otherwise}.
+\end{cases}
+\end{equation}
+
+Heuristic options are
+\begin{equation}
+h_{\mathrm{man}}(n,g)=|r-r_g|+|c-c_g|,
+\end{equation}
+\begin{equation}
+h_{\mathrm{euc}}(n,g)=\sqrt{(r-r_g)^2+(c-c_g)^2},
+\end{equation}
+\begin{equation}
+h_{\mathrm{cheb}}(n,g)=\max\{|r-r_g|,|c-c_g|\}.
+\end{equation}
+
+\subsection{Planner and Benchmark Objectives}
+For a path $\pi=(n_0,\dots,n_K)$ with $n_0=s$ and $n_K=g$, the weighted path-cost objective is
+\begin{equation}
+J_{\mathrm{cost}}(\pi)=\sum_{k=1}^{K} c(n_{k-1},n_k).
+\end{equation}
+
+The baseline priority keys used in the benchmark are:
+\begin{equation}
+f_{\mathrm{A*}}(n)=g(n)+w\,h(n), \qquad w\ge 1,
+\end{equation}
+\begin{equation}
+f_{\mathrm{Dijkstra}}(n)=g(n),
+\end{equation}
+\begin{equation}
+f_{\mathrm{GBFS}}(n)=h(n),
+\end{equation}
+and BFS minimizes hop count
+\begin{equation}
+J_{\mathrm{hop}}(\pi)=K.
+\end{equation}
+
+For A*, the secondary tie key is
+\begin{equation}
+\tau(n)=
+\begin{cases}
+h(n), & \text{low\_h},\\
+-g(n), & \text{high\_g},\\
+0, & \text{fifo},
+\end{cases}
+\end{equation}
+and the heap key is $(f(n),\tau(n),t(n))$ where $t(n)$ is a monotonically increasing insertion counter.
+
+\paragraph*{Path validation and measured length}
+Given returned path $P=(p_0,\dots,p_K)$, validity requires:
+\begin{equation}
+p_0=s,\quad p_K=g,\quad p_k\in\Omega,\quad G_{p_k}=0,\ \forall k,
+\end{equation}
+and for each segment, every rasterized Bresenham cell is also in-bounds and free.
+If $\mathcal{B}(p_{k-1},p_k)$ denotes the rasterized segment cell sequence, the measured benchmark path length is
+\begin{equation}
+L(P)=\sum_{k=1}^{K}\left(\left|\mathcal{B}(p_{k-1},p_k)\right|-1\right).
+\end{equation}
+
+\paragraph*{Planner ranking objective}
+For planner $p$ over $M$ mazes, with success indicator $I_{p,m}\in\{0,1\}$, solve time $t_{p,m}$, measured length $L_{p,m}$, and expansions $e_{p,m}$:
+\begin{equation}
+S_p=\frac{1}{M}\sum_{m=1}^{M} I_{p,m},\qquad
+\mathcal{M}_p^+=\{m\mid I_{p,m}=1\}.
+\end{equation}
+Define the shared-success set
+\begin{equation}
+\mathcal{M}_{\mathrm{shared}}=\{m\mid I_{q,m}=1,\ \forall q\in\mathcal{P}\}.
+\end{equation}
+The comparable means used for ranking are
+\begin{equation}
+\bar{t}_p^{c}=
+\begin{cases}
+\frac{1}{|\mathcal{M}_{\mathrm{shared}}|}\sum_{m\in\mathcal{M}_{\mathrm{shared}}} t_{p,m}, & |\mathcal{M}_{\mathrm{shared}}|>0,\\
+\frac{1}{M}\sum_{m=1}^{M} t_{p,m}, & \text{otherwise},
+\end{cases}
+\end{equation}
+\begin{equation}
+\bar{L}_p^{c}=
+\begin{cases}
+\frac{1}{|\mathcal{M}_{\mathrm{shared}}|}\sum_{m\in\mathcal{M}_{\mathrm{shared}}} L_{p,m}, & |\mathcal{M}_{\mathrm{shared}}|>0,\\
+\frac{1}{|\mathcal{M}_p^{+}|}\sum_{m\in\mathcal{M}_p^{+}} L_{p,m}, & \text{otherwise}.
+\end{cases}
+\end{equation}
+With
+\begin{equation}
+\bar{e}_p=\frac{1}{|\mathcal{M}_p^{+}|}\sum_{m\in\mathcal{M}_p^{+}} e_{p,m}, \qquad
+\bar{t}_p=\frac{1}{M}\sum_{m=1}^{M} t_{p,m},
+\end{equation}
+ranking is lexicographic on
+\begin{equation}
+\left(-S_p,\ \bar{t}_p^{c},\ \bar{L}_p^{c},\ \bar{e}_p,\ \bar{t}_p,\ \text{name}_p\right).
+\end{equation}
+
+\subsection{Local Control Abstraction}
+\paragraph*{Path-to-waypoint map}
+The simulator converts planner outputs to world-frame waypoints.
+If a path is recognized as cell-grid coordinates $(x_k,y_k)$:
+\begin{equation}
+w_k=\left((x_k+0.5)s_c,\ (y_k+0.5)s_c\right),
+\end{equation}
+where $s_c$ is \texttt{cell\_size}.
+If recognized as occupancy-lattice coordinates:
+\begin{equation}
+w_k=\left(0.5\,s_c\,x_k,\ 0.5\,s_c\,y_k\right).
+\end{equation}
+Cell-grid waypoints are additionally compressed by removing collinear interior points.
+
+\paragraph*{Waypoint tracking law}
+At control step $t$, with robot pose $(x_t,y_t,\psi_t)$ and active waypoint $(x_j,y_j)$:
+\begin{equation}
+d_t=\sqrt{(x_j-x_t)^2+(y_j-y_t)^2},
+\end{equation}
+\begin{equation}
+\theta_t=\operatorname{atan2}(y_j-y_t,\ x_j-x_t),\qquad
+e_{\psi,t}=\mathrm{wrap}_{[-\pi,\pi]}(\theta_t-\psi_t).
+\end{equation}
+
+The angular command is the clipped proportional target
+\begin{equation}
+\omega_t^\star=\arg\min_{|\omega|\le \omega_{\max}}|\omega-k_\psi e_{\psi,t}|
+=\mathrm{clip}(k_\psi e_{\psi,t},-\omega_{\max},\omega_{\max}).
+\end{equation}
+
+The linear target is the largest feasible speed under speed, distance, and braking bounds:
+\begin{equation}
+v_t^\star=\alpha_t\cdot \max_{v\ge 0} v
+\quad\text{s.t.}\quad
+v\le v_{\max},\ \ v\le d_t,\ \ v\le\sqrt{2a_{\mathrm{dec}}d_t},
+\end{equation}
+equivalently
+\begin{equation}
+v_t^\star=\alpha_t\cdot\min\left\{v_{\max},\ d_t,\ \sqrt{2a_{\mathrm{dec}}d_t}\right\}.
+\end{equation}
+The heading gate $\alpha_t\in[0,1]$ is
+\begin{equation}
+\alpha_t=
+\begin{cases}
+0, & |e_{\psi,t}|\ge \theta_{\mathrm{turn}},\\
+1, & |e_{\psi,t}|\le \theta_{\mathrm{drive}},\\
+1-\sigma\!\left(\dfrac{|e_{\psi,t}|-\theta_{\mathrm{drive}}}{\theta_{\mathrm{turn}}-\theta_{\mathrm{drive}}}\right), & \text{otherwise},
+\end{cases}
+\end{equation}
+with smoothstep
+\begin{equation}
+\sigma(z)=z^2(3-2z), \quad z\in[0,1].
+\end{equation}
+
+Commands are passed through acceleration/deceleration slew limits with control step $\Delta t$:
+\begin{equation}
+u_t=u_{t-1}+\mathrm{clip}\!\left(u_t^\star-u_{t-1},-\Delta_u,\Delta_u\right),
+\end{equation}
+where
+\begin{equation}
+\Delta_u=
+\begin{cases}
+a_{u,+}\Delta t, & \operatorname{sgn}(u_t^\star)=\operatorname{sgn}(u_{t-1})\ \wedge\ |u_t^\star|>|u_{t-1}|,\\
+a_{u,-}\Delta t, & \text{otherwise},
+\end{cases}
+\end{equation}
+applied separately to $u=v$ and $u=\omega$.
+
+Then the turn-rate-dependent linear cap is enforced:
+\begin{equation}
+\eta_t=\mathrm{clip}\!\left(\frac{|\omega_t|}{\omega_{\max}},0,1\right),\qquad
+v_{\mathrm{turn},t}=v_{\max}\max\left(0.18,\ 1-0.68\,\sigma(\eta_t)\right),
+\end{equation}
+\begin{equation}
+v_t\leftarrow \mathrm{clip}(v_t,-v_{\mathrm{turn},t},v_{\mathrm{turn},t}).
+\end{equation}
+
+For differential drive with axle track $b$ and wheel radius $r$:
+\begin{equation}
+v_{L,t}=v_t-\frac{b}{2}\omega_t,\qquad
+v_{R,t}=v_t+\frac{b}{2}\omega_t,
+\end{equation}
+\begin{equation}
+\Omega_{L,t}=v_{L,t}/r,\qquad \Omega_{R,t}=v_{R,t}/r.
+\end{equation}
+Waypoint index $j$ is advanced when $d_t\le \varepsilon_j$, where $\varepsilon_j$ is the per-waypoint tolerance (larger at the final waypoint).
+
+\subsection{Complexity Statements}
+Let $V=RC$ and $E\le 8V$ for the occupancy lattice graph.
+
+\begin{equation}
+T_{\mathrm{A*}/\mathrm{Dijkstra}/\mathrm{GBFS}}=O(E\log V),\qquad
+M_{\mathrm{A*}/\mathrm{Dijkstra}/\mathrm{GBFS}}=O(V),
+\end{equation}
+because open lists are binary heaps and closed/g-score/came-from are hash maps/sets.
+
+\begin{equation}
+T_{\mathrm{BFS}}=O(V+E),\qquad M_{\mathrm{BFS}}=O(V),
+\end{equation}
+from deque frontier plus visited/parent maps.
+
+For one returned path $P$:
+\begin{equation}
+T_{\mathrm{validate}}=O\!\left(\sum_{k=1}^{K}\left|\mathcal{B}(p_{k-1},p_k)\right|\right)
+=O(L(P)).
+\end{equation}
+
+For $M$ mazes and $|\mathcal{P}|$ planners:
+\begin{equation}
+T_{\mathrm{benchmark}}=
+O\!\left(
+\sum_{m=1}^{M}\sum_{p\in\mathcal{P}}
+\left(T_{\mathrm{plan}}(p,m)+T_{\mathrm{validate}}(p,m)\right)
+\right).
+\end{equation}
+
+Per control update, command synthesis is constant-time, and actuator dispatch is linear in wheel-joint count $n_w$:
+\begin{equation}
+T_{\mathrm{control\ step}}=O(1+n_w).
+\end{equation}

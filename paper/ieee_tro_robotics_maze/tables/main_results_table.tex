@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\caption{Main benchmark results on 50 generated \(15\times15\) backtracker mazes. Rows are ranked by success rate (descending), then comparable mean solve time on shared-success mazes, mean expansions, and overall mean solve time (ascending), with planner name as deterministic tie-break. Time is reported as mean \(\pm\) standard deviation over mazes; median and interquartile range (IQR) are included to expose skew. Lower is better for time, path length, and expansions.}
+\label{tab:main_results}
+\footnotesize
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{clccccc}
+\toprule
+Rank & Planner & Success & Time (ms) $\downarrow$ & Median [IQR] (ms) $\downarrow$ & Path Length $\downarrow$ & Expansions $\downarrow$ \\
+\midrule
+1  & R1 Weighted A*         & 50/50 & 0.35 $\pm$ 0.21   & 0.29 [0.15, 0.54]   & 142.72          & 187.16  \\
+2  & R7 Beam Search         & 50/50 & 0.42 $\pm$ 0.24   & 0.38 [0.20, 0.65]   & 142.72          & 198.36  \\
+3  & R5 Jump Point Search   & 50/50 & 0.45 $\pm$ 0.26   & 0.39 [0.19, 0.69]   & 142.72          & 57.26   \\
+4  & Greedy Best-First      & 50/50 & 0.46 $\pm$ 0.27   & 0.38 [0.21, 0.71]   & 142.72          & 171.96  \\
+5  & R8 Fringe Search       & 50/50 & 0.52 $\pm$ 0.31   & 0.43 [0.23, 0.79]   & 142.72          & 190.30  \\
+6  & A*                     & 50/50 & 0.52 $\pm$ 0.31   & 0.43 [0.22, 0.79]   & 142.72          & 189.06  \\
+7  & Dijkstra               & 50/50 & 0.54 $\pm$ 0.32   & 0.48 [0.22, 0.84]   & 142.72          & 200.52  \\
+8  & R9 Bidirectional BFS   & 50/50 & 0.54 $\pm$ 0.31   & 0.49 [0.24, 0.80]   & 142.72          & 201.52  \\
+9  & R2 Bidirectional A*    & 50/50 & 1.25 $\pm$ 0.69   & 1.28 [0.52, 1.92]   & 142.72          & 468.02  \\
+10 & R3 Theta*              & 50/50 & 1.55 $\pm$ 0.92   & 1.27 [0.65, 2.35]   & 97.96$^\dagger$ & 189.18  \\
+11 & R6 LPA*                & 50/50 & 3.95 $\pm$ 1.59   & 3.56 [2.41, 5.59]   & 142.72          & 295.10  \\
+12 & R4 IDA*                & 50/50 & 22.56 $\pm$ 22.13 & 11.05 [2.93, 43.00] & 142.72          & 7061.34 \\
+\bottomrule
+\end{tabular}
+
+{\raggedright\footnotesize $^\dagger$Theta* uses any-angle motion, so path-length values are not directly comparable to cardinal-grid planners.\par}
+\end{table*}

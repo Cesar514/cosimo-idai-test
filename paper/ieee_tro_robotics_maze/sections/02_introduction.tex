@@ -1,0 +1,17 @@
+\section{Introduction}
+Grid-based planning remains a practical foundation for robotic navigation in constrained environments, and recent surveys show that graph-search, heuristic, and hybrid variants remain competitive baselines in deployed systems \cite{S_nchez_Ib_ez_2021,Karur_2021,Xiao_2022,Liu_2023}. A persistent experimental gap is not planner availability, but comparable execution: simulator differences, heterogeneous planner return schemas, and weak path-validity checks can dominate reported deltas. This work targets that gap for one bounded domain: static occupancy-grid mazes.
+
+The implemented stack links a command-level entrypoint (\texttt{scripts/sim\_runner.py}) to deterministic execution in \texttt{robotics\_maze/src/main.py}: argument parsing to \texttt{RunConfig}, per-episode seeding, module discovery for maze generator/planner/simulator, and standardized episode logging. The runtime is robust to machine variability by selecting PyBullet or MuJoCo when available, with deterministic fallback when dependencies are missing. This emphasis on portable execution is aligned with recent ROS2/cloud robotics infrastructure trends \cite{Baumann_2021,He_2022,Chen_2024,Shcherbyna_2025}.
+
+The same repository provides a benchmark harness (\texttt{robotics\_maze/src/benchmark.py}) that normalizes planner outputs, validates geometric path feasibility against occupancy grids, and emits trial-level CSV/Markdown artifacts. In the tracked snapshot (\texttt{robotics\_maze/results/benchmark\_summary.md}), 12 planners are evaluated on 50 generated \(15\times15\) backtracker mazes.
+
+This paper contributes three bounded, repository-grounded results:
+\begin{itemize}
+    \item \textbf{Infrastructure method contribution:} a deterministic planner-evaluation runtime that combines explicit seed propagation, heterogeneous planner I/O normalization, geometric path validation, and backend fallback behavior in one executable workflow.
+    \item \textbf{Evaluation-protocol contribution:} a shared-success comparability policy with rotated planner order and deterministic lexicographic ranking by success rate, comparable solve time, mean expansions, and overall mean solve time. Path length is reported descriptively but excluded from ranking when any-angle outputs are present.
+    \item \textbf{Evidence contribution:} an executed benchmark snapshot (12 planners, 50 mazes) with trial-level artifacts, plus deterministic simulation regression checks and screenshot outputs for reproducibility auditing.
+\end{itemize}
+
+Traceability artifacts (claims tables, figure manifests, citation audits) are included to support reproducibility and reviewability, but are not presented as standalone novelty claims.
+
+The remainder of the manuscript details the implemented architecture and protocol, reports current benchmark evidence, and delineates what remains future work.

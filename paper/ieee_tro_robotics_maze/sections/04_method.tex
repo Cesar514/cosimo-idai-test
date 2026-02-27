@@ -1,0 +1,54 @@
+\section{Method}
+\subsection{Implemented System Architecture}
+The implemented architecture is a modular runtime centered on \texttt{robotics\_maze/src/main.py}, with four concrete layers:
+\begin{enumerate}
+    \item \textbf{Orchestration layer} (\texttt{scripts/sim\_runner.py}, \texttt{main.py}): parses command-line arguments into \texttt{RunConfig}, supports optional GUI setup overrides, and executes an episode loop.
+    \item \textbf{Maze and planning layer} (\texttt{maze.py}, \texttt{planners.py}, \texttt{alt\_planners/}): generates deterministic mazes and computes paths using baseline and alternative planners.
+    \item \textbf{Simulation layer} (\texttt{sim.py}, \texttt{robot.py}, \texttt{geometry.py}): converts plans to waypoints, instantiates obstacles from maze walls, and executes motion in physics backends.
+    \item \textbf{Evaluation layer} (\texttt{benchmark.py}): runs planner trials, validates returned paths, ranks methods, and writes CSV/Markdown artifacts.
+\end{enumerate}
+
+For episode \(e\in\{1,\dots,E\}\), \texttt{main.py} first computes an episode seed
+\(s_e^{\mathrm{main}}=s_0+(e-1)\), where \(s_0\) is the user-provided base seed.
+The current deterministic generator adapter then applies an additional episode offset,
+yielding the effective maze-generation seed
+\(s_e^{\mathrm{gen}}=s_e^{\mathrm{main}}+e=s_0+2e-1\).
+This manuscript reports the behavior as currently implemented in code.
+
+\subsection{Maze Generation and Grid Conversion}
+The maze model (\texttt{Maze} dataclass) stores explicit horizontal and vertical wall arrays, start/goal cells, and generation metadata. Two algorithms are implemented: recursive backtracker and randomized Prim. After carving, generation is accepted only if (i) all \(W\times H\) cells are reachable from start and (ii) a BFS shortest path exists between start and goal. This provides a deterministic solvable-maze contract before planning is invoked.
+
+For planner compatibility, \texttt{benchmark.py} converts wall-based mazes into occupancy grids of size \((2H+1)\times(2W+1)\), where free corridors are explicitly opened between neighboring cells. Start and goal are transformed from cell coordinates into occupancy-grid indices and forced free.
+
+\subsection{Planner Interface and Normalization}
+Baseline planners are registered by name in \texttt{planners.py} (A*, Dijkstra, BFS, and greedy best-first, plus aliases). Additional methods are loaded from \texttt{alt\_planners/} through module-symbol mapping. To support heterogeneous planner APIs, \texttt{FunctionPlannerAdapter} and benchmark-side normalization convert outputs to a common payload with path plus metrics (e.g., expansions and runtime).
+
+Planner outputs are accepted from multiple schemas (dictionary, tuple, or raw path sequence), then normalized by \texttt{\_normalize\_planner\_output}. Path validity is enforced by \texttt{\_validate\_and\_measure\_path}: endpoints must match benchmark start/goal, all path cells must stay in bounds and collision free, and each segment is checked with Bresenham rasterization before success is credited.
+
+\subsection{Simulation Backends and Controller Path}
+\texttt{MazeEpisodeSimulator} receives \texttt{(maze, plan)} and performs three steps:
+\begin{enumerate}
+    \item extract or infer a path (\texttt{path}, \texttt{waypoints}, tuple payload, or maze fallback),
+    \item map the path to world-frame waypoints (including occupancy-grid to metric conversion),
+    \item execute via selected backend (\texttt{pybullet}, \texttt{mujoco}, or deterministic kinematic fallback).
+\end{enumerate}
+
+Backend selection is explicit: \texttt{auto} prefers PyBullet when available, then MuJoCo; forced backend requests degrade gracefully when dependencies are missing. For robot models, custom URDF loading is attempted first, then default fallback (\texttt{husky/husky.urdf}, then \texttt{r2d2.urdf}) to preserve run continuity. In PyBullet runs, a waypoint follower (\texttt{MobileRobotController}) applies heading-aware speed control, differential-drive wheel commands when available, and bounded command slew rates.
+
+\subsection{Benchmark Protocol and Ranking}
+Let \(\mathcal{P}\) denote the planner set and \(\mathcal{M}\) the generated mazes. The benchmark executes every \(p\in\mathcal{P}\) on every \(m\in\mathcal{M}\), rotating planner order per maze to reduce warm-start/caching bias. Each trial records success, solve time (ms), path length, expansions, and error text.
+This structure aligns with recent benchmarking toolchains that separate dataset/task generation, planner execution normalization, and metric aggregation \cite{Heiden_2021,Chamzas_2022,Mayer_2024}.
+
+To avoid unfair timing comparisons when planners fail on different mazes, the method computes a shared-success subset:
+\[
+\mathcal{M}_{\mathrm{shared}}=\{m\in\mathcal{M}\mid \forall p\in\mathcal{P},\; p \text{ succeeds on } m\}.
+\]
+Ranking follows the implemented lexicographic policy in \texttt{benchmark.py}:
+\[
+\text{rank}(p)\sim\big(-\mathrm{SR}_p,\; T^{\mathrm{shared}}_p,\; E_p,\; T_p,\; \mathrm{name}_p\big),
+\]
+where \(\mathrm{SR}\) is success rate, \(T^{\mathrm{shared}}\) comparable solve time, \(E\) mean expansions, and \(T\) mean solve time.
+Planner name is used only as a deterministic final tie-break.
+Comparable path length \(L^{\mathrm{shared}}\) is still reported as a descriptive metric, but excluded from ranking when any-angle planners are present to avoid mixed-geometry bias.
+
+This protocol outputs \texttt{benchmark\_results.csv} and \texttt{benchmark\_summary.md}, enabling traceable comparison and direct linkage between manuscript claims and generated artifacts.

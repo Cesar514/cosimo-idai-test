@@ -1,0 +1,57 @@
+\section{Results}
+\label{sec:results}
+
+Table~\ref{tab:main_results} summarizes planner performance on 50 generated \(15\times15\) backtracker mazes (seeds 7--56). All 12 planners solved all trials (600/600) with no runtime errors, so differences here primarily reflect computational efficiency rather than reachability.
+
+\input{tables/main_results_table}
+Figures~\ref{fig:benchmark_runtime_ms}, \ref{fig:runtime_uncertainty}, \ref{fig:benchmark_expansions}, and \ref{fig:benchmark_success_rate} provide complementary visual summaries of runtime, runtime uncertainty, search effort, and success rate using the same benchmark snapshot as Table~\ref{tab:main_results}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/benchmark_runtime_ms.png}
+\caption{Mean planner solve time (ms) on a logarithmic scale over 50 benchmark mazes. Lower values
+indicate faster planning.}
+\label{fig:benchmark_runtime_ms}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/runtime_uncertainty.png}
+\caption{Runtime uncertainty over the same 50 paired mazes. Horizontal box summaries are shown on a logarithmic scale (box: IQR, center line: median, red dot: mean).}
+\label{fig:runtime_uncertainty}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/benchmark_expansions.png}
+\caption{Mean node expansions on a logarithmic scale for the same benchmark runs. Lower values
+indicate lower search effort.}
+\label{fig:benchmark_expansions}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/benchmark_success_rate.png}
+\caption{Planner success rate over 50 mazes. All methods achieve \(100\%\) in this static benchmark
+setting.}
+\label{fig:benchmark_success_rate}
+\end{figure}
+
+\paragraph{Overall ranking and runtime spread.}
+\texttt{r1\_weighted\_astar} is fastest in mean solve time (0.35 ms), followed by \texttt{r7\_beam\_search} (0.42 ms). A second tier---\texttt{r5\_jump\_point\_search}, \texttt{greedy\_best\_first}, \texttt{r8\_fringe\_search}, \texttt{astar}, \texttt{dijkstra}, and \texttt{r9\_bidirectional\_bfs}---is tightly clustered between 0.45 and 0.54 ms (at most +0.19 ms versus the top row). At maze level, \texttt{r1\_weighted\_astar} is fastest on 48/50 mazes, but the best-vs-second-best margin is small (median 0.049 ms; 43/50 mazes within 0.1 ms), indicating limited practical separation among the fastest methods in this setup.
+This narrow spread is visible in Figures~\ref{fig:benchmark_runtime_ms} and~\ref{fig:runtime_uncertainty}.
+
+\paragraph{Inferential runtime comparison.}
+To characterize runtime consistency across paired mazes, each planner was compared against \texttt{r1\_weighted\_astar} using exact two-sided paired sign tests with Holm correction (family-wise \(\alpha=0.05\)). Effect sizes are reported as paired median runtime deltas (\(\Delta=\text{comparator}-\texttt{r1\_weighted\_astar}\), ms) with 95\% bootstrap confidence intervals from 40{,}000 paired resamples.
+\input{tables/statistical_comparison_table}
+For the closest comparator (\texttt{r7\_beam\_search}), the median paired delta is 0.068 ms (95\% CI [0.046, 0.085]) with \texttt{r1\_weighted\_astar} faster on 50/50 mazes; this indicates a consistent but small absolute gain in this dataset. Larger separations appear for slower planners (e.g., \texttt{r6\_lpa\_star}: 3.30 ms [2.73, 4.27]; \texttt{r4\_idastar}: 10.76 ms [5.70, 30.03]). Because each planner-maze pair is measured once, these inferential statistics should be interpreted as exploratory consistency indicators, not hardware-controlled latency certification.
+
+\paragraph{Search-effort trade-offs.}
+\texttt{r5\_jump\_point\_search} attains the lowest expansion count (57.26) while remaining in the fast runtime cluster (0.45 ms), reducing expansions by roughly 69.7\% relative to baseline \texttt{astar} (189.06). \texttt{r2\_bidirectional\_astar} and \texttt{r3\_theta\_star} are slower (1.25 and 1.55 ms). \texttt{r6\_lpa\_star} and \texttt{r4\_idastar} are clear outliers at 3.95 ms and 22.56 ms, with \texttt{r4\_idastar} also showing the highest variability (std 22.13 ms; IQR 2.93--43.00 ms) and expansion count (7061.34).
+The expansion profile in Figure~\ref{fig:benchmark_expansions} highlights this separation between
+the efficient frontier (\texttt{r5\_jump\_point\_search}) and high-overhead outliers.
+
+\paragraph{Uncertainty and limitations.}
+These results are limited to one benchmark regime: 50 mazes, one maze size (\(15\times15\)), one generator (backtracker), and one seed schedule. Timings are wall-clock and mostly sub-millisecond for the fastest methods, so statistical significance should not be conflated with large practical effect size in deployment settings. The benchmark also covers static, fully known mazes only; conclusions may not transfer to dynamic, partially observable, or larger-scale environments. Finally, Theta* uses any-angle motion, so its path-length values are not directly comparable to cardinal-grid planners.
+The flat success-rate profile in Figure~\ref{fig:benchmark_success_rate} further emphasizes that
+this dataset mainly distinguishes planners by efficiency rather than solvability.

@@ -1,0 +1,34 @@
+\begin{table*}[t]
+\centering
+\caption{Reproducibility protocol, explicitly separated into executed vs planned studies.}
+\label{tab:experiment_protocol}
+\begin{tabular}{p{0.19\textwidth} p{0.38\textwidth} p{0.38\textwidth}}
+\toprule
+Component & Executed protocol (current artifacts) & Planned protocol (not yet executed) \\
+\midrule
+Entrypoints &
+\texttt{python robotics\_maze/src/benchmark.py} for planner benchmarks; \texttt{bash robotics\_maze/testing/run\_sim\_tests.sh} for deterministic simulation and screenshot regression. &
+Add CI jobs that run full benchmark and regression protocols on pinned hardware classes and publish signed artifacts per run. \\
+\midrule
+Benchmark workload &
+50 mazes, \(15 \times 15\), \texttt{backtracker}, base seed 7, maze seed = \(7 +\) maze index. Current snapshot evaluates 12 planners. &
+Scale to larger mazes and multi-generator sweeps (\texttt{backtracker} + \texttt{prim}) with expanded seed ranges to evaluate ranking stability. \\
+\midrule
+Simulation regression workload &
+3 planners (\texttt{astar}, \texttt{weighted\_astar}, \texttt{fringe\_search}), 3 episodes each, \texttt{maze-size}=11, \texttt{seed}=42, backend preference \texttt{auto}. &
+Matched paired runs with forced \texttt{pybullet} and \texttt{mujoco}; additional stress scenarios with dynamic obstacles and replanning triggers. \\
+\midrule
+Primary metrics &
+Per trial: success, solve\_time\_ms, path\_length, expansions, and error text on failure. Summary ranking prioritizes success, then comparable shared-success solve time, mean expansions, and overall mean solve time (planner name as deterministic tie-break). Path length is reported descriptively. &
+Add variance statistics (median, p95), per-backend deltas, and disturbance-recovery metrics for dynamic scenes. \\
+\midrule
+Validity checks &
+Path-level validation enforces endpoint consistency, in-bounds traversal, and collision-free segments; benchmark marks success only when planner and validator agree. &
+Add robustness checks for near-collision margins, execution drift under dynamics, and failure-mode taxonomy by planner family. \\
+\midrule
+Visual regression &
+Deterministic screenshot pipeline requires six fixed filenames (3 MuJoCo + 3 fallback). Latest committed run reports PASS on all checks. &
+Add pixel-diff thresholds and automated anomaly triage reports in CI for each benchmark commit. \\
+\bottomrule
+\end{tabular}
+\end{table*}

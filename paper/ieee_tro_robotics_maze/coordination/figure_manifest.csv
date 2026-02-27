@@ -1,0 +1,7 @@
+figure_id,source_path,generation_method,caption_status,section,reproducible
+F1_system_pipeline,paper/ieee_tro_robotics_maze/figures/system_pipeline.png,python3+Pillow deterministic render (see coordination/agent_reports/figure_agent_system.md; source topology from robotics_maze/src/main.py and robotics_maze/src/sim.py),in_text,05_experiments,yes
+F2_agentic_workflow,paper/ieee_tro_robotics_maze/figures/agentic_workflow.png,python3+Pillow deterministic render (see coordination/agent_reports/figure_agent_system.md),supplementary_only,appendix,yes
+benchmark_runtime_ms,figures/benchmark_runtime_ms.png,pixi-run python (Pillow renderer, 2026-02-27) from robotics_maze/results/benchmark_results.csv (SHA256 aad1a3e07fdb0b3921e60f0b8e59ba60d6ea98484ad019fd8191f0acb98f9a30),in_text,06_results,yes
+runtime_uncertainty,figures/runtime_uncertainty.png,pixi-run python (Pillow box-summary renderer, 2026-02-27) from robotics_maze/results/benchmark_results.csv (SHA256 aad1a3e07fdb0b3921e60f0b8e59ba60d6ea98484ad019fd8191f0acb98f9a30),in_text,06_results,yes
+benchmark_expansions,figures/benchmark_expansions.png,pixi-run python (Pillow renderer, 2026-02-27) from robotics_maze/results/benchmark_results.csv (SHA256 aad1a3e07fdb0b3921e60f0b8e59ba60d6ea98484ad019fd8191f0acb98f9a30),in_text,06_results,yes
+benchmark_success_rate,figures/benchmark_success_rate.png,pixi-run python (Pillow renderer, 2026-02-27) from robotics_maze/results/benchmark_results.csv (SHA256 aad1a3e07fdb0b3921e60f0b8e59ba60d6ea98484ad019fd8191f0acb98f9a30),in_text,06_results,yes

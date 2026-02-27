@@ -1,0 +1,71 @@
+cite_key,title,year,venue,peer_reviewed,doi_or_url,verification_status,included
+Baumann_2021,A modular functional framework for the design and evaluation of multi-robot navigation,2021,Robotics and Autonomous Systems,yes,10.1016/j.robot.2021.103849,verified_doi,yes
+de_Jesus_2021,Soft Actor-Critic for Navigation of Mobile Robots,2021,Journal of Intelligent \& Robotic Systems,yes,10.1007/s10846-021-01367-5,verified_doi,yes
+Fahmi_2021,A Simulation-Based Study of Maze-Solving-Robot Navigation for Educational Purposes,2021,Journal of Robotics and Control (JRC),yes,10.18196/jrc.v3i1.12241,verified_doi,yes
+Heiden_2021,Bench-MR: A Motion Planning Benchmark for Wheeled Mobile Robots,2021,IEEE Robotics and Automation Letters,yes,10.1109/lra.2021.3068913,verified_doi,yes
+Hossain_2021,Local path planning for autonomous mobile robots by integrating modified dynamic‐window approach and improved follow the gap method,2021,Journal of Field Robotics,yes,10.1002/rob.22055,verified_doi,yes
+Jian_2021,A Global-Local Coupling Two-Stage Path Planning Method for Mobile Robots,2021,IEEE Robotics and Automation Letters,yes,10.1109/lra.2021.3074878,verified_doi,yes
+Karur_2021,A Survey of Path Planning Algorithms for Mobile Robots,2021,Vehicles,yes,10.3390/vehicles3030027,verified_doi,yes
+Liu_2021,A Lifelong Learning Approach to Mobile Robot Navigation,2021,IEEE Robotics and Automation Letters,yes,10.1109/lra.2021.3056373,verified_doi,yes
+Miao_2021,Path planning optimization of indoor mobile robot based on adaptive ant colony algorithm,2021,Computers \& Industrial Engineering,yes,10.1016/j.cie.2021.107230,verified_doi,yes
+S_nchez_Ib_ez_2021,Path Planning for Autonomous Mobile Robots: A Review,2021,Sensors,yes,10.3390/s21237898,verified_doi,yes
+Tolstaya_2021,Multi-Robot Coverage and Exploration using Spatial Graph Neural Networks,2021,2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS),yes,10.1109/iros51168.2021.9636675,verified_doi,yes
+Xue_2021,Navigation system with SLAM-based trajectory topological map and reinforcement learning-based local planner,2021,Advanced Robotics,yes,10.1080/01691864.2021.1938671,verified_doi,yes
+Zhu_2021,Deep reinforcement learning based mobile robot navigation: A review,2021,Tsinghua Science and Technology,yes,10.26599/tst.2021.9010012,verified_doi,yes
+Chamzas_2022,MotionBenchMaker: A Tool to Generate and Benchmark Motion Planning Datasets,2022,IEEE Robotics and Automation Letters,yes,10.1109/lra.2021.3133603,verified_doi,yes
+Chi_2022,A Generalized Voronoi Diagram-Based Efficient Heuristic Path Planning Method for RRTs in Mobile Robots,2022,IEEE Transactions on Industrial Electronics,yes,10.1109/tie.2021.3078390,verified_doi,yes
+Gao_2022,Meeting-Merging-Mission: A Multi-robot Coordinate Framework for Large-Scale Communication-Limited Exploration,2022,2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS),yes,10.1109/iros47612.2022.9981544,verified_doi,yes
+Guo_2022,Obstacle Avoidance With Dynamic Avoidance Risk Region for Mobile Robots in Dynamic Environments,2022,IEEE Robotics and Automation Letters,yes,10.1109/lra.2022.3161710,verified_doi,yes
+Gutow_2022,Sparse Integration Schemes for Chance-Constrained Motion Primitive Path Planning,2022,IEEE Robotics and Automation Letters,yes,10.1109/lra.2022.3173045,verified_doi,yes
+He_2022,A ROS2-Based Framework for Industrial Automation Systems,2022,"2022 2nd International Conference on Computer, Control and Robotics (ICCCR)",yes,10.1109/icccr54399.2022.9790247,verified_doi,yes
+Hewawasam_2022,"Past, Present and Future of Path-Planning Algorithms for Mobile Robot Navigation in Dynamic Environments",2022,IEEE Open Journal of the Industrial Electronics Society,yes,10.1109/ojies.2022.3179617,verified_doi,yes
+Li_2022,Global path planning based on a bidirectional alternating search A* algorithm for mobile robots,2022,Computers \& Industrial Engineering,yes,10.1016/j.cie.2022.108123,verified_doi,yes
+Liu_2022,A Hybrid Mobile Robot Path Planning Scheme Based on Modified Gray Wolf Optimization and Situation Assessment,2022,Journal of Robotics,yes,10.1155/2022/4167170,verified_doi,yes
+Mackay_2022,RL-DOVS: Reinforcement Learning for Autonomous Robot Navigation in Dynamic Environments,2022,Sensors,yes,10.3390/s22103847,verified_doi,yes
+Magall_n_Ram_rez_2022,Implementation of NAO Robot Maze Navigation Based on Computer Vision and Collaborative Learning,2022,Frontiers in Robotics and AI,yes,10.3389/frobt.2022.834021,verified_doi,yes
+Matsuzaki_2022,Learning Crowd-Aware Robot Navigation from Challenging Environments via Distributed Deep Reinforcement Learning,2022,2022 International Conference on Robotics and Automation (ICRA),yes,10.1109/icra46639.2022.9812011,verified_doi,yes
+Nadour_2022,Using flood-fill algorithms for an autonomous mobile robot maze navigation,2022,International Journal of System Assurance Engineering and Management,yes,10.1007/s13198-022-01630-4,verified_doi,yes
+Pei_2022,An Improved Dyna-Q Algorithm for Mobile Robot Path Planning in Unknown Dynamic Environment,2022,"IEEE Transactions on Systems, Man, and Cybernetics: Systems",yes,10.1109/tsmc.2021.3096935,verified_doi,yes
+Thomas_2022,Safe motion planning with environment uncertainty,2022,Robotics and Autonomous Systems,yes,10.1016/j.robot.2022.104203,verified_doi,yes
+Xiao_2022,Motion planning and control for mobile robot navigation using machine learning: a survey,2022,Autonomous Robots,yes,10.1007/s10514-022-10039-8,verified_doi,yes
+Xiao_2022_2,Autonomous Ground Navigation in Highly Constrained Spaces: Lessons Learned From the Benchmark Autonomous Robot Navigation Challenge at ICRA 2022 [Competitions],2022,IEEE Robotics \& Automation Magazine,yes,10.1109/mra.2022.3213466,verified_doi,yes
+Zhang_2022,H2GNN: Hierarchical-Hops Graph Neural Networks for Multi-Robot Exploration in Unknown Environments,2022,IEEE Robotics and Automation Letters,yes,10.1109/lra.2022.3146912,verified_doi,yes
+Zhang_2022b,MR-TopoMap: Multi-Robot Exploration Based on Topological Map in Communication Restricted Environment,2022,IEEE Robotics and Automation Letters,yes,10.1109/lra.2022.3192765,verified_doi,yes
+Abdulsaheb_2023,Classical and Heuristic Approaches for Mobile Robot Path Planning: A Survey,2023,Robotics,yes,10.3390/robotics12040093,verified_doi,yes
+Adu_2023,"RADIUS: Risk-Aware, Real-Time, Reachability-Based Motion Planning",2023,Robotics: Science and Systems XIX,yes,10.15607/rss.2023.xix.083,verified_doi,yes
+Gaebert_2023,Parameter Optimization for Manipulator Motion Planning using a Novel Benchmark Set,2023,2023 IEEE International Conference on Robotics and Automation (ICRA),yes,10.1109/icra48891.2023.10160694,verified_doi,yes
+Gao_2023,Improved Deep Deterministic Policy Gradient for Dynamic Obstacle Avoidance of Mobile Robot,2023,"IEEE Transactions on Systems, Man, and Cybernetics: Systems",yes,10.1109/tsmc.2022.3230666,verified_doi,yes
+Han_2023,Hybrid path planning algorithm for mobile robot based on A* algorithm fused with DWA,2023,"2023 IEEE 3rd International Conference on Information Technology, Big Data and Artificial Intelligence (ICIBA)",yes,10.1109/iciba56860.2023.10165386,verified_doi,yes
+Ho_2023,Planning with SiMBA: Motion Planning under Uncertainty for Temporal Goals using Simplified Belief Guides,2023,2023 IEEE International Conference on Robotics and Automation (ICRA),yes,10.1109/icra48891.2023.10160897,verified_doi,yes
+Huang_2023,FAEL: Fast Autonomous Exploration for Large-scale Environments With a Mobile Robot,2023,IEEE Robotics and Automation Letters,yes,10.1109/lra.2023.3236573,verified_doi,yes
+Jiang_2023,Path Planning Method for Mobile Robot Based on a Hybrid Algorithm,2023,Journal of Intelligent \& Robotic Systems,yes,10.1007/s10846-023-01985-1,verified_doi,yes
+Karwowski_2023,SRPB: a benchmark for the quantitative evaluation of a social robot navigation,2023,2023 27th International Conference on Methods and Models in Automation and Robotics (MMAR),yes,10.1109/mmar58394.2023.10242422,verified_doi,yes
+Liu_2023,Path planning techniques for mobile robots: Review and prospect,2023,Expert Systems with Applications,yes,10.1016/j.eswa.2023.120254,verified_doi,yes
+Loganathan_2023,A systematic review on recent advances in autonomous mobile robot navigation,2023,"Engineering Science and Technology, an International Journal",yes,10.1016/j.jestch.2023.101343,verified_doi,yes
+Martini_2023,PIC4rl-gym: a ROS2 Modular Framework for Robots Autonomous Navigation with Deep Reinforcement Learning,2023,"2023 3rd International Conference on Computer, Control and Robotics (ICCCR)",yes,10.1109/icccr56747.2023.10193996,verified_doi,yes
+Nakka_2023,Trajectory Optimization of Chance-Constrained Nonlinear Stochastic Systems for Motion Planning Under Uncertainty,2023,IEEE Transactions on Robotics,yes,10.1109/tro.2022.3197072,verified_doi,yes
+R_mer_2023,Vision-Based Uncertainty-Aware Motion Planning Based on Probabilistic Semantic Segmentation,2023,IEEE Robotics and Automation Letters,yes,10.1109/lra.2023.3322899,verified_doi,yes
+Tan_2023,Deep Reinforcement Learning for Decentralized Multi-Robot Exploration With Macro Actions,2023,IEEE Robotics and Automation Letters,yes,10.1109/lra.2022.3224667,verified_doi,yes
+Zhang_2023,Crowd-Aware Mobile Robot Navigation Based on Improved Decentralized Structured RNN via Deep Reinforcement Learning,2023,Sensors,yes,10.3390/s23041810,verified_doi,yes
+Bai_2024,Path Planning of Autonomous Mobile Robot in Comprehensive Unknown Environment Using Deep Reinforcement Learning,2024,IEEE Internet of Things Journal,yes,10.1109/jiot.2024.3379361,verified_doi,yes
+Bi_2024,CURE: A Hierarchical Framework for Multi-Robot Autonomous Exploration Inspired by Centroids of Unknown Regions,2024,IEEE Transactions on Automation Science and Engineering,yes,10.1109/tase.2023.3285300,verified_doi,yes
+Chen_2024,FogROS2-LS: A Location-Independent Fog Robotics Framework for Latency Sensitive ROS2 Applications,2024,2024 IEEE International Conference on Robotics and Automation (ICRA),yes,10.1109/icra57147.2024.10610759,verified_doi,yes
+Chipade_2024,WiTHy A*: Winding-Constrained Motion Planning for Tethered Robot using Hybrid A*,2024,2024 IEEE International Conference on Robotics and Automation (ICRA),yes,10.1109/icra57147.2024.10611175,verified_doi,yes
+Li_2024,Dynamic path planning of mobile robots using adaptive dynamic programming,2024,Expert Systems with Applications,yes,10.1016/j.eswa.2023.121112,verified_doi,yes
+Mayer_2024,CoBRA: A Composable Benchmark for Robotics Applications,2024,2024 IEEE International Conference on Robotics and Automation (ICRA),yes,10.1109/icra57147.2024.10610776,verified_doi,yes
+Polykretis_2024,Mapless mobile robot navigation at the edge using self-supervised cognitive map learners,2024,Frontiers in Robotics and AI,yes,10.3389/frobt.2024.1372375,verified_doi,yes
+Takemura_2024,Uncertainty-Aware Trajectory Planning: Using Uncertainty Quantification and Propagation in Traversability Prediction of Planetary Rovers,2024,IEEE Robotics \& Automation Magazine,yes,10.1109/mra.2023.3341289,verified_doi,yes
+Theurkauf_2024,Chance-Constrained Multi-Robot Motion Planning Under Gaussian Uncertainties,2024,IEEE Robotics and Automation Letters,yes,10.1109/lra.2023.3337700,verified_doi,yes
+Xue_2024,Combining Motion Planner and Deep Reinforcement Learning for UAV Navigation in Unknown Environment,2024,IEEE Robotics and Automation Letters,yes,10.1109/lra.2023.3334978,verified_doi,yes
+Yin_2024,Autonomous navigation of mobile robots in unknown environments using off-policy reinforcement learning with curriculum learning,2024,Expert Systems with Applications,yes,10.1016/j.eswa.2024.123202,verified_doi,yes
+Zheng_2024,IBBT: Informed Batch Belief Trees for Motion Planning Under Uncertainty,2024,2024 IEEE International Conference on Robotics and Automation (ICRA),yes,10.1109/icra57147.2024.10610244,verified_doi,yes
+Zhou_2024,An optimized Q-Learning algorithm for mobile robot local path planning,2024,Knowledge-Based Systems,yes,10.1016/j.knosys.2024.111400,verified_doi,yes
+Hu_2025,Deep Reinforcement Learning-Based Mapless Navigation for Mobile Robot in Unknown Environment With Local Optima,2025,IEEE Robotics and Automation Letters,yes,10.1109/lra.2024.3511437,verified_doi,yes
+Hu_2025_2,Improved Exponential and Cost-Weighted Hybrid Algorithm for Mobile Robot Path Planning,2025,Sensors,yes,10.3390/s25082579,verified_doi,yes
+K_stner_2025,Demonstrating Arena 5.0: A Photorealistic ROS2 Simulation Framework for Developing and Benchmarking Social Navigation,2025,Robotics: Science and Systems XXI,yes,10.15607/rss.2025.xxi.092,verified_doi,yes
+Karakaya_2025,Hybrid Boustrophedon and Direction-Biased Region Transitions for Mobile Robot Coverage Path Planning: A Region-Based Multi-Cost Framework,2025,Applied Sciences,yes,10.3390/app152312666,verified_doi,yes
+Shcherbyna_2025,Arena 4.0: a Comprehensive Ros2 Development and Benchmarking Platform for Human-Centric Navigation Using Generative-Model-Based Environment Generation,2025,2025 IEEE International Conference on Robotics and Automation (ICRA),yes,10.1109/icra55743.2025.11127635,verified_doi,yes
+Wang_2025,OpenBench: A New Benchmark and Baseline for Semantic Navigation in Smart Logistics,2025,2025 IEEE International Conference on Robotics and Automation (ICRA),yes,10.1109/icra55743.2025.11127476,verified_doi,yes
+Ward_2025,Exploring ROS2 Based Robot Navigation: Parameter Tuning Using the NAV2 Package,2025,Volume 5: 21st IEEE/ASME International Conference on Mechatronic and Embedded Systems and Applications (MESA); 49th Mechanisms and Robotics Conference (MR),yes,10.1115/detc2025-168734,verified_doi,yes
+Xue_2025,Robot Mapless Navigation in VUCA Environments via Deep Reinforcement Learning,2025,IEEE Transactions on Industrial Electronics,yes,10.1109/tie.2024.3404113,verified_doi,yes
+Zhang_2025,DRL-DCLP: A Deep Reinforcement Learning-Based Dimension-Configurable Local Planner for Robot Navigation,2025,IEEE Robotics and Automation Letters,yes,10.1109/lra.2025.3544927,verified_doi,yes

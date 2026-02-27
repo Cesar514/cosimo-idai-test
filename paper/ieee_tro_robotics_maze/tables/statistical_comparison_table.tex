@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\caption{Exploratory paired runtime comparisons against \texttt{r1\_weighted\_astar} on the same 50 mazes (single run per planner-maze pair). Positive \(\Delta\) means the comparator is slower. Confidence intervals are percentile bootstrap intervals from 40{,}000 paired resamples (fixed seed). \(p\)-values are exact two-sided paired sign tests with Holm correction across 11 comparisons.}
+\label{tab:runtime_statistical_comparison}
+\footnotesize
+\setlength{\tabcolsep}{4.0pt}
+\begin{tabular}{lcccc}
+\toprule
+Comparator & Median \(\Delta\) (ms) & 95\% CI for \(\Delta\) (ms) & Slower/Faster (of 50) & Holm-adjusted \(p\) \\
+\midrule
+R7 Beam Search       & 0.068  & [0.046, 0.085]  & 50/0 & \(1.95\times10^{-14}\) \\
+R5 Jump Point Search & 0.081  & [0.055, 0.124]  & 50/0 & \(1.95\times10^{-14}\) \\
+Greedy Best-First    & 0.078  & [0.056, 0.112]  & 48/2 & \(2.27\times10^{-12}\) \\
+R8 Fringe Search     & 0.154  & [0.113, 0.228]  & 50/0 & \(1.95\times10^{-14}\) \\
+A*                   & 0.149  & [0.097, 0.230]  & 50/0 & \(1.95\times10^{-14}\) \\
+Dijkstra             & 0.172  & [0.106, 0.244]  & 50/0 & \(1.95\times10^{-14}\) \\
+R9 Bidirectional BFS & 0.191  & [0.121, 0.232]  & 50/0 & \(1.95\times10^{-14}\) \\
+R2 Bidirectional A*  & 0.983  & [0.593, 1.320]  & 50/0 & \(1.95\times10^{-14}\) \\
+R3 Theta*            & 1.003  & [0.723, 1.714]  & 50/0 & \(1.95\times10^{-14}\) \\
+R6 LPA*              & 3.296  & [2.726, 4.265]  & 50/0 & \(1.95\times10^{-14}\) \\
+R4 IDA*              & 10.762 & [5.697, 30.026] & 50/0 & \(1.95\times10^{-14}\) \\
+\bottomrule
+\end{tabular}
+\end{table*}

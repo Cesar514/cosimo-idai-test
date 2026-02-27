@@ -41,6 +41,21 @@ ALT_PLANNER_SPECS: tuple[tuple[str, str, str], ...] = (
     ("r9_bidirectional_bfs", "alt_planners.r9_bidirectional_bfs", "plan_bidirectional_bfs"),
 )
 
+DEFAULT_BENCHMARK_PLANNERS: tuple[str, ...] = (
+    "astar",
+    "dijkstra",
+    "greedy_best_first",
+    "r1_weighted_astar",
+    "r2_bidirectional_astar",
+    "r3_theta_star",
+    "r4_idastar",
+    "r5_jump_point_search",
+    "r6_lpa_star",
+    "r7_beam_search",
+    "r8_fringe_search",
+    "r9_bidirectional_bfs",
+)
+
 
 @dataclass(frozen=True)
 class TrialResult:
@@ -53,7 +68,7 @@ class TrialResult:
     success: bool
     solve_time_ms: float
     path_length: int | None
-    expansions: int
+    expansions: int | None
     error: str | None = None
 
 
@@ -75,15 +90,17 @@ def _coerce_path(raw_path: Any) -> list[Cell]:
     return path
 
 
-def _to_int_metric(value: Any) -> int:
+def _to_int_metric(value: Any) -> int | None:
     if isinstance(value, bool):
         return int(value)
     if isinstance(value, (int, float)):
+        if isinstance(value, float) and not math.isfinite(value):
+            return None
         return int(value)
-    return 0
+    return None
 
 
-def _extract_expansions(metrics: Mapping[str, Any]) -> int:
+def _extract_expansions(metrics: Mapping[str, Any]) -> int | None:
     preferred_keys = (
         "expansions",
         "expanded_nodes",
@@ -93,13 +110,14 @@ def _extract_expansions(metrics: Mapping[str, Any]) -> int:
     )
     for key in preferred_keys:
         if key in metrics:
-            return max(_to_int_metric(metrics[key]), 0)
+            value = _to_int_metric(metrics[key])
+            return max(value, 0) if value is not None else None
 
     forward = _to_int_metric(metrics.get("expanded_forward"))
     backward = _to_int_metric(metrics.get("expanded_backward"))
-    if forward or backward:
-        return max(forward + backward, 0)
-    return 0
+    if forward is not None or backward is not None:
+        return max((forward or 0) + (backward or 0), 0)
+    return None
 
 
 def _is_blocked_cell(value: Any) -> bool:
@@ -186,7 +204,9 @@ def _validate_and_measure_path(
     return True, measured_steps, None
 
 
-def _normalize_planner_output(result: Any, start: Cell, goal: Cell) -> tuple[bool, list[Cell], int]:
+def _normalize_planner_output(
+    result: Any, start: Cell, goal: Cell
+) -> tuple[bool, list[Cell], int | None]:
     payload: dict[str, Any] = {}
     path: list[Cell] = []
 
@@ -250,6 +270,25 @@ def load_available_planners(include_alt: bool = True) -> dict[str, PlannerFn]:
                 planners[planner_name] = planner_fn
 
     return planners
+
+
+def _resolve_default_benchmark_planners(available: Mapping[str, PlannerFn]) -> dict[str, PlannerFn]:
+    expected = set(DEFAULT_BENCHMARK_PLANNERS)
+    discovered = set(available)
+    missing = sorted(expected - discovered)
+    unexpected = sorted(discovered - expected)
+    if missing or unexpected:
+        details: list[str] = []
+        if missing:
+            details.append(f"missing: {', '.join(missing)}")
+        if unexpected:
+            details.append(f"unexpected: {', '.join(unexpected)}")
+        raise ValueError(
+            "Default benchmark planner set mismatch "
+            f"({' ; '.join(details)}). "
+            "Specify --planner explicitly to run a custom subset."
+        )
+    return {name: available[name] for name in DEFAULT_BENCHMARK_PLANNERS}
 
 
 def maze_to_occupancy_grid(maze: Any) -> tuple[Grid, Cell, Cell]:
@@ -334,7 +373,15 @@ def summarize_trials(trials: list[TrialResult]) -> list[dict[str, Any]]:
                     if shared_rows
                     else math.nan
                 ),
-                "mean_expansions": mean(row.expansions for row in successes) if successes else math.nan,
+                "mean_expansions": (
+                    mean(valid_expansions)
+                    if (
+                        valid_expansions := [
+                            row.expansions for row in successes if row.expansions is not None
+                        ]
+                    )
+                    else math.nan
+                ),
             }
         )
     return rank_summary_rows(summary_rows)
@@ -364,7 +411,6 @@ def rank_summary_rows(summary_rows: list[dict[str, Any]]) -> list[dict[str, Any]
         key=lambda row: (
             -float(row["success_rate"]),
             _rank_metric(_comparison_time_ms(row)),
-            _rank_metric(_comparison_path_length(row)),
             _rank_metric(float(row["mean_expansions"])),
             float(row["mean_solve_time_ms"]),
             str(row["planner"]),
@@ -404,7 +450,7 @@ def write_results_csv(trials: list[TrialResult], output_path: Path) -> Path:
                     int(row.success),
                     f"{row.solve_time_ms:.6f}",
                     row.path_length if row.path_length is not None else "",
-                    row.expansions,
+                    row.expansions if row.expansions is not None else "",
                     row.error or "",
                 ]
             )
@@ -499,7 +545,7 @@ def write_summary_markdown(
         f"- Seed: {seed}",
         f"- Top planner: {top_planner}",
         "- Comparable mazes: mazes solved by every planner (shared-success set).",
-        "- Ranking policy: success rate (desc), comparable solve time (asc), comparable path length (asc), mean expansions (asc), mean solve time (asc).",
+        "- Ranking policy: success rate (desc), comparable solve time (asc), mean expansions (asc), mean solve time (asc), planner name (asc).",
         "",
         "| Rank | Planner | Success Rate | Comparable Mazes | Comparable Solve Time (ms) | Delta vs #1 (ms) | Comparable Path Length | Mean Expansions |",
         "|---:|---|---:|---:|---:|---:|---:|---:|",
@@ -537,7 +583,7 @@ def run_benchmark(
 
     available = load_available_planners(include_alt=True)
     if planners is None:
-        planners = available
+        planners = _resolve_default_benchmark_planners(available)
     planner_items = sorted(planners.items(), key=lambda item: item[0])
     if not planner_items:
         raise ValueError("At least one planner is required.")
@@ -685,8 +731,13 @@ def main() -> None:
                 f"Available: {', '.join(sorted(available))}"
             )
         selected = {name: available[name] for name in args.planner}
-    else:
+    elif args.no_alt:
         selected = {name: available[name] for name in sorted(available)}
+    else:
+        try:
+            selected = _resolve_default_benchmark_planners(available)
+        except ValueError as exc:
+            parser.error(str(exc))
 
     _, summary_rows, csv_path, summary_path = run_benchmark_and_write_reports(
         planners=selected,

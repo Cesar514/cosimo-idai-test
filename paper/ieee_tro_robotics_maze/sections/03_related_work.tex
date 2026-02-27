@@ -1,0 +1,9 @@
+\section{Related Work}
+Recent navigation literature continues to improve planner quality across classical, hybrid, and learned approaches \cite{S_nchez_Ib_ez_2021,Karur_2021,Xiao_2022,Liu_2023,Abdulsaheb_2023,Hu_2025}. At the same time, multiple surveys report that reproducibility bottlenecks often come from integration variance (runtime stack, simulator configuration, and evaluation protocol) rather than algorithmic novelty alone \cite{Hewawasam_2022,Loganathan_2023}.
+
+For this reason, the closest prior art for our scope is benchmark/runtime infrastructure rather than a single planner family. Benchmark platforms such as Bench-MR \cite{Heiden_2021}, MotionBenchMaker \cite{Chamzas_2022}, and CoBRA \cite{Mayer_2024} focus on reusable benchmark construction and reporting. Runtime frameworks in ROS2/cloud settings emphasize deployment portability and orchestration across heterogeneous environments \cite{Baumann_2021,He_2022,Chen_2024,Shcherbyna_2025}. Our manuscript is positioned at their intersection for one bounded regime: deterministic static grid-maze planner comparison with repository-local traceability.
+
+\input{tables/closest_work_delta_table}
+
+Adjacent systems such as FogROS2-LS and Arena 4.0 provide important deployment/simulation context \cite{Chen_2024,Shcherbyna_2025}, but are not treated as the closest benchmark-protocol comparators in Table~\ref{tab:closest_work_delta}.
+The concrete incremental delta claimed in this paper is integration-level: not a new planner, but a deterministic execution-and-evaluation stack that couples seed policy, output normalization, geometric path validation, and backend-fallback simulation regression in one auditable repository workflow.

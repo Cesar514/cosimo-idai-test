@@ -1,0 +1,81 @@
+\section{Experimental Setup}
+\label{sec:experiments}
+
+This section documents (i) experiments already executed in the current repository snapshot and
+(ii) planned studies that are intentionally out of scope for the current results.
+
+\subsection{Executed Experiments}
+\textbf{System and workflow context (executed).}
+Figure~\ref{fig:system_pipeline} summarizes the deterministic runtime and artifact path used for
+the reported experiments, from configuration parsing and planner execution through benchmark export.
+Manuscript-process coordination artifacts are tracked in \texttt{coordination/} files and are not
+treated as primary scientific evidence in the main experimental narrative.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/system_pipeline.png}
+\caption{Deterministic system pipeline used in the executed experiments, including planner
+benchmarking and artifact emission. The runtime path captures backend fallback behavior
+(\texttt{pybullet} \(\rightarrow\) \texttt{mujoco} \(\rightarrow\) deterministic fallback) and
+the benchmark output branch used for reproducible reporting.}
+\label{fig:system_pipeline}
+\end{figure*}
+
+\textbf{Planner benchmark (executed).}
+We evaluate planners with the repository benchmark harness
+(\texttt{robotics\_maze/src/benchmark.py}). The harness generates mazes with fixed settings
+(\(50\) mazes, \(15 \times 15\) cells, \texttt{backtracker}, base seed \(7\), per-maze seed
+\(= 7 + \texttt{maze\_index}\)) and, by default, fail-closed enforces the canonical 12-planner
+evaluation set used in this paper. In the committed benchmark
+artifacts (\texttt{robotics\_maze/results/benchmark\_summary.md} and
+\texttt{robotics\_maze/results/benchmark\_results.csv}), this corresponds to 12 planners:
+\texttt{astar}, \texttt{dijkstra}, \texttt{greedy\_best\_first},
+\texttt{r1\_weighted\_astar}, \texttt{r2\_bidirectional\_astar}, \texttt{r3\_theta\_star},
+\texttt{r4\_idastar}, \texttt{r5\_jump\_point\_search}, \texttt{r6\_lpa\_star},
+\texttt{r7\_beam\_search}, \texttt{r8\_fringe\_search}, and
+\texttt{r9\_bidirectional\_bfs}.
+The baseline BFS implementation exists in the planner registry but is intentionally excluded from
+the benchmark harness default discovered set; all reported rankings and tables use this 12-planner
+execution set for consistency with committed artifacts.
+
+Per trial, the harness records success, wall-clock solve time (ms), path length, and node
+expansions. Reported paths are validated against occupancy and bounds constraints, including
+segment-level collision checks; a trial is marked successful only if both planner output and path
+validation succeed. Solve time is measured using Python \texttt{time.perf\_counter()} around each
+planner invocation and converted to milliseconds. To reduce first-run cache bias, planner execution
+order is rotated per maze. In the current snapshot, each planner-maze pair is executed once, so
+timing differences should be interpreted as descriptive. Aggregated ranking follows the executable
+lexicographic order in \texttt{benchmark.py}: success rate, comparable shared-success solve time,
+mean expansions, overall mean solve time, then planner name as deterministic tie-break.
+Comparable path length is reported but excluded from ranking because any-angle and cardinal-grid
+path geometries are not directly commensurate.
+
+\textbf{Deterministic simulation regression (executed).}
+In addition to planner benchmarking, the repository executes deterministic simulation checks
+(\texttt{robotics\_maze/testing/run\_sim\_tests.sh}) for three representative planners
+(\texttt{astar}, \texttt{weighted\_astar}, \texttt{fringe\_search}) over three episodes
+(\texttt{maze-size}=11, \texttt{seed}=42). The same test run invokes the deterministic screenshot
+pipeline (\texttt{robotics\_maze/scripts/capture\_regression\_screenshots.py}), which enforces six
+expected PNG outputs (three MuJoCo and three fallback renderer images). The latest committed test
+log reports all deterministic runs and screenshot checks as PASS.
+
+\input{tables/experiment_protocol_table}
+Table~\ref{tab:experiment_protocol} separates executed protocol components (used for all current
+claims) from planned, not-yet-executed studies.
+
+\subsection{Planned Future Experiments (Not Yet Executed)}
+The following experiments are planned and are \textbf{not} included in the current result tables:
+\begin{enumerate}
+    \item \textbf{Cross-algorithm robustness sweep:} expand benchmark runs across
+    \texttt{backtracker} and \texttt{prim} generators, larger mazes, and broader seed sets to
+    quantify ranking stability.
+    \item \textbf{Dynamic-environment stress tests:} introduce moving obstacles and replanning
+    triggers to evaluate incremental planners under online disturbances.
+    \item \textbf{Post-2021 planner integration study:} add learned local heuristics, Hybrid-A*,
+    and uncertainty-aware planning baselines from the repository shortlist, then rerun the same
+    benchmark protocol for direct comparability.
+    \item \textbf{Backend sensitivity analysis:} run matched scenarios with explicit
+    \texttt{pybullet} and \texttt{mujoco} settings to isolate simulator-dependent effects on
+    runtime and path execution behavior.
+\end{enumerate}
+No quantitative claims from these planned experiments are used in the present manuscript version.

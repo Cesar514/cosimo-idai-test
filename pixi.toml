@@ -17,4 +17,4 @@ pytest = ">=8"
 
 [tasks]
 sim = "python scripts/sim_runner.py --gui-setup --gui --planner astar --episodes 1 --maze-size 15 --seed 42 --physics-backend auto --gui-hold-seconds 20"
-benchmark = "python robotics_maze/src/benchmark.py --mazes 30 --width 15 --height 15 --algorithm backtracker"
+benchmark = "python robotics_maze/src/benchmark.py --mazes 50 --width 15 --height 15 --seed 7 --algorithm backtracker"

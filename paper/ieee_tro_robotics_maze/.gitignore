@@ -1,0 +1,20 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Editor
+.vscode/
+*.swp
+
+# Generated outputs
+build/
+out/

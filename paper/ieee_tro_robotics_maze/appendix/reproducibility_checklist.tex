@@ -1,0 +1,29 @@
+\subsection{Reproducibility Checklist}
+\label{app:reproducibility_checklist}
+
+\begin{table}[t]
+\centering
+\caption{Repository-grounded reproducibility checklist snapshot (2026-02-26).}
+\begin{tabular}{p{0.28\linewidth}p{0.12\linewidth}p{0.54\linewidth}}
+\toprule
+Item & Status & Evidence \\
+\midrule
+Environment specification and dependencies & complete & \texttt{pixi.toml} (workspace tasks), \texttt{robotics\_maze/pixi.toml} (Python 3.11, PyBullet, MuJoCo, pytest). \\
+CLI entrypoints and run commands & complete & \texttt{scripts/sim\_runner.py} and root \texttt{pixi.toml} task definitions. \\
+Physics backend fallback behavior & complete & \texttt{robotics\_maze/src/sim.py} backend resolution and deterministic fallback branch. \\
+Planner benchmark protocol and ranking policy & complete & \texttt{robotics\_maze/src/benchmark.py}; generated \texttt{robotics\_maze/results/benchmark\_summary.md}. \\
+Benchmark trial artifacts & complete & \texttt{robotics\_maze/results/benchmark\_results.csv} and \texttt{robotics\_maze/results/benchmark\_summary.md}. \\
+Regression screenshot generation & complete & \texttt{robotics\_maze/scripts/capture\_regression\_screenshots.py} strict expected filename checks. \\
+Smoke and regression test logs & complete & \texttt{robotics\_maze/tests/test\_core.py} and \texttt{robotics\_maze/testing/TEST\_RUN\_LOG.md}. \\
+Reference inventory target (\(\geq\)40 refs from 2021+) & complete & \texttt{references.bib} and \texttt{coordination/citations\_audit.csv} contain populated, post-2021 citation records in the current snapshot. \\
+Citation quality target (\(\geq\)80\% peer reviewed) & complete & \texttt{coordination/citations\_audit.csv} marks peer-review status per entry and is populated beyond header-only state. \\
+Figure manifest inventory completeness & complete & \texttt{coordination/figure\_manifest.csv} lists tracked figure IDs, source paths, and reproducibility fields. \\
+Claim-traceability freshness gate & complete & \texttt{coordination/claims\_traceability.csv} refreshed to verified entries for current manuscript claims and artifact checks. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+This checklist reflects the repository snapshot date listed in the caption.
+Coordination artifacts are maintained as explicit evidence ledgers and updated
+when benchmark/code/manuscript states change.

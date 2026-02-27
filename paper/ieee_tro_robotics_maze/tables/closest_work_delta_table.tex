@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\caption{Closest infrastructure-oriented prior work and the bounded incremental delta of this paper.}
+\label{tab:closest_work_delta}
+\footnotesize
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{p{0.19\textwidth} p{0.31\textwidth} p{0.43\textwidth}}
+\toprule
+Closest work & Reported primary scope & Incremental delta in this paper \\
+\midrule
+Bench-MR \cite{Heiden_2021} &
+Motion-planning benchmark for wheeled mobile robots. &
+Repository-level deterministic seed propagation tied to CLI entrypoints, plus trial-level geometric path raster validation before success is counted. \\
+\midrule
+MotionBenchMaker \cite{Chamzas_2022} &
+Tooling for generating and benchmarking motion-planning datasets. &
+Planner output normalization across heterogeneous Python planner schemas, coupled with shared-success comparability ranking and committed CSV/Markdown artifacts. \\
+\midrule
+CoBRA \cite{Mayer_2024} &
+Composable benchmark framework for robotics applications. &
+Single-stack integration of planner benchmark execution with explicit \texttt{pybullet} \(\rightarrow\) \texttt{mujoco} \(\rightarrow\) deterministic fallback runtime behavior and deterministic screenshot-regression checks. \\
+\bottomrule
+\end{tabular}
+\end{table*}

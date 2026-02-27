@@ -1,0 +1,53 @@
+\documentclass[journal]{IEEEtran}
+
+% Minimal, template-friendly package set
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{url}
+
+% Uncomment if your venue allows (IEEEtran generally works with hyperref, but check)
+% \usepackage[hidelinks]{hyperref}
+
+\begin{document}
+
+\title{Deterministic Static Grid-Maze Planner Benchmarking for Reproducible Robotics Experiments}
+
+\author{Cesar Contreras%
+\thanks{Cesar Contreras is an independent robotics researcher based in California, USA.}%
+}
+
+\maketitle
+
+\begin{abstract}
+This paper presents a deterministic maze-navigation benchmark stack for reproducible robotics
+experiments across multiple simulation backends. The implementation unifies planner execution,
+path validation, benchmarking, and artifact generation in a single repository workflow built
+around deterministic seeds and explicit benchmark exports. In the executed snapshot, the benchmark
+evaluates 12 planners on 50 generated \(15\times15\) mazes with complete trial-level reporting
+for success, runtime, path length, and expansions. All planners solve all trials; within this
+static regime, weighted A* has the lowest mean solve time (0.35 ms), while search-effort profiles
+show non-trivial runtime-expansion tradeoffs across methods. The pipeline also includes deterministic
+simulation regression checks with fixed screenshot expectations to support repeatability audits.
+The contribution is a repository-grounded, traceable benchmarking workflow for static grid-maze
+navigation; claims are intentionally scoped to this benchmark regime and do not assert general
+superiority in dynamic or kinodynamic navigation domains.
+\end{abstract}
+
+\begin{IEEEkeywords}
+mobile robot navigation, deterministic benchmarking, path planning, reproducibility, simulation
+\end{IEEEkeywords}
+
+\input{sections/02_introduction}
+\input{sections/03_related_work}
+\input{sections/04_method}
+\input{sections/05_experiments}
+\input{sections/06_results}
+\input{sections/07_discussion}
+\input{sections/08_conclusion}
+\input{sections/A_appendix}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

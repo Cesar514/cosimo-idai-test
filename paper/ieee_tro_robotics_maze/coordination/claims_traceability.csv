@@ -1,0 +1,30 @@
+claim_id,claim_text,section,evidence_file,evidence_locator,evidence_type,status
+C1,Root pixi sim task launches scripts/sim_runner with GUI setup defaults,05_experiments,pixi.toml,line 19 task sim command,config,verified
+C2,Root pixi benchmark task launches robotics_maze benchmark on 15x15 backtracker mazes,05_experiments,pixi.toml,line 20 task benchmark command,config,verified
+C3,sim_runner injects default GUI hold seconds of 20 when GUI hold is unspecified,05_experiments,scripts/sim_runner.py,lines 11 and 36-40 DEFAULT_INTERACTIVE_GUI_HOLD_SECONDS handling,code,verified
+C4,sim_runner enables GUI setup by default for interactive GUI runs when no explicit setup flag is provided,05_experiments,scripts/sim_runner.py,lines 43-47 interactive GUI setup append,code,verified
+C5,Main CLI restricts physics backend to auto pybullet or mujoco,04_method,robotics_maze/src/main.py,lines 12 and 205-206 BACKEND_CHOICES parser choices,code,verified
+C6,Main CLI validates custom URDF inputs and falls back to default robot path when invalid,04_method,robotics_maze/src/main.py,lines 136-164 validate_robot_urdf warnings and fallback,code,verified
+C7,GUI setup behavior can be controlled via ROBOTICS_MAZE_GUI_SETUP_MODE accept cancel skip or dialog,04_method,robotics_maze/src/gui_setup.py,lines 9 and 68-83 environment mode handling,code,verified
+C8,GUI setup coerces backend auto to pybullet for visual GUI runs,04_method,robotics_maze/src/main.py,lines 319-320 GUI backend coercion comment and logic,code,verified
+C9,Simulator backend auto mode prefers pybullet then falls back to mujoco with warning,04_method,robotics_maze/src/sim.py,lines 654-658 auto resolution and warning path,code,verified
+C10,Simulator uses deterministic kinematic fallback when both physics backends are unavailable,04_method,robotics_maze/src/sim.py,line 757 fallback warning and deterministic branch,code,verified
+C11,Default robot loading tries husky URDF first then r2d2 fallback,04_method,robotics_maze/src/sim.py,lines 30-31 and 288-289 URDF candidate order,code,verified
+C12,Benchmark planner set combines 3 baselines with 9 alternative planners for 12 total planners,05_experiments,robotics_maze/src/benchmark.py,lines 32 240 and 246 planner loading logic,code,verified
+C13,Benchmark rotates planner execution order per maze index to reduce cache bias,05_experiments,robotics_maze/src/benchmark.py,line 561 planner rotation comment and code,code,verified
+C14,Benchmark validates planner path feasibility before marking trial success,05_experiments,robotics_maze/src/benchmark.py,lines 147 and 577 path validation function and call site,code,verified
+C15,Benchmark trial CSV includes explicit error field for crashed planners,05_experiments,robotics_maze/src/benchmark.py,lines 380-396 csv header and row writer include error column,code,verified
+C16,Benchmark markdown summary records top planner and ranking policy metadata,06_results,robotics_maze/src/benchmark.py,lines 500 and 502 markdown summary metadata lines,code,verified
+C17,Current benchmark artifact reports 50 mazes of size 15x15 with seed 7 and top planner r1_weighted_astar,06_results,robotics_maze/results/benchmark_summary.md,lines 4-8 benchmark metadata block,artifact,verified
+C18,Current ranking table reports r1_weighted_astar at rank 1 with 100 percent success and 0.35 ms comparable mean time,06_results,robotics_maze/results/benchmark_summary.md,line 14 rank table first row,artifact,verified
+C19,Benchmark CSV artifact contains expected schema header and weighted A star success sample row,06_results,robotics_maze/results/benchmark_results.csv,lines 1 and 5 csv schema and sample trial row,artifact,verified
+C20,Unit tests enforce deterministic maze generation for identical seeds and fixed endpoints,05_experiments,robotics_maze/tests/test_core.py,lines 21 29 and 30 deterministic assertions,test,verified
+C21,Simulation regression log records PASS for screenshot capture workflow with generated artifacts,05_experiments,robotics_maze/testing/TEST_RUN_LOG.md,lines 137 and 149 summary pass status,artifact,verified
+C22,Regression screenshot script enforces deterministic filename suffixes and strict unexpected file checks,05_experiments,robotics_maze/scripts/capture_regression_screenshots.py,lines 143-154 and 106-121 expected and strict filename validation,code,verified
+C23,Reference policy target of at least 40 references from year 2021 onward is satisfied in current manuscript snapshot,03_related_work,paper/ieee_tro_robotics_maze/references.bib,70 entries all year >=2021 (verified against bibliography parse on 2026-02-27),audit,verified
+C24,Citation quality threshold of at least 80 percent peer reviewed is satisfied in citation audit artifact,03_related_work,paper/ieee_tro_robotics_maze/coordination/citations_audit.csv,70 of 70 entries marked peer_reviewed yes,audit,verified
+C25,Figure reproducibility manifest is populated with tracked figure records and generation provenance,06_results,paper/ieee_tro_robotics_maze/coordination/figure_manifest.csv,lines 2-7 include figure ids source paths and provenance,audit,verified
+C26,Root pixi benchmark entrypoint matches manuscript workload settings for benchmark regeneration,05_experiments,pixi.toml,line 20 task benchmark uses --mazes 50 --seed 7 --algorithm backtracker,config,verified
+C27,Appendix content is integrated into the main manuscript build,07_discussion,paper/ieee_tro_robotics_maze/main.tex,line 48 includes \\input{sections/A_appendix},audit,verified
+C28,Inferential runtime claims in Table runtime_statistical_comparison are traceable to exported paired-comparison artifact,06_results,paper/ieee_tro_robotics_maze/coordination/inferential_runtime_comparison.csv,rows 2-12 capture median delta CI slower faster and Holm-adjusted p values,audit,verified
+C29,Runtime uncertainty figure and inferential table are both derived from the same benchmark results snapshot,06_results,paper/ieee_tro_robotics_maze/coordination/figure_manifest.csv,lines 4-7 share benchmark_results.csv SHA256 aad1a3e07fdb0b3921e60f0b8e59ba60d6ea98484ad019fd8191f0acb98f9a30,audit,verified
