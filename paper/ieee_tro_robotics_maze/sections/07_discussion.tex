@@ -1,6 +1,6 @@
 \section{Discussion}
 
-The current repository snapshot establishes a reproducible baseline for grid-maze navigation with measurable algorithmic tradeoffs. The benchmark artifact reports 12 planners evaluated on 50 generated $15\times15$ mazes, with 100\% success for every planner in this static setting. Under the executable ranking policy (success rate, then comparable solve time on shared-success mazes, then mean expansions, then overall mean solve time, then planner-name tie-break), \texttt{r1\_weighted\_astar} is first (0.35 ms mean solve time), while \texttt{r4\_idastar} is last (22.56 ms), showing that admissible but deep iterative search remains expensive for this map class.
+The current repository snapshot provides a reproducible baseline for grid-maze navigation with measurable efficiency tradeoffs. The benchmark artifact reports 12 planners evaluated on 50 generated $15\times15$ mazes, with 100\% success for every planner in this static setting. Under the implemented ranking policy, \texttt{r1\_weighted\_astar} achieves the lowest mean solve time (0.35 ms), while \texttt{r4\_idastar} shows the highest computational burden (22.56 ms), highlighting the cost of deep iterative search in this map class.
 
 \subsection{What the Current Results Establish}
 
@@ -52,4 +52,4 @@ The present evidence is strong for reproducible static-grid comparison, but limi
 
 The next implementation priorities are: (i) learned local heuristics with admissibility safeguards, (ii) incremental global-local replanning under dynamic disturbances, (iii) heading-aware SE(2) planners for executable trajectory quality, and (iv) uncertainty-aware continuous planners for large-map robustness. All four directions require the same acceptance discipline before being promoted into default comparisons: multi-generator and multi-seed evaluation, repeated-run timing protocols, and feasibility-oriented metrics beyond grid-path length.
 
-These items are intentionally framed as planned work rather than current contributions. The present manuscript claims are limited to the executed static-grid benchmark infrastructure and its repository-grounded evidence.
+These items are intentionally framed as future directions rather than current contributions. The present manuscript claims are explicitly bounded to the static-grid benchmark infrastructure and its associated repository-grounded evidence.
