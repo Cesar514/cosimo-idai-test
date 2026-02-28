@@ -151,3 +151,48 @@ pytest robotics_maze/tests/test_core.py
 ## Contact
 
 For any more questions, feel free to email: `cac214@bham.ac.uk`
+
+
+CONFIG TOML
+
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+model_reasoning_summary = "concise"
+personality = "pragmatic"
+
+# Leave room for native compaction near the 272–273k context window.
+# Formula: 273000 - (tool_output_token_limit + 15000)
+# With tool_output_token_limit=25000 ⇒ 273000 - (25000 + 15000) = 233000
+model_auto_compact_token_limit = 233000
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+web_search = "live" 
+plan_mode_reasoning_effort = "xhigh"
+
+
+[features]
+apps = true
+responses_websockets_v2 = true
+multi_agent = true
+prevent_idle_sleep = true
+js_repl = true
+voice_transcription = false
+runtime_metrics = false
+child_agents_md = true
+apply_patch_freeform = true
+
+
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"
+
+[mcp_servers.github]
+url = "https://api.githubcopilot.com/mcp/"
+bearer_token_env_var = "GITHUB_TOKEN"
+
+
+[agents]
+max_threads = 36
+max_depth = 3
+
+
+For any more questions, feel free to email: `cac214@bham.ac.uk`
