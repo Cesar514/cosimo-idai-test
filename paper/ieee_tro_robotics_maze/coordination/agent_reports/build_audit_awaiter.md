@@ -30,13 +30,13 @@
   - `LaTeX Warning: Reference`: `0`
 
 ## Command 2
-`python3 /Users/cesar514/.codex/skills/paper-forge/scripts/paperforge.py audit --root paper/ieee_tro_robotics_maze`
+`python3 skills/paper-forge/scripts/paperforge.py audit --root paper/ieee_tro_robotics_maze`
 
 - Exit code: `0`
 - Result: `PASS`
 
 ### Full output
-`Paper Forge audit: /Users/cesar514/Documents/agent_programming/cosimi-idai-test/paper/ieee_tro_robotics_maze`
+`Paper Forge audit: paper/ieee_tro_robotics_maze`
 `- TeX files: 14`
 `- Bib files: 1`
 `  - references.bib`

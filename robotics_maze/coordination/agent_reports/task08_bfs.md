@@ -19,7 +19,7 @@
 ## Quick Validation
 
 - Command:
-  - `cd /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze && python3 - <<'PY' ... PY`
+  - `cd robotics_maze && python3 - <<'PY' ... PY`
 - Checks performed:
   - `planners.plan_path("bfs", ...)` returns a valid start->goal path.
   - `alt_planners.r12_bfs.plan_bfs(...)` returns a valid start->goal path.

@@ -1,7 +1,7 @@
 # GUI Validation (Worker C)
 
 Last refreshed: 2026-02-27 (UTC)  
-Refresh run location: repository root (`/Users/cesar514/Documents/agent_programming/cosimi-idai-test`)  
+Refresh run location: repository root (`.`)  
 Previous full baseline in this note: 2026-02-26
 
 ## Latest Cycle Revalidation (2026-02-27)

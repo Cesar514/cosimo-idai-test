@@ -78,6 +78,7 @@ python3 ../../robotics_maze/src/benchmark.py --mazes 50 --width 15 --height 15 -
 - Submission PDF: `submission/ieee_tro_robotics_maze_main.pdf`
 - Submission source package: `submission/ieee_tro_robotics_maze_source.zip`
 - Build + quality status ledger: `coordination/paper_status.md`
+- Paper-writing execution plan used in this repo: `coordination/PAPER_WRITING_PLAN_USED.md`
 
 ## Latest submission artifact hashes
 

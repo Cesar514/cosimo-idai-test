@@ -18,9 +18,9 @@ pixi run python robotics_maze/scripts/check_backends.py
 ## Sample Output
 ```text
 Physics backend probe:
-  pybullet      available=yes version=3.2.5        detail=/Users/cesar514/Documents/agent_programming/cosimi-idai-test/.pixi/envs/default/lib/python3.11/site-packages/pybullet.cpython-311-darwin.so
-  pybullet_data available=yes version=n/a          detail=/Users/cesar514/Documents/agent_programming/cosimi-idai-test/.pixi/envs/default/lib/python3.11/site-packages/pybullet_data/__init__.py
-  mujoco        available=yes version=3.5.0        detail=/Users/cesar514/Documents/agent_programming/cosimi-idai-test/.pixi/envs/default/lib/python3.11/site-packages/mujoco/__init__.py
+  pybullet      available=yes version=3.2.5        detail=.pixi/envs/default/lib/python3.11/site-packages/pybullet.cpython-311-darwin.so
+  pybullet_data available=yes version=n/a          detail=.pixi/envs/default/lib/python3.11/site-packages/pybullet_data/__init__.py
+  mujoco        available=yes version=3.5.0        detail=.pixi/envs/default/lib/python3.11/site-packages/mujoco/__init__.py
 
 Effective backend availability: pybullet=1 mujoco=1
 

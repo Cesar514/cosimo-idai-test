@@ -1,7 +1,7 @@
 # Robotics Maze Simulation Test Run Log
 
 - Date (UTC): 2026-02-26T22:05:41Z
-- Working directory: /Users/cesar514/Documents/agent_programming/cosimi-idai-test
+- Working directory: .
 - PYTHONHASHSEED: 0
 
 ## Deterministic run: astar
@@ -83,26 +83,26 @@ python3 robotics_maze/src/main.py --planner fringe_search --episodes 3 --maze-si
 
 **Command**
 ```bash
-python3 robotics_maze/scripts/capture_regression_screenshots.py --output-dir /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots --require-mujoco 
+python3 robotics_maze/scripts/capture_regression_screenshots.py --output-dir robotics_maze/testing/screenshots --require-mujoco 
 ```
 
 **Output**
 ```text
-[INFO] running: /Library/Developer/CommandLineTools/usr/bin/python3 /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/scripts/generate_mujoco_screenshots.py --output-dir /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots --filename-prefix mujoco_
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png
-[INFO] running: /Library/Developer/CommandLineTools/usr/bin/python3 /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/scripts/generate_sim_screenshots.py --output-dir /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots --filename-prefix fallback_
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png
+[INFO] running: python3 robotics_maze/scripts/generate_mujoco_screenshots.py --output-dir robotics_maze/testing/screenshots --filename-prefix mujoco_
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png
+[INFO] running: python3 robotics_maze/scripts/generate_sim_screenshots.py --output-dir robotics_maze/testing/screenshots --filename-prefix fallback_
+robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png
+robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png
+robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png
 [INFO] generated screenshots:
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png
+robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png
+robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png
+robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png
 
 ```
 
@@ -112,17 +112,17 @@ python3 robotics_maze/scripts/capture_regression_screenshots.py --output-dir /Us
 
 **Command**
 ```bash
-find /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots -maxdepth 1 -type f -name '*.png' | sort
+find robotics_maze/testing/screenshots -maxdepth 1 -type f -name '*.png' | sort
 ```
 
 **Output**
 ```text
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png
-/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png
+robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png
+robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png
+robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png
+robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png
 ```
 
 **Exit status:** 0
@@ -139,12 +139,12 @@ find /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/
 
 ### Produced Screenshots
 
-- /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png
-- /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png
-- /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png
-- /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png
-- /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png
-- /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png
+- robotics_maze/testing/screenshots/fallback_sim_snapshot_1_astar.png
+- robotics_maze/testing/screenshots/fallback_sim_snapshot_2_weighted_astar.png
+- robotics_maze/testing/screenshots/fallback_sim_snapshot_3_fringe_search.png
+- robotics_maze/testing/screenshots/mujoco_sim_mujoco_1_astar.png
+- robotics_maze/testing/screenshots/mujoco_sim_mujoco_2_weighted_astar.png
+- robotics_maze/testing/screenshots/mujoco_sim_mujoco_3_fringe_search.png
 
 **Overall status:** PASS
 
@@ -153,7 +153,7 @@ find /Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze/
 ## Verification Cycle: 2026-02-27 (UTC)
 
 - Logged at (UTC): 2026-02-27T10:31:08Z
-- Working directory: /Users/cesar514/Documents/agent_programming/cosimi-idai-test
+- Working directory: .
 - Scope: Benchmark harness + paper build verification
 
 ## Benchmark verification

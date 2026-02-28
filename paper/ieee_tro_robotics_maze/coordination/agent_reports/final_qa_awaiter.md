@@ -20,7 +20,7 @@
   - No fatal LaTeX errors.
 
 ### 2) Paper Forge Audit
-- Command: `python3 /Users/cesar514/.codex/skills/paper-forge/scripts/paperforge.py audit --root paper/ieee_tro_robotics_maze`
+- Command: `python3 skills/paper-forge/scripts/paperforge.py audit --root paper/ieee_tro_robotics_maze`
 - Exit code: `0`
 - Audit result: `OK`
 - Inventory:

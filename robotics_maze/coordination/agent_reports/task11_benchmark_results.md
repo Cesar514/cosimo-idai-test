@@ -2,7 +2,7 @@
 
 - Run timestamp (UTC): 2026-02-26T22:31:51+00:00
 - Command: `python3 src/benchmark.py`
-- Working directory: `/Users/cesar514/Documents/agent_programming/cosimi-idai-test/robotics_maze`
+- Working directory: `robotics_maze`
 - Configuration: 50 mazes, size 15x15, algorithm `backtracker`, seed `7`
 - Planners benchmarked: 12 available planners (baseline + alt planners)
 

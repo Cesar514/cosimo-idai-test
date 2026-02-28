@@ -3,10 +3,10 @@
 Date: 2026-02-26
 
 ## Source -> Destination Mapping
-- `/Users/cesar514/.codex/skills/create-plan` -> `/Users/cesar514/Documents/agent_programming/cosimi-idai-test/skills/create-plan`
-- `/Users/cesar514/.codex/skills/github-agents-deploy` -> `/Users/cesar514/Documents/agent_programming/cosimi-idai-test/skills/github-agents-deploy`
-- `/Users/cesar514/.codex/skills/openai-docs` -> `/Users/cesar514/Documents/agent_programming/cosimi-idai-test/skills/openai-docs`
-- `/Users/cesar514/.codex/skills/.system/skill-creator` -> `/Users/cesar514/Documents/agent_programming/cosimi-idai-test/skills/skill-creator`
+- `skills/create-plan` -> `skills/create-plan`
+- `skills/github-agents-deploy` -> `skills/github-agents-deploy`
+- `skills/openai-docs` -> `skills/openai-docs`
+- `skills/.system/skill-creator` -> `skills/skill-creator`
 
 ## Folder Counts
 - `skills/create-plan`: 2 files
@@ -37,4 +37,4 @@ Date: 2026-02-26
 
 ## Portability Notes
 - No machine-local absolute paths were found in copied files; no content edits were needed.
-- `skill-creator` was copied from `.system/skill-creator` because `~/.codex/skills/skill-creator` does not exist.
+- `skill-creator` was copied from `.system/skill-creator` because `skills/skill-creator` does not exist.

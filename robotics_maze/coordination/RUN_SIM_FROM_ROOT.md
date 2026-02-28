@@ -1,7 +1,7 @@
 # Run Simulation from Repo Root (`pixi`)
 
 Validated on 2026-02-26 from:
-`/Users/cesar514/Documents/agent_programming/cosimi-idai-test`
+`.`
 
 ## 1) Default GUI mode
 

@@ -8,7 +8,7 @@ Validate deterministic simulation behavior for:
 - physics backend fallback order
 
 ## Test Setup
-1. Run from repository root: `/Users/cesar514/Documents/agent_programming/cosimi-idai-test`.
+1. Run from repository root: `.`.
 2. Export deterministic env vars:
 ```bash
 export PYTHONHASHSEED=0

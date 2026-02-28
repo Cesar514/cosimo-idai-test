@@ -1,7 +1,7 @@
 # SC2 Skill Copy Log
 
-- Source root: `/Users/cesar514/.codex/skills`
-- Destination root: `/Users/cesar514/Documents/agent_programming/cosimi-idai-test/skills`
+- Source root: `skills` (local mirror source for this repo copy pass)
+- Destination root: `skills`
 
 ## suggest-improve
 - Source file count: 3
