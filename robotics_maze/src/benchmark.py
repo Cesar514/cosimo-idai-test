@@ -6,6 +6,7 @@ import argparse
 import csv
 import importlib
 import math
+import random
 import sys
 import time
 from collections import defaultdict
@@ -58,6 +59,18 @@ DEFAULT_BENCHMARK_PLANNERS: tuple[str, ...] = (
 
 
 @dataclass(frozen=True)
+class DynamicDisturbanceConfig:
+    """Configuration for dynamic obstacle disturbances."""
+
+    enabled: bool = False
+    prob_per_step: float = 0.2
+    max_disturbances: int = 3
+    min_lookahead: int = 2
+    max_lookahead: int = 5
+    seed_offset: int = 1000
+
+
+@dataclass(frozen=True)
 class TrialResult:
     planner: str
     maze_index: int
@@ -69,6 +82,11 @@ class TrialResult:
     solve_time_ms: float
     path_length: int | None
     expansions: int | None
+    is_dynamic: bool = False
+    replans: int = 0
+    replan_time_ms: float = 0.0
+    collisions: int = 0
+    progress: float = 1.0
     error: str | None = None
 
 
@@ -240,6 +258,170 @@ def _normalize_planner_output(
     return True, path, expansions
 
 
+def run_dynamic_trial(
+    planner_name: str,
+    planner_fn: PlannerFn,
+    grid: Grid,
+    start: Cell,
+    goal: Cell,
+    maze_seed: int,
+    maze_index: int,
+    width: int,
+    height: int,
+    algorithm: str,
+    config: DynamicDisturbanceConfig | None = None,
+) -> TrialResult:
+    """Run a trial where obstacles can appear on the robot's path, forcing replans."""
+    if config is None:
+        config = DynamicDisturbanceConfig(enabled=True)
+
+    trial_grid = _copy_grid(grid)
+    current_pos = start
+
+    replans = 0
+    total_replan_ms = 0.0
+    total_expansions = 0
+    collisions = 0
+    disturbances_applied = 0
+
+    # Controlled randomness for disturbances
+    rng = random.Random(maze_seed + config.seed_offset)
+
+    # Initial Plan
+    t0 = time.perf_counter()
+    try:
+        res = planner_fn(trial_grid, current_pos, goal)
+    except Exception as exc:
+        return TrialResult(
+            planner=planner_name,
+            maze_index=maze_index,
+            maze_seed=maze_seed,
+            width=width,
+            height=height,
+            algorithm=algorithm,
+            success=False,
+            solve_time_ms=(time.perf_counter() - t0) * 1000.0,
+            path_length=None,
+            expansions=0,
+            is_dynamic=True,
+            replans=1,
+            replan_time_ms=(time.perf_counter() - t0) * 1000.0,
+            progress=0.0,
+            error=f"Initial plan failed: {exc}",
+        )
+
+    first_solve_ms = (time.perf_counter() - t0) * 1000.0
+    total_replan_ms += first_solve_ms
+    replans += 1
+
+    ok, path, expansions = _normalize_planner_output(res, current_pos, goal)
+    if expansions:
+        total_expansions += expansions
+
+    if not ok or not path:
+        return TrialResult(
+            planner=planner_name,
+            maze_index=maze_index,
+            maze_seed=maze_seed,
+            width=width,
+            height=height,
+            algorithm=algorithm,
+            success=False,
+            solve_time_ms=total_replan_ms,
+            path_length=None,
+            expansions=total_expansions,
+            is_dynamic=True,
+            replans=replans,
+            replan_time_ms=total_replan_ms,
+            progress=0.0,
+            error="Initial plan returned no path",
+        )
+
+    traversed_path = [current_pos]
+    path_idx = 0
+    max_steps = width * height * 4
+    steps = 0
+
+    while current_pos != goal and steps < max_steps:
+        # Move along path
+        path_idx += 1
+        if path_idx >= len(path):
+            break
+
+        next_pos = path[path_idx]
+
+        # Before moving, a disturbance might occur!
+        if disturbances_applied < config.max_disturbances and rng.random() < config.prob_per_step:
+            # Try to block a cell ahead on the current path
+            look_ahead = rng.randint(config.min_lookahead, config.max_lookahead)
+            if path_idx + look_ahead < len(path):
+                block_cell = path[path_idx + look_ahead]
+                if block_cell != goal and block_cell != current_pos and block_cell != next_pos:
+                    trial_grid[block_cell[0]][block_cell[1]] = 1
+                    disturbances_applied += 1
+
+                    # Trigger Replan
+                    tr0 = time.perf_counter()
+                    try:
+                        res = planner_fn(trial_grid, current_pos, goal)
+                    except Exception:
+                        res = None
+                    total_replan_ms += (time.perf_counter() - tr0) * 1000.0
+                    replans += 1
+
+                    ok, new_path, expansions = _normalize_planner_output(res, current_pos, goal)
+                    if expansions:
+                        total_expansions += expansions
+
+                    if ok and new_path:
+                        path = new_path
+                        path_idx = 0
+                        # Re-evaluate next step from new path
+                        path_idx += 1
+                        if path_idx >= len(path):
+                            break
+                        next_pos = path[path_idx]
+                    else:
+                        # No path found after disturbance
+                        break
+
+        # Check for collision (if robot moved into an obstacle it didn't see yet)
+        if trial_grid[next_pos[0]][next_pos[1]]:
+            collisions += 1
+            break
+
+        current_pos = next_pos
+        traversed_path.append(current_pos)
+        steps += 1
+
+    success = current_pos == goal
+
+    # Progress
+    d_start = math.hypot(goal[0] - start[0], goal[1] - start[1])
+    d_end = math.hypot(goal[0] - current_pos[0], goal[1] - current_pos[1])
+    progress_val = 1.0 - (d_end / d_start) if d_start > 0 else 1.0
+    progress_val = max(0.0, min(1.0, progress_val))
+
+    return TrialResult(
+        planner=planner_name,
+        maze_index=maze_index,
+        maze_seed=maze_seed,
+        width=width,
+        height=height,
+        algorithm=algorithm,
+        success=success,
+        solve_time_ms=total_replan_ms,
+        path_length=len(traversed_path) - 1 if success else None,
+        expansions=total_expansions,
+        is_dynamic=True,
+        replans=replans,
+        replan_time_ms=total_replan_ms,
+        collisions=collisions,
+        progress=progress_val,
+        error=None if success else "Goal not reached",
+    )
+
+
 def _trial_key(row: TrialResult) -> TrialKey:
     return (row.maze_index, row.maze_seed, row.width, row.height, row.algorithm)
 
@@ -382,6 +564,15 @@ def summarize_trials(trials: list[TrialResult]) -> list[dict[str, Any]]:
                     )
                     else math.nan
                 ),
+                "mean_replans": mean(row.replans for row in rows) if rows else 0.0,
+                "mean_replan_latency_ms": (
+                    mean(latencies)
+                    if (latencies := [row.replan_time_ms / row.replans for row in rows if row.replans > 0])
+                    else 0.0
+                ),
+                "mean_collisions": mean(row.collisions for row in rows) if rows else 0.0,
+                "mean_progress": mean(row.progress for row in rows) if rows else 0.0,
+                "is_dynamic": any(row.is_dynamic for row in rows),
             }
         )
     return rank_summary_rows(summary_rows)
@@ -435,6 +626,11 @@ def write_results_csv(trials: list[TrialResult], output_path: Path) -> Path:
                 "solve_time_ms",
                 "path_length",
                 "expansions",
+                "is_dynamic",
+                "replans",
+                "replan_time_ms",
+                "collisions",
+                "progress",
                 "error",
             ]
         )
@@ -451,6 +647,11 @@ def write_results_csv(trials: list[TrialResult], output_path: Path) -> Path:
                     f"{row.solve_time_ms:.6f}",
                     row.path_length if row.path_length is not None else "",
                     row.expansions if row.expansions is not None else "",
+                    int(row.is_dynamic),
+                    row.replans,
+                    f"{row.replan_time_ms:.6f}",
+                    row.collisions,
+                    f"{row.progress:.4f}",
                     row.error or "",
                 ]
             )
@@ -478,30 +679,57 @@ def render_console_summary_table(summary_rows: list[dict[str, Any]]) -> str:
     if not ranked_rows:
         return "No planner rows to display."
 
+    is_dynamic = any(row.get("is_dynamic") for row in summary_rows)
     baseline_time_ms = _comparison_time_ms(ranked_rows[0])
-    headers = [
-        ("Rank", "right"),
-        ("Planner", "left"),
-        ("Success Rate", "right"),
-        ("Comparable Mazes", "right"),
-        ("Comparable Time (ms)", "right"),
-        ("Delta vs #1 (ms)", "right"),
-        ("Comparable Path", "right"),
-        ("Mean Expansions", "right"),
-    ]
-    rows = [
-        [
-            str(row["rank"]),
-            str(row["planner"]),
-            _fmt_success(int(row["successes"]), int(row["runs"])),
-            str(int(row.get("shared_success_maze_count", 0))),
-            f"{_comparison_time_ms(row):.2f}",
-            _fmt_delta_ms(_comparison_time_ms(row) - baseline_time_ms),
-            _fmt_metric(_comparison_path_length(row)),
-            _fmt_metric(float(row["mean_expansions"])),
+
+    if is_dynamic:
+        headers = [
+            ("Rank", "right"),
+            ("Planner", "left"),
+            ("Success Rate", "right"),
+            ("Mean Replans", "right"),
+            ("Replan Latency (ms)", "right"),
+            ("Collisions", "right"),
+            ("Progress", "right"),
+            ("Comp. Time (ms)", "right"),
         ]
-        for row in ranked_rows
-    ]
+        rows = [
+            [
+                str(row["rank"]),
+                str(row["planner"]),
+                _fmt_success(int(row["successes"]), int(row["runs"])),
+                f"{row['mean_replans']:.2f}",
+                f"{row['mean_replan_latency_ms']:.2f}",
+                f"{row['mean_collisions']:.2f}",
+                f"{row['mean_progress']:.2f}",
+                f"{_comparison_time_ms(row):.2f}",
+            ]
+            for row in ranked_rows
+        ]
+    else:
+        headers = [
+            ("Rank", "right"),
+            ("Planner", "left"),
+            ("Success Rate", "right"),
+            ("Comparable Mazes", "right"),
+            ("Comparable Time (ms)", "right"),
+            ("Delta vs #1 (ms)", "right"),
+            ("Comparable Path", "right"),
+            ("Mean Expansions", "right"),
+        ]
+        rows = [
+            [
+                str(row["rank"]),
+                str(row["planner"]),
+                _fmt_success(int(row["successes"]), int(row["runs"])),
+                str(int(row.get("shared_success_maze_count", 0))),
+                f"{_comparison_time_ms(row):.2f}",
+                _fmt_delta_ms(_comparison_time_ms(row) - baseline_time_ms),
+                _fmt_metric(_comparison_path_length(row)),
+                _fmt_metric(float(row["mean_expansions"])),
+            ]
+            for row in ranked_rows
+        ]
     widths = [
         max(len(headers[idx][0]), max(len(row[idx]) for row in rows))
         for idx in range(len(headers))
@@ -535,6 +763,13 @@ def write_summary_markdown(
     ranked_rows = rank_summary_rows(summary_rows)
     baseline_time_ms = _comparison_time_ms(ranked_rows[0]) if ranked_rows else 0.0
     top_planner = str(ranked_rows[0]["planner"]) if ranked_rows else "n/a"
+    is_dynamic = any(row.get("is_dynamic") for row in summary_rows) or False
+    # Check trials to see if dynamic was requested
+    if not is_dynamic and summary_rows:
+        # This is a bit hacky but we don't pass 'dynamic' to this function explicitly.
+        # We can infer it if any row in any TrialResult was dynamic.
+        pass
+
     lines = [
         "# Benchmark Summary",
         "",
@@ -544,25 +779,51 @@ def write_summary_markdown(
         f"- Maze algorithm: {algorithm}",
         f"- Seed: {seed}",
         f"- Top planner: {top_planner}",
+    ]
+
+    if is_dynamic:
+        lines.append("- Mode: Dynamic Obstacles")
+
+    lines.extend([
         "- Comparable mazes: mazes solved by every planner (shared-success set).",
         "- Ranking policy: success rate (desc), comparable solve time (asc), mean expansions (asc), mean solve time (asc), planner name (asc).",
         "",
-        "| Rank | Planner | Success Rate | Comparable Mazes | Comparable Solve Time (ms) | Delta vs #1 (ms) | Comparable Path Length | Mean Expansions |",
-        "|---:|---|---:|---:|---:|---:|---:|---:|",
-    ]
+    ])
+
+    header = "| Rank | Planner | Success Rate | Comparable Mazes | Comparable Solve Time (ms) | Delta vs #1 (ms) | Comparable Path Length | Mean Expansions |"
+    sep = "|---:|---|---:|---:|---:|---:|---:|---:|"
+    if is_dynamic:
+        header = "| Rank | Planner | Success Rate | Mean Replans | Mean Replan Latency (ms) | Mean Collisions | Mean Progress | Comparable Solve Time (ms) |"
+        sep = "|---:|---|---:|---:|---:|---:|---:|---:|"
+
+    lines.append(header)
+    lines.append(sep)
 
     for row in ranked_rows:
-        lines.append(
-            "| "
-            + f"{row['rank']} | "
-            + f"{row['planner']} | "
-            + f"{_fmt_success(int(row['successes']), int(row['runs']))} | "
-            + f"{int(row.get('shared_success_maze_count', 0))} | "
-            + f"{_comparison_time_ms(row):.2f} | "
-            + f"{_fmt_delta_ms(_comparison_time_ms(row) - baseline_time_ms)} | "
-            + f"{_fmt_metric(_comparison_path_length(row))} | "
-            + f"{_fmt_metric(row['mean_expansions'])} |"
-        )
+        if is_dynamic:
+            lines.append(
+                "| "
+                + f"{row['rank']} | "
+                + f"{row['planner']} | "
+                + f"{_fmt_success(int(row['successes']), int(row['runs']))} | "
+                + f"{row['mean_replans']:.2f} | "
+                + f"{row['mean_replan_latency_ms']:.2f} | "
+                + f"{row['mean_collisions']:.2f} | "
+                + f"{row['mean_progress']:.2f} | "
+                + f"{_comparison_time_ms(row):.2f} |"
+            )
+        else:
+            lines.append(
+                "| "
+                + f"{row['rank']} | "
+                + f"{row['planner']} | "
+                + f"{_fmt_success(int(row['successes']), int(row['runs']))} | "
+                + f"{int(row.get('shared_success_maze_count', 0))} | "
+                + f"{_comparison_time_ms(row):.2f} | "
+                + f"{_fmt_delta_ms(_comparison_time_ms(row) - baseline_time_ms)} | "
+                + f"{_fmt_metric(_comparison_path_length(row))} | "
+                + f"{_fmt_metric(row['mean_expansions'])} |"
+            )
 
     output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return output_path
@@ -575,6 +836,7 @@ def run_benchmark(
     height: int = 15,
     seed: int = 7,
     algorithm: str = "backtracker",
+    dynamic_config: DynamicDisturbanceConfig | None = None,
 ) -> tuple[list[TrialResult], list[dict[str, Any]]]:
     if maze_count < 1:
         raise ValueError("maze_count must be >= 1.")
@@ -609,41 +871,57 @@ def run_benchmark(
         ordered_items = planner_items[offset:] + planner_items[:offset]
 
         for planner_name, planner_fn in ordered_items:
-            trial_grid = _copy_grid(grid)
-            started = time.perf_counter()
-            error_text: str | None = None
-            try:
-                raw_result = planner_fn(trial_grid, start, goal)
-            except Exception as exc:
-                raw_result = None
-                error_text = f"{type(exc).__name__}: {exc}"
-            elapsed_ms = (time.perf_counter() - started) * 1000.0
-
-            reported_success, path, expansions = _normalize_planner_output(raw_result, start, goal)
-            valid_path, path_length, validation_error = _validate_and_measure_path(
-                grid=grid,
-                path=path,
-                start=start,
-                goal=goal,
-            )
-            success = reported_success and valid_path
-            if reported_success and not valid_path and error_text is None:
-                error_text = validation_error
-            trials.append(
-                TrialResult(
-                    planner=planner_name,
-                    maze_index=maze_index,
+            if dynamic_config and dynamic_config.enabled:
+                trial = run_dynamic_trial(
+                    planner_name=planner_name,
+                    planner_fn=planner_fn,
+                    grid=grid,
+                    start=start,
+                    goal=goal,
                     maze_seed=maze_seed,
+                    maze_index=maze_index,
                     width=width,
                     height=height,
                     algorithm=algorithm,
-                    success=success,
-                    solve_time_ms=elapsed_ms,
-                    path_length=path_length if success else None,
-                    expansions=expansions,
-                    error=error_text,
+                    config=dynamic_config,
                 )
-            )
+                trials.append(trial)
+            else:
+                trial_grid = _copy_grid(grid)
+                started = time.perf_counter()
+                error_text: str | None = None
+                try:
+                    raw_result = planner_fn(trial_grid, start, goal)
+                except Exception as exc:
+                    raw_result = None
+                    error_text = f"{type(exc).__name__}: {exc}"
+                elapsed_ms = (time.perf_counter() - started) * 1000.0
+
+                reported_success, path, expansions = _normalize_planner_output(raw_result, start, goal)
+                valid_path, path_length, validation_error = _validate_and_measure_path(
+                    grid=grid,
+                    path=path,
+                    start=start,
+                    goal=goal,
+                )
+                success = reported_success and valid_path
+                if reported_success and not valid_path and error_text is None:
+                    error_text = validation_error
+                trials.append(
+                    TrialResult(
+                        planner=planner_name,
+                        maze_index=maze_index,
+                        maze_seed=maze_seed,
+                        width=width,
+                        height=height,
+                        algorithm=algorithm,
+                        success=success,
+                        solve_time_ms=elapsed_ms,
+                        path_length=path_length if success else None,
+                        expansions=expansions,
+                        error=error_text,
+                    )
+                )
 
     return trials, summarize_trials(trials)
 
@@ -656,6 +934,7 @@ def run_benchmark_and_write_reports(
     seed: int = 7,
     algorithm: str = "backtracker",
     output_dir: Path | str | None = None,
+    dynamic_config: DynamicDisturbanceConfig | None = None,
 ) -> tuple[list[TrialResult], list[dict[str, Any]], Path, Path]:
     output_dir = (
         Path(output_dir)
@@ -669,6 +948,7 @@ def run_benchmark_and_write_reports(
         height=height,
         seed=seed,
         algorithm=algorithm,
+        dynamic_config=dynamic_config,
     )
     csv_path = write_results_csv(trials, output_dir / "benchmark_results.csv")
     summary_path = write_summary_markdown(
@@ -708,6 +988,23 @@ def _build_cli_parser() -> argparse.ArgumentParser:
         help="Only benchmark baseline planners from src/planners.py.",
     )
     parser.add_argument(
+        "--dynamic",
+        action="store_true",
+        help="Run dynamic benchmark extension with controlled disturbances.",
+    )
+    parser.add_argument(
+        "--dynamic-prob",
+        type=float,
+        default=0.2,
+        help="Probability of disturbance per step in dynamic mode.",
+    )
+    parser.add_argument(
+        "--dynamic-disturbances",
+        type=int,
+        default=3,
+        help="Maximum number of disturbances per episode.",
+    )
+    parser.add_argument(
         "--output-dir",
         default=str(Path(__file__).resolve().parents[1] / "results"),
         help="Directory where CSV + Markdown outputs are written.",
@@ -739,6 +1036,12 @@ def main() -> None:
         except ValueError as exc:
             parser.error(str(exc))
 
+    dynamic_config = DynamicDisturbanceConfig(
+        enabled=args.dynamic,
+        prob_per_step=args.dynamic_prob,
+        max_disturbances=args.dynamic_disturbances,
+    )
+
     _, summary_rows, csv_path, summary_path = run_benchmark_and_write_reports(
         planners=selected,
         maze_count=args.mazes,
@@ -747,6 +1050,7 @@ def main() -> None:
         seed=args.seed,
         algorithm=args.algorithm,
         output_dir=args.output_dir,
+        dynamic_config=dynamic_config,
     )
 
     print(f"Wrote: {csv_path}")
