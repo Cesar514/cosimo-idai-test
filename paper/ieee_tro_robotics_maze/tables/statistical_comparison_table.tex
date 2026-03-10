@@ -1,6 +1,6 @@
 \begin{table*}[t]
 \centering
-\caption{Exploratory paired runtime comparisons against \texttt{r1\_weighted\_astar} on the same 50 mazes (single run per planner-maze pair). Positive \(\Delta\) means the comparator is slower. Confidence intervals are percentile bootstrap intervals from 40{,}000 paired resamples (fixed seed). \(p\)-values are exact two-sided paired sign tests with Holm correction across 11 comparisons.}
+\caption{Exploratory paired runtime comparisons against \texttt{r1\_weighted\_astar} on the same mazes (single run per planner-maze pair). Positive \(\Delta\) means the comparator is slower. Confidence intervals are percentile bootstrap intervals from 40{,}000 paired resamples (fixed seed). \(p\)-values are exact two-sided paired sign tests with Holm correction across 11 comparisons.}
 \label{tab:runtime_statistical_comparison}
 \footnotesize
 \setlength{\tabcolsep}{4.0pt}
@@ -8,17 +8,17 @@
 \toprule
 Comparator & Median \(\Delta\) (ms) & 95\% CI for \(\Delta\) (ms) & Slower/Faster (of 50) & Holm-adjusted \(p\) \\
 \midrule
-R7 Beam Search       & 0.068  & [0.046, 0.085]  & 50/0 & \(1.95\times10^{-14}\) \\
-R5 Jump Point Search & 0.081  & [0.055, 0.124]  & 50/0 & \(1.95\times10^{-14}\) \\
-Greedy Best-First    & 0.078  & [0.056, 0.112]  & 48/2 & \(2.27\times10^{-12}\) \\
-R8 Fringe Search     & 0.154  & [0.113, 0.228]  & 50/0 & \(1.95\times10^{-14}\) \\
-A*                   & 0.149  & [0.097, 0.230]  & 50/0 & \(1.95\times10^{-14}\) \\
-Dijkstra             & 0.172  & [0.106, 0.244]  & 50/0 & \(1.95\times10^{-14}\) \\
-R9 Bidirectional BFS & 0.191  & [0.121, 0.232]  & 50/0 & \(1.95\times10^{-14}\) \\
-R2 Bidirectional A*  & 0.983  & [0.593, 1.320]  & 50/0 & \(1.95\times10^{-14}\) \\
-R3 Theta*            & 1.003  & [0.723, 1.714]  & 50/0 & \(1.95\times10^{-14}\) \\
-R6 LPA*              & 3.296  & [2.726, 4.265]  & 50/0 & \(1.95\times10^{-14}\) \\
-R4 IDA*              & 10.762 & [5.697, 30.026] & 50/0 & \(1.95\times10^{-14}\) \\
+R7 Beam Search         & 0.039   & [0.032, 0.049]       & 46/4   & \(8.92\times10^{-10}\) \\
+R5 Jump Point Search   & 0.072   & [0.059, 0.113]       & 48/2   & \(1.59\times10^{-11}\) \\
+Greedy Best-First      & 0.086   & [0.065, 0.119]       & 46/4   & \(8.92\times10^{-10}\) \\
+Dijkstra               & 0.158   & [0.119, 0.253]       & 48/2   & \(1.59\times10^{-11}\) \\
+R8 Fringe Search       & 0.160   & [0.101, 0.202]       & 48/2   & \(1.59\times10^{-11}\) \\
+A*                     & 0.163   & [0.111, 0.226]       & 48/2   & \(1.59\times10^{-11}\) \\
+R9 Bidirectional BFS   & 0.174   & [0.120, 0.211]       & 48/2   & \(1.59\times10^{-11}\) \\
+R3 Theta*              & 1.046   & [0.719, 1.764]       & 50/0   & \(1.95\times10^{-14}\) \\
+R2 Bidirectional A*    & 1.210   & [0.749, 1.523]       & 50/0   & \(1.95\times10^{-14}\) \\
+R6 LPA*                & 3.617   & [3.078, 4.838]       & 50/0   & \(1.95\times10^{-14}\) \\
+R4 IDA*                & 14.778  & [7.015, 37.882]      & 50/0   & \(1.95\times10^{-14}\) \\
 \bottomrule
 \end{tabular}
 \end{table*}
