@@ -12,7 +12,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from statistics import mean
+from statistics import mean, median, stdev
 from typing import Any, Callable, Mapping
 
 # Ensure sibling modules (maze.py, planners.py, alt_planners/*) are importable
@@ -70,6 +70,7 @@ class TrialResult:
     path_length: int | None
     expansions: int | None
     error: str | None = None
+    repeat_index: int = 0
 
 
 def _copy_grid(grid: Grid) -> Grid:
@@ -436,6 +437,7 @@ def write_results_csv(trials: list[TrialResult], output_path: Path) -> Path:
                 "path_length",
                 "expansions",
                 "error",
+                "repeat_index",
             ]
         )
         for row in trials:
@@ -452,6 +454,7 @@ def write_results_csv(trials: list[TrialResult], output_path: Path) -> Path:
                     row.path_length if row.path_length is not None else "",
                     row.expansions if row.expansions is not None else "",
                     row.error or "",
+                    row.repeat_index,
                 ]
             )
     return output_path
@@ -529,6 +532,8 @@ def write_summary_markdown(
     height: int,
     seed: int,
     algorithm: str,
+    repeats: int = 1,
+    warmup: int = 0,
 ) -> Path:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     generated_at = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
@@ -543,6 +548,8 @@ def write_summary_markdown(
         f"- Maze size (cells): {width}x{height}",
         f"- Maze algorithm: {algorithm}",
         f"- Seed: {seed}",
+        f"- Repeats per planner-maze pair: {repeats}",
+        f"- Warm-up runs (discarded): {warmup}",
         f"- Top planner: {top_planner}",
         "- Comparable mazes: mazes solved by every planner (shared-success set).",
         "- Ranking policy: success rate (desc), comparable solve time (asc), mean expansions (asc), mean solve time (asc), planner name (asc).",
@@ -568,6 +575,133 @@ def write_summary_markdown(
     return output_path
 
 
+def compute_repeat_stats(trials: list[TrialResult]) -> list[dict[str, Any]]:
+    """Aggregate per (planner, maze) over repeats: mean, median, std of solve_time_ms."""
+    grouped: dict[tuple[str, int, int], list[TrialResult]] = defaultdict(list)
+    for trial in trials:
+        key = (trial.planner, trial.maze_index, trial.maze_seed)
+        grouped[key].append(trial)
+
+    rows: list[dict[str, Any]] = []
+    for (planner, maze_index, maze_seed), group in sorted(grouped.items()):
+        times = [t.solve_time_ms for t in group]
+        rows.append(
+            {
+                "planner": planner,
+                "maze_index": maze_index,
+                "maze_seed": maze_seed,
+                "repeats": len(group),
+                "mean_solve_time_ms": mean(times),
+                "median_solve_time_ms": median(times),
+                "std_solve_time_ms": stdev(times) if len(times) >= 2 else float("nan"),
+                "min_solve_time_ms": min(times),
+                "max_solve_time_ms": max(times),
+            }
+        )
+    return rows
+
+
+def _spearman_rho(ranks_a: list[float], ranks_b: list[float]) -> float:
+    """Compute Spearman rank correlation coefficient."""
+    n = len(ranks_a)
+    if n < 2:
+        return float("nan")
+    d_sq_sum = sum((a - b) ** 2 for a, b in zip(ranks_a, ranks_b))
+    denom = n * (n**2 - 1)
+    return 1.0 - (6.0 * d_sq_sum) / denom if denom else float("nan")
+
+
+def compute_rank_stability(trials: list[TrialResult]) -> dict[str, Any]:
+    """Evaluate planner rank stability across repeat indices.
+
+    For each repeat index, summarise planners and extract their ranks.
+    Returns pairwise Spearman ρ between every pair of repeat-round rankings.
+    """
+    repeat_indices = sorted({t.repeat_index for t in trials})
+    if len(repeat_indices) < 2:
+        return {"repeat_count": len(repeat_indices), "mean_spearman_rho": float("nan"), "pairs": []}
+
+    planner_ranks_per_repeat: dict[int, dict[str, int]] = {}
+    for rep_idx in repeat_indices:
+        rep_trials = [t for t in trials if t.repeat_index == rep_idx]
+        summary = summarize_trials(rep_trials)
+        planner_ranks_per_repeat[rep_idx] = {row["planner"]: int(row["rank"]) for row in summary}
+
+    planners = sorted(planner_ranks_per_repeat[repeat_indices[0]])
+    pairs: list[dict[str, Any]] = []
+    for i in range(len(repeat_indices)):
+        for j in range(i + 1, len(repeat_indices)):
+            ri, rj = repeat_indices[i], repeat_indices[j]
+            ranks_i = [float(planner_ranks_per_repeat[ri].get(p, 0)) for p in planners]
+            ranks_j = [float(planner_ranks_per_repeat[rj].get(p, 0)) for p in planners]
+            pairs.append({"repeat_i": ri, "repeat_j": rj, "spearman_rho": _spearman_rho(ranks_i, ranks_j)})
+
+    valid_rhos = [p["spearman_rho"] for p in pairs if not math.isnan(p["spearman_rho"])]
+    return {
+        "repeat_count": len(repeat_indices),
+        "mean_spearman_rho": mean(valid_rhos) if valid_rhos else float("nan"),
+        "pairs": pairs,
+    }
+
+
+def write_repeat_stats_csv(repeat_stats: list[dict[str, Any]], output_path: Path) -> Path:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(
+            [
+                "planner",
+                "maze_index",
+                "maze_seed",
+                "repeats",
+                "mean_solve_time_ms",
+                "median_solve_time_ms",
+                "std_solve_time_ms",
+                "min_solve_time_ms",
+                "max_solve_time_ms",
+            ]
+        )
+        for row in repeat_stats:
+            writer.writerow(
+                [
+                    row["planner"],
+                    row["maze_index"],
+                    row["maze_seed"],
+                    row["repeats"],
+                    f"{row['mean_solve_time_ms']:.6f}",
+                    f"{row['median_solve_time_ms']:.6f}",
+                    f"{row['std_solve_time_ms']:.6f}",
+                    f"{row['min_solve_time_ms']:.6f}",
+                    f"{row['max_solve_time_ms']:.6f}",
+                ]
+            )
+    return output_path
+
+
+def write_rank_stability_report(stability: dict[str, Any], output_path: Path) -> Path:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "# Rank Stability Report",
+        "",
+        f"- Repeat count: {stability['repeat_count']}",
+        f"- Mean Spearman \u03c1 across repeat pairs: {_fmt_metric(stability['mean_spearman_rho'])}",
+        "",
+    ]
+    if stability["pairs"]:
+        lines += [
+            "| Repeat i | Repeat j | Spearman \u03c1 |",
+            "|---:|---:|---:|",
+        ]
+        for pair in stability["pairs"]:
+            lines.append(
+                f"| {pair['repeat_i']} | {pair['repeat_j']} | {_fmt_metric(pair['spearman_rho'])} |"
+            )
+    else:
+        lines.append("No cross-repeat pairs available (repeats < 2).")
+    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return output_path
+
+
 def run_benchmark(
     planners: Mapping[str, PlannerFn] | None = None,
     maze_count: int = 50,
@@ -575,11 +709,17 @@ def run_benchmark(
     height: int = 15,
     seed: int = 7,
     algorithm: str = "backtracker",
+    repeats: int = 1,
+    warmup: int = 0,
 ) -> tuple[list[TrialResult], list[dict[str, Any]]]:
     if maze_count < 1:
         raise ValueError("maze_count must be >= 1.")
     if width < 2 or height < 2:
         raise ValueError("Maze width and height must be >= 2.")
+    if repeats < 1:
+        raise ValueError("repeats must be >= 1.")
+    if warmup < 0:
+        raise ValueError("warmup must be >= 0.")
 
     available = load_available_planners(include_alt=True)
     if planners is None:
@@ -609,41 +749,52 @@ def run_benchmark(
         ordered_items = planner_items[offset:] + planner_items[:offset]
 
         for planner_name, planner_fn in ordered_items:
-            trial_grid = _copy_grid(grid)
-            started = time.perf_counter()
-            error_text: str | None = None
-            try:
-                raw_result = planner_fn(trial_grid, start, goal)
-            except Exception as exc:
-                raw_result = None
-                error_text = f"{type(exc).__name__}: {exc}"
-            elapsed_ms = (time.perf_counter() - started) * 1000.0
+            # Warm-up runs: execute the planner but discard timing results.
+            for _ in range(warmup):
+                warmup_grid = _copy_grid(grid)
+                try:
+                    planner_fn(warmup_grid, start, goal)
+                except Exception:
+                    pass
 
-            reported_success, path, expansions = _normalize_planner_output(raw_result, start, goal)
-            valid_path, path_length, validation_error = _validate_and_measure_path(
-                grid=grid,
-                path=path,
-                start=start,
-                goal=goal,
-            )
-            success = reported_success and valid_path
-            if reported_success and not valid_path and error_text is None:
-                error_text = validation_error
-            trials.append(
-                TrialResult(
-                    planner=planner_name,
-                    maze_index=maze_index,
-                    maze_seed=maze_seed,
-                    width=width,
-                    height=height,
-                    algorithm=algorithm,
-                    success=success,
-                    solve_time_ms=elapsed_ms,
-                    path_length=path_length if success else None,
-                    expansions=expansions,
-                    error=error_text,
+            # Timed repeats.
+            for repeat_index in range(repeats):
+                trial_grid = _copy_grid(grid)
+                started = time.perf_counter()
+                error_text: str | None = None
+                try:
+                    raw_result = planner_fn(trial_grid, start, goal)
+                except Exception as exc:
+                    raw_result = None
+                    error_text = f"{type(exc).__name__}: {exc}"
+                elapsed_ms = (time.perf_counter() - started) * 1000.0
+
+                reported_success, path, expansions = _normalize_planner_output(raw_result, start, goal)
+                valid_path, path_length, validation_error = _validate_and_measure_path(
+                    grid=grid,
+                    path=path,
+                    start=start,
+                    goal=goal,
                 )
-            )
+                success = reported_success and valid_path
+                if reported_success and not valid_path and error_text is None:
+                    error_text = validation_error
+                trials.append(
+                    TrialResult(
+                        planner=planner_name,
+                        maze_index=maze_index,
+                        maze_seed=maze_seed,
+                        width=width,
+                        height=height,
+                        algorithm=algorithm,
+                        success=success,
+                        solve_time_ms=elapsed_ms,
+                        path_length=path_length if success else None,
+                        expansions=expansions,
+                        error=error_text,
+                        repeat_index=repeat_index,
+                    )
+                )
 
     return trials, summarize_trials(trials)
 
@@ -656,6 +807,8 @@ def run_benchmark_and_write_reports(
     seed: int = 7,
     algorithm: str = "backtracker",
     output_dir: Path | str | None = None,
+    repeats: int = 1,
+    warmup: int = 0,
 ) -> tuple[list[TrialResult], list[dict[str, Any]], Path, Path]:
     output_dir = (
         Path(output_dir)
@@ -669,6 +822,8 @@ def run_benchmark_and_write_reports(
         height=height,
         seed=seed,
         algorithm=algorithm,
+        repeats=repeats,
+        warmup=warmup,
     )
     csv_path = write_results_csv(trials, output_dir / "benchmark_results.csv")
     summary_path = write_summary_markdown(
@@ -679,7 +834,14 @@ def run_benchmark_and_write_reports(
         height=height,
         seed=seed,
         algorithm=algorithm,
+        repeats=repeats,
+        warmup=warmup,
     )
+    if repeats > 1:
+        repeat_stats = compute_repeat_stats(trials)
+        write_repeat_stats_csv(repeat_stats, output_dir / "benchmark_repeat_stats.csv")
+        stability = compute_rank_stability(trials)
+        write_rank_stability_report(stability, output_dir / "benchmark_rank_stability.md")
     return trials, summary_rows, csv_path, summary_path
 
 
@@ -711,6 +873,18 @@ def _build_cli_parser() -> argparse.ArgumentParser:
         "--output-dir",
         default=str(Path(__file__).resolve().parents[1] / "results"),
         help="Directory where CSV + Markdown outputs are written.",
+    )
+    parser.add_argument(
+        "--repeats",
+        type=int,
+        default=1,
+        help="Number of timed repetitions per planner-maze pair (default: 1).",
+    )
+    parser.add_argument(
+        "--warmup",
+        type=int,
+        default=0,
+        help="Number of warm-up (discarded) runs before timed repeats (default: 0).",
     )
     return parser
 
@@ -747,13 +921,20 @@ def main() -> None:
         seed=args.seed,
         algorithm=args.algorithm,
         output_dir=args.output_dir,
+        repeats=args.repeats,
+        warmup=args.warmup,
     )
 
     print(f"Wrote: {csv_path}")
     print(f"Wrote: {summary_path}")
+    if args.repeats > 1:
+        output_dir = Path(args.output_dir)
+        print(f"Wrote: {output_dir / 'benchmark_repeat_stats.csv'}")
+        print(f"Wrote: {output_dir / 'benchmark_rank_stability.md'}")
     print(
         f"Planner comparison ({args.mazes} mazes, {args.width}x{args.height}, "
-        f"algorithm={args.algorithm}, seed={args.seed}):"
+        f"algorithm={args.algorithm}, seed={args.seed}, "
+        f"repeats={args.repeats}, warmup={args.warmup}):"
     )
     print(render_console_summary_table(summary_rows))
 

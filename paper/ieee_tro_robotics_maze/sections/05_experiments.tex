@@ -43,8 +43,7 @@ expansions. Reported paths are validated against occupancy and bounds constraint
 segment-level collision checks; a trial is marked successful only if both planner output and path
 validation succeed. Solve time is measured using Python \texttt{time.perf\_counter()} around each
 planner invocation and converted to milliseconds. To reduce first-run cache bias, planner execution
-order is rotated per maze. In the current snapshot, each planner-maze pair is executed once, so
-timing differences should be interpreted as descriptive. Aggregated ranking follows the executable
+order is rotated per maze. The harness supports configurable repeated-run timing via \texttt{--repeats} \(R\) (number of timed runs per planner-maze pair) and \texttt{--warmup} \(W\) (discarded warm-up invocations before timing begins); when \(R > 1\), per-(planner, maze) aggregate statistics and a Spearman rank-stability report are also emitted. In the current committed artifacts, \(R = 1\) (single measurement), so timing differences should be interpreted as exploratory. Aggregated ranking follows the executable
 lexicographic order in \texttt{benchmark.py}: success rate, comparable shared-success solve time,
 mean expansions, overall mean solve time, then planner name as deterministic tie-break.
 Comparable path length is reported but excluded from ranking because any-angle and cardinal-grid
