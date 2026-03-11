@@ -8,6 +8,7 @@
 
 ## Gates
 - Build Gate: pass (latest latexmk run succeeds)
+- Planner Set Gate: pass (12-planner canonical contract enforced in CI)
 - Citation Gate: pass (70 references, all year >=2021; no missing cite keys)
 - Claims Gate: pass (29 claims tracked; all currently marked verified)
 - Figure Gate: pass (benchmark/system/uncertainty figures integrated with manifest provenance)
