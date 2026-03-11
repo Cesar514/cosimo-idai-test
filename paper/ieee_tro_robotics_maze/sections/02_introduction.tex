@@ -5,11 +5,11 @@ The implemented stack links a command-level entrypoint (\texttt{scripts/sim\_run
 
 The same repository provides a benchmark harness (\texttt{robotics\_maze/src/benchmark.py}) that normalizes planner outputs, validates geometric path feasibility against occupancy grids, and emits trial-level CSV/Markdown artifacts. In the tracked snapshot (\texttt{robotics\_maze/results/benchmark\_summary.md}), 12 planners are evaluated on 50 generated \(15\times15\) backtracker mazes.
 
-This paper contributes three bounded, repository-grounded results:
+This paper contributes three bounded, repository-grounded results focused on integration-level novelty:
 \begin{itemize}
-    \item \textbf{Infrastructure method contribution:} a deterministic planner-evaluation runtime that combines explicit seed propagation, heterogeneous planner I/O normalization, geometric path validation, and backend fallback behavior in one executable workflow.
-    \item \textbf{Evaluation-protocol contribution:} a shared-success comparability policy with rotated planner order and deterministic lexicographic ranking by success rate, comparable solve time, mean expansions, and overall mean solve time. Path length is reported descriptively but excluded from ranking when any-angle outputs are present.
-    \item \textbf{Evidence contribution:} an executed benchmark snapshot (12 planners, 50 mazes) with trial-level artifacts, plus deterministic simulation regression checks and screenshot outputs for reproducibility auditing.
+    \item \textbf{Integration-level infrastructure:} a deterministic planner-evaluation runtime that couples seed propagation, heterogeneous planner I/O normalization, and geometric path validation into one auditable repository workflow.
+    \item \textbf{Standardized evaluation protocol:} a shared-success comparability policy with deterministic lexicographic ranking by success rate and efficiency metrics, designed to reduce reporting bias in static-grid comparisons.
+    \item \textbf{Traceable evidence snapshot:} an executed benchmark (12 planners, 50 mazes) with trial-level artifacts and deterministic simulation regression checks, serving as a reproducibility baseline.
 \end{itemize}
 
 Traceability artifacts (claims tables, figure manifests, citation audits) are included to support reproducibility and reviewability, but are not presented as standalone novelty claims.
