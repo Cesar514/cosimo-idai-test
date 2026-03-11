@@ -194,6 +194,18 @@ Pass criteria:
 - `backend=mujoco`: if `M=0, P=1`, warns `Requested physics_backend='mujoco'...falling back to PyBullet.`
 - Every run ends with `[DONE] success=1/1`.
 
+## Case 10: Structured Diagnostics (Required)
+Command:
+```bash
+python3 robotics_maze/src/main.py \
+  --planner astar --episodes 1 --maze-size 11 --seed 42 \
+  --robot-urdf not_a_urdf.txt --no-gui-setup
+```
+Pass criteria:
+- `[EP 1/1]` line contains `diagnostics={...}`.
+- `diagnostics` contains `'urdf_status': 'BACKEND_FALLBACK'`.
+- `diagnostics` contains `'urdf_fallback_reason': "URDF path must end with '.urdf'..."`.
+
 ## Sign-off Rules
 - Required cases must be `PASS`.
 - `Case 06` may be `SKIP` only when `P=0`.
