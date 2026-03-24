@@ -1,206 +1,205 @@
-# cosimi-idai-test
+# AI Course for Research, Science, Engineering, and Education
 
-Agentic engineering demo workspace with three active tracks:
+This repository is being reorganized into a multi-chapter course on practical AI and agentic systems for research, science, engineering, and education.
 
-- `robotics_maze/`: maze generation, planners, simulation, benchmarking
-- `presentation_assets/` + `agents.pptx`: deck assets and factual audit material
-- `robotics_maze/coordination/`: multi-agent planning, logs, and per-task reports
+The current robotics material has been moved into `chapters/chapter10/casestudy_robotics/` as the opening case study. The rest of the repository will evolve around the course structure below.
 
-Last updated: 2026-02-27 (UTC)
+## Part I. Foundations
 
-## Key Outputs
+### Chapter 1. What AI is good at, what agents are good at
+Goal: separate plain prompting, workflow automation, and true agents.
 
-- Benchmark CSV: `robotics_maze/results/benchmark_results.csv`
-- Benchmark summary: `robotics_maze/results/benchmark_summary.md`
-- Coordination dashboard: `robotics_maze/coordination/AGENT_DASHBOARD.md`
-- Coordination event log: `robotics_maze/coordination/session_event_log.csv`
-- Test run log: `robotics_maze/testing/TEST_RUN_LOG.md`
+Core lesson:
 
-## Execution Narrative
+- LLM as reasoner/writer
+- tool-using assistant
+- single-agent loop
+- multi-agent system
+- human-in-the-loop system
 
-- Paper writing plan used: `paper/ieee_tro_robotics_maze/coordination/PAPER_WRITING_PLAN_USED.md`
-- Full prompt/step/result slideshow: `docs/generated/repo_prompt_step_results_slideshow.md`
-- Full chat-order prompt ledger: `docs/generated/session_chat_prompt_ledger.md`
+End product:
 
-## Plan and Agent Distribution
+- one diagram showing increasing capability and increasing failure modes
 
-Primary plan document:
+### Chapter 2. Prompting that survives contact with reality
+Goal: teach prompt design as engineering, not magic.
 
-- `paper/ieee_tro_robotics_maze/coordination/PAPER_WRITING_PLAN_USED.md`
+Based on current OpenAI and Anthropic guidance:
 
-Prompt-log-derived artifacts (cleaned and centralized):
+- define the task
+- define success criteria
+- define exact output contract
+- define ambiguity behavior
+- define what `done` means
+- define citation rules
+- define verification step
 
-- `artifacts_prompts/PAPER_WRITING_PLAN_USED.md`
-- `artifacts_prompts/session_chat_prompt_ledger.md`
-- `artifacts_prompts/repo_prompt_step_results_slideshow.md`
-- `artifacts_prompts/session_prompt_raw_from_history.md`
+End product:
 
-Logged agent distribution (from coordination artifacts):
+- a reusable prompt template for research, education, and engineering
 
-```mermaid
-flowchart TD
-    A[Session Orchestration]
-    A --> B[Robotics Build Agents<br/>B1-B6 (6)]
-    A --> C[Alternative Method Research<br/>R1-R10 (10)]
-    A --> D[Supervisor + Logger<br/>S1 + L1 (2)]
-    A --> E[Test and Screenshot Loop<br/>T1-T3 (3)]
-    A --> F[Skills Copy Agents<br/>SC1-SC3 (3)]
-    A --> G[Runtime and GUI Tracks<br/>ROOT_PIXI + GUI_SETUP + GUI_VALIDATION (3)]
-    A --> H[Monitoring Agent<br/>Larry (1)]
-    A --> I[Paper Review Roles<br/>researcher/reviewer/math/verifier/literature/figure/integrator]
-    A --> J[Privacy Audit Sweep<br/>20 agents]
-```
+### Chapter 3. Context engineering
+Goal: teach that agent quality depends on what is in context, not only how prompts are worded.
 
-## Useful Artifact Map
+Cover:
 
-Paper and submission:
+- system instructions
+- workspace/project context
+- files and references
+- tool results
+- memory/history
+- retrieval vs overload
+- compaction/summarization
+- loss of grounding in long sessions
 
-- `paper/ieee_tro_robotics_maze/README.md`
-- `paper/ieee_tro_robotics_maze/coordination/paper_status.md`
-- `paper/ieee_tro_robotics_maze/submission/ieee_tro_robotics_maze_main.pdf`
-- `paper/ieee_tro_robotics_maze/submission/ieee_tro_robotics_maze_source.zip`
+End product:
 
-Prompt and process documentation:
+- a `context budget` worksheet
 
-- `artifacts_prompts/session_chat_prompt_ledger.md`
-- `artifacts_prompts/repo_prompt_step_results_slideshow.md`
-- `artifacts_prompts/session_prompt_raw_from_history.md`
-- `artifacts_prompts/privacy_audit/MASTER_SUMMARY.md`
+## Part II. Core agent workflows
 
-Robotics implementation and experiments:
+### Chapter 4. Tools, actions, and safe boundaries
+Goal: show that tools are part of the prompt contract.
 
-- `robotics_maze/README.md`
-- `robotics_maze/src/`
-- `robotics_maze/results/benchmark_summary.md`
-- `robotics_maze/testing/TEST_RUN_LOG.md`
-- `robotics_maze/testing/screenshots/`
+Cover:
 
-Coordination and operations:
+- search tools
+- file tools
+- code tools
+- spreadsheets
+- calendar/email
+- destructive vs non-destructive tools
+- tool descriptions and schemas
+- when not to let an agent act automatically
 
-- `robotics_maze/coordination/AGENT_DASHBOARD.md`
-- `robotics_maze/coordination/session_event_log.csv`
-- `robotics_maze/coordination/BACKLOG_SUMMARY.md`
+End product:
 
-Presentation and references:
+- a table for tool design: purpose, inputs, outputs, failure modes, guardrails
 
-- `agents.pptx`
-- `presentation_assets/slide_references.json`
-- `presentation_assets/slide_image_map.json`
-- `presentation_assets/deck_runbook.md`
+### Chapter 5. Single-agent systems first
+Goal: build the first serious agent the right way.
 
-Skills mirrored for reproducibility:
+OpenAI explicitly recommends starting with strong foundations and simple orchestration before moving to multi-agent patterns.
 
-- `skills/README_LOCAL_SKILLS.md`
-- `skills/`
+Cover:
 
-## Contact
+- while-loop agent pattern
+- plan -> act -> observe -> verify -> stop
+- retry logic
+- exit conditions
+- when a single agent is enough
 
-For any more questions, feel free to email: `cac214@bham.ac.uk`
+End product:
 
-## Quick Start
+- one generic single-agent architecture for research tasks
 
-Run from repository root:
+### Chapter 6. Multi-agent systems without nonsense
+Goal: show when decomposition helps and when it only adds latency and errors.
 
-```bash
-pixi install
-pixi task list
-```
+Use OpenAI’s two common patterns:
 
-Current root Pixi tasks:
+- manager agent calling specialists as tools
+- peer agents handing off to each other
 
-- `sim`
-- `benchmark`
+Suggested specialist set:
 
-## Run Commands
+- planner
+- retriever
+- critic/verifier
+- coder
+- report writer
+- experiment designer
 
-Default GUI simulation task:
+End product:
 
-```bash
-pixi run sim
-```
+- one architecture comparison table: single-agent vs manager-agent vs peer handoff
 
-Default benchmark task (`50` mazes, `seed 7`):
+## Part III. Domain application chapters
 
-```bash
-pixi run benchmark
-```
+### Chapter 7. AI for research
+Goal: literature review, synthesis, citation discipline, gap finding.
 
-Equivalent direct benchmark command:
+Use the official research framing:
 
-```bash
-python robotics_maze/src/benchmark.py --mazes 50 --width 15 --height 15 --algorithm backtracker --seed 7 --output-dir robotics_maze/results
-```
+- web search for recency
+- deep research for multi-step synthesis
+- citations mandatory
+- source comparison
+- empty-result recovery
+- claim verification before conclusion
 
-Custom simulation examples:
+Mini-projects:
 
-```bash
-python scripts/sim_runner.py --planner astar --episodes 3 --maze-size 15 --seed 42
-python scripts/sim_runner.py --planner astar --episodes 1 --maze-size 15 --seed 42 --gui --physics-backend pybullet
-python scripts/sim_runner.py --planner astar --episodes 3 --maze-size 15 --seed 42 --physics-backend mujoco
-```
+- literature review
+- benchmark matrix
+- identify gaps in a field
+- create a reproducibility checklist
 
-## Validation Commands
+### Chapter 8. AI for education
+Goal: use agents to teach, not only answer.
 
-```bash
-bash robotics_maze/testing/run_sim_tests.sh
-bash scripts/run_repo_smoke.sh
-pytest robotics_maze/tests/test_core.py
-```
+Cover:
 
+- explanation ladder: beginner -> intermediate -> expert
+- Socratic tutor agent
+- quiz generator with verifier
+- misconception detector
+- lesson planner from papers, slides, or notes
 
-## Contact
+Important point:
 
-For any more questions, feel free to email: `cac214@bham.ac.uk`
+- evaluation here is learning outcome, not just fluent text
 
+Mini-projects:
 
-CONFIG TOML
+- build a tutor for one engineering topic
+- convert a paper into a teachable lesson
+- create adaptive exercises
 
-model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
-model_reasoning_summary = "concise"
-personality = "pragmatic"
+### Chapter 9. AI for engineering
+Goal: practical workflows for coding, design, debugging, experiments, documentation.
 
-# Leave room for native compaction near the 272–273k context window.
-# Formula: 273000 - (tool_output_token_limit + 15000)
-# With tool_output_token_limit=25000 ⇒ 273000 - (25000 + 15000) = 233000
-model_auto_compact_token_limit = 233000
-approval_policy = "never"
-sandbox_mode = "danger-full-access"
-web_search = "live" 
-plan_mode_reasoning_effort = "xhigh"
+OpenAI’s current guidance is strong on coding/terminal agents with explicit tool boundaries, structured contracts, and verification loops.
 
+Mini-projects:
 
-[features]
-apps = true
-responses_websockets_v2 = true
-multi_agent = true
-prevent_idle_sleep = true
-js_repl = true
-voice_transcription = false
-runtime_metrics = false
-child_agents_md = true
-apply_patch_freeform = true
+- design review agent
+- code generation + test agent
+- debugging agent
+- experiment planner
+- requirements-to-spec agent
 
+## Part IV. Hard problems and case studies
 
-[mcp_servers.openaiDeveloperDocs]
-url = "https://developers.openai.com/mcp"
+### Chapter 10. Robotics case study: solving challenging problems with agentic systems
 
-[mcp_servers.github]
-url = "https://api.githubcopilot.com/mcp/"
-bearer_token_env_var = "GITHUB_TOKEN"
+This chapter is the worked case study for the current robotics paper and supporting artifacts.
+It captures a difficult, real-world system that requires careful orchestration, strong evaluation, and clear failure handling.
 
+## License
 
-[agents]
-max_threads = 36
-max_depth = 3
+This project is licensed under the MIT License.
 
+Copyright (c) 2026 Cesar Contreras
 
-For any more questions, feel free to email: `cac214@bham.ac.uk`
+For the full license text, see the `LICENSE` file.
 
+## Author
 
+Cesar Contreras
 
+- Website: [cesar514.com](https://cesar514.com)
+- Email: `cac214@student.bham.ac.uk`
 
+## Repository Layout
 
+- `chapters/chapter10/casestudy_robotics/`: robotics case study and paper artifacts
+- `chapters/chapter10/`: robotics case study chapter
+- `paper/` and `robotics_maze/`: compatibility links to the Chapter 10 case study
+- `chapters/`: chapter drafts and supporting content
+- `docs/`: generated documentation and reference material
+- `presentation_assets/`: slides, visuals, and source references
 
+## Next Step
 
-
+The next implementation step is to turn each chapter into a draft with examples, diagrams, and reusable exercises.

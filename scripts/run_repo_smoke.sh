@@ -28,17 +28,17 @@ targets = [
     root / "scripts" / "apply_ppt_assets.py",
     root / "scripts" / "fix_ppt_full.py",
     root / "scripts" / "sim_runner.py",
-    root / "robotics_maze" / "src" / "main.py",
-    root / "robotics_maze" / "src" / "benchmark.py",
-    root / "robotics_maze" / "src" / "planners.py",
-    root / "robotics_maze" / "src" / "maze.py",
-    root / "robotics_maze" / "src" / "geometry.py",
-    root / "robotics_maze" / "src" / "heuristics.py",
-    root / "robotics_maze" / "src" / "robot.py",
-    root / "robotics_maze" / "src" / "sim.py",
-    root / "robotics_maze" / "src" / "gui_setup.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "main.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "benchmark.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "planners.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "maze.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "geometry.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "heuristics.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "robot.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "sim.py",
+    root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "gui_setup.py",
 ]
-targets.extend(sorted((root / "robotics_maze" / "src" / "alt_planners").glob("*.py")))
+targets.extend(sorted((root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "alt_planners").glob("*.py")))
 
 missing = [str(path) for path in targets if not path.is_file()]
 if missing:
@@ -291,9 +291,9 @@ if not isinstance(image_map, dict):
     fail(f"Invalid image map payload: {image_map_path}")
 
 tracked_prefixes = (
-    (root / "robotics_maze" / "results" / "screenshots").resolve().as_posix() + "/",
-    (root / "robotics_maze" / "results" / "screenshots_mujoco").resolve().as_posix() + "/",
-    (root / "robotics_maze" / "testing" / "screenshots").resolve().as_posix() + "/",
+    (root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "results" / "screenshots").resolve().as_posix() + "/",
+    (root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "results" / "screenshots_mujoco").resolve().as_posix() + "/",
+    (root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "testing" / "screenshots").resolve().as_posix() + "/",
 )
 simulation_png_assets: set[Path] = set()
 for mapped in image_map.values():
@@ -345,7 +345,7 @@ def fail(message: str) -> None:
 
 
 root = Path(os.environ["REPO_ROOT"])
-benchmark_path = root / "robotics_maze" / "src" / "benchmark.py"
+benchmark_path = root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "benchmark.py"
 spec = importlib.util.spec_from_file_location("robotics_benchmark_smoke", benchmark_path)
 if spec is None or spec.loader is None:
     fail(f"Unable to load benchmark module: {benchmark_path}")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Root-level, simulation-only wrapper for robotics_maze/src/main.py."""
+"""Root-level, simulation-only wrapper for chapters/chapter10/casestudy_robotics/robotics_maze/src/main.py."""
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ def _apply_interactive_gui_defaults(args: Sequence[str]) -> list[str]:
 
 def run(argv: Sequence[str] | None = None) -> int:
     root = _repo_root()
-    target = root / "robotics_maze" / "src" / "main.py"
+    target = root / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "src" / "main.py"
     raw_args = argv if argv is not None else sys.argv[1:]
     args = _apply_interactive_gui_defaults(_normalize_passthrough_args(raw_args))
 

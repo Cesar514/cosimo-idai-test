@@ -39,9 +39,9 @@ def main() -> int:
         "mcp_mesh": ROOT / "presentation_assets" / "custom" / "mcp_mesh.png",
         "planning_loop": ROOT / "presentation_assets" / "custom" / "planning_loop.png",
         "robotics_arm": ROOT / "presentation_assets" / "custom" / "robotics_arm.png",
-        "sim1": ROOT / "robotics_maze" / "results" / "screenshots_mujoco" / "sim_mujoco_1_astar.png",
-        "sim2": ROOT / "robotics_maze" / "results" / "screenshots_mujoco" / "sim_mujoco_2_weighted_astar.png",
-        "sim3": ROOT / "robotics_maze" / "results" / "screenshots_mujoco" / "sim_mujoco_3_fringe_search.png",
+        "sim1": ROOT / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "results" / "screenshots_mujoco" / "sim_mujoco_1_astar.png",
+        "sim2": ROOT / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "results" / "screenshots_mujoco" / "sim_mujoco_2_weighted_astar.png",
+        "sim3": ROOT / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "results" / "screenshots_mujoco" / "sim_mujoco_3_fringe_search.png",
     }
 
     for path in assets.values():

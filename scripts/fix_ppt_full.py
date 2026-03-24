@@ -30,9 +30,9 @@ NS = {"ep": XML_NS_EP, "vt": XML_NS_VT}
 def iter_candidate_fallback_images() -> list[Path]:
     patterns = [
         ROOT / "presentation_assets" / "custom",
-        ROOT / "robotics_maze" / "results" / "screenshots",
-        ROOT / "robotics_maze" / "results" / "screenshots_mujoco",
-        ROOT / "robotics_maze" / "testing" / "screenshots",
+        ROOT / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "results" / "screenshots",
+        ROOT / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "results" / "screenshots_mujoco",
+        ROOT / "chapters" / "chapter10" / "casestudy_robotics" / "robotics_maze" / "testing" / "screenshots",
     ]
     files: list[Path] = []
     for base in patterns:
