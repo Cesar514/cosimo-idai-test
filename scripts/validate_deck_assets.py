@@ -328,7 +328,7 @@ def main() -> int:
     expected_slide_count = deck_slide_count
     if expected_slide_count is None:
         discovered_counts = [
-            count for count in [speaker_slide_count, image_map_slide_count, reference_map_slide_count] if count
+            count for count in (speaker_slide_count, image_map_slide_count, reference_map_slide_count) if count
         ]
         expected_slide_count = max(discovered_counts, default=0)
         if expected_slide_count == 0:
