@@ -14,6 +14,9 @@ pillow = ">=10"
 mujoco = ">=3.3.7"
 python-pptx = ">=0.6.23"
 pytest = ">=8"
+requests = "*"
+aiohttp = "*"
+nest_asyncio = "*"
 
 [tasks]
 sim = "python scripts/sim_runner.py --gui-setup --gui --planner astar --episodes 1 --maze-size 15 --seed 42 --physics-backend auto --gui-hold-seconds 20"
