@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Apply full-deck polish: remove deprecated topics and ensure image + refs on each slide."""
 
-from __future__ import annotations
-
 import json
 import tempfile
 import xml.etree.ElementTree as ET
